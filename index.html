@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1f4e79">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="康复知识库">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>康复知识库 · 21 位点 / 22 版次分级检索</title>
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1d1f;--muted:#6b6b70;--line:#e6e3dc;--card:#fff;--accent:#1f4e79;--soft:#f1efe9}
+@media (prefers-color-scheme: dark){:root{--bg:#17181a;--fg:#eceae6;--muted:#a09e98;--line:#2e3033;--card:#1e2023;--accent:#8ab4d8;--soft:#24262a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.65 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif}
+.wrap{display:grid;grid-template-columns:330px 1fr;height:100vh}
+aside{border-right:1px solid var(--line);display:flex;flex-direction:column;background:var(--card)}
+.top{padding:14px 14px 8px}
+h1{font-size:22px}
+.brand{font-weight:700;font-size:15px;letter-spacing:.02em;margin-bottom:10px}
+.brand small{color:var(--muted);font-weight:400;margin-left:6px}
+.who{padding:0 14px 8px}
+.who select{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);font-size:12.5px;cursor:pointer}
+.idcard{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0 16px;background:var(--card)}
+.idcard .k2{font-weight:700;font-size:13px;margin:8px 0 4px;color:var(--accent)}
+.idcard .row{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:2px 0}
+.bar{height:6px;background:var(--soft);border-radius:99px;overflow:hidden;margin:2px 0 6px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.fp{display:inline-block;margin-left:6px;padding:0 5px;border-radius:999px;font-size:10.5px;background:var(--soft);color:var(--accent);border:1px solid var(--line)}
+.banner{display:flex;flex-wrap:wrap;align-items:center;gap:8px;border-left:3px solid var(--accent);background:var(--soft);padding:9px 12px;border-radius:0 10px 10px 0;margin:10px 0 16px;font-size:13px}
+.banner a[data-who]{color:var(--accent);cursor:pointer;text-decoration:underline}
+ul.srcs{font-size:12.5px;color:var(--muted);word-break:break-all}
+ul.srcs a{color:var(--accent)}
+input[type=search]{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--fg);font-size:14px;outline:none}
+input[type=search]:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent)}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;padding:10px 14px 6px}
+.tab{border:1px solid var(--line);background:transparent;color:var(--muted);padding:5px 9px;border-radius:999px;font-size:12px;cursor:pointer;white-space:nowrap}
+.tab.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+#filters{display:flex;gap:4px;padding:0 14px 8px;flex-wrap:wrap;align-items:center}
+#filters .sep{width:100%;height:0}
+.chipbtn{border:1px solid var(--line);background:transparent;color:var(--muted);font-size:11px;padding:3px 7px;border-radius:6px;cursor:pointer}
+.chipbtn.on{background:var(--soft);color:var(--fg);border-color:var(--accent)}
+#count{margin-left:auto;font-size:11px;color:var(--muted)}
+#list{overflow:auto;flex:1;padding:0 8px 14px}
+.item{display:flex;gap:8px;align-items:flex-start;padding:8px 8px;border-radius:8px;cursor:pointer;border:1px solid transparent}
+.item:hover{background:var(--soft)}
+.item.active{background:var(--soft);border-color:var(--accent)}
+.it-title{font-size:13.5px;font-weight:600;line-height:1.4}
+.it-sub{font-size:11.5px;color:var(--muted)}
+.mini{margin-left:auto;font-size:10.5px;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:1px 4px}
+.mini.full{color:#fff;background:#2e7d32;border-color:#2e7d32}
+.badge{font-size:10px;font-weight:700;padding:1px 5px;border-radius:4px;background:var(--soft);color:var(--fg);flex:none;margin-top:2px}
+.lv-L0{background:#e8f1fa;color:#1f4e79}.lv-L1{background:#e8f4e6;color:#2e6b2b}.lv-L2{background:#fff1df;color:#8a5300}.lv-L3{background:#f4e8f8;color:#6b2b80}.lv-L4{background:#fde9e7;color:#8a2c22}
+@media (prefers-color-scheme: dark){.badge{color:#111}}
+main{overflow:auto;padding:30px 44px 80px}
+.kicker{font-size:12px;color:var(--muted);letter-spacing:.04em}
+main h1{margin:6px 0 10px;font-size:26px;line-height:1.3}
+.meta{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+main h3{margin:26px 0 8px;font-size:14px;letter-spacing:.03em;color:var(--accent);border-bottom:1px solid var(--line);padding-bottom:5px}
+main h3 small{color:var(--muted);font-weight:400;letter-spacing:0}
+p{margin:6px 0}
+.muted{color:var(--muted);font-size:13.5px}
+ul.chapters{list-style:none;padding:0;margin:0;columns:1}
+.vblock{margin:16px 0 22px}
+.vhead{font-size:13.5px;font-weight:700;padding:6px 10px;background:var(--soft);border-left:3px solid var(--accent);border-radius:4px}
+.vmeta{font-weight:400;color:var(--muted);font-size:11.5px}
+.vnote{font-size:12px;color:var(--muted);margin-top:4px;font-weight:400}
+ul.chapters li{display:flex;gap:8px;padding:6px 8px;border-bottom:1px dashed var(--line);cursor:pointer;font-size:13.5px;align-items:flex-start;break-inside:avoid}
+@media(min-width:1200px){ul.chapters{columns:2;column-gap:40px}}
+ul.chapters li:hover{background:var(--soft)}
+ul.chapters li .box{width:16px;height:16px;border:1.5px solid var(--line);border-radius:4px;flex:none;text-align:center;font-size:11px;line-height:14px;margin-top:2px;color:#fff}
+ul.chapters li.done{color:var(--muted)}
+ul.chapters li.done .box{background:#2e7d32;border-color:#2e7d32}
+.progwrap{display:flex;align-items:center;gap:10px;margin:4px 0 6px}
+.progbar{flex:1;height:6px;background:var(--soft);border-radius:99px;overflow:hidden;max-width:340px}
+.progfill{height:100%;background:#2e7d32;width:0;transition:width .2s}
+#progress-label{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:12px;color:var(--accent);cursor:pointer;text-decoration:none}
+.chip:hover{background:var(--soft)}
+table.grid{border-collapse:collapse;width:100%;font-size:13.5px;margin:8px 0}
+table.grid th,table.grid td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+table.grid th{background:var(--soft);font-weight:600;white-space:nowrap}
+td.stage{white-space:nowrap;font-weight:600}
+.file{margin-top:36px;font-size:11.5px;color:var(--muted)}
+.empty{max-width:640px;margin:8vh auto}
+.empty h2{font-size:26px;margin-bottom:8px}
+.hint{font-size:12.5px;color:var(--muted)}
+kbd{border:1px solid var(--line);border-radius:4px;padding:0 5px;font-size:11px;background:var(--soft)}
+.stat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:26px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.stat-n{font-size:26px;font-weight:700}
+.stat-l{font-size:11.5px;color:var(--muted)}
+.mbar{display:none}
+.mask{display:none}
+@media(max-width:820px){
+  .mbar{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:45;
+        padding:9px 12px;background:var(--card);border-bottom:1px solid var(--line)}
+  .mbar b{font-size:15px}
+  .mbar small{font-size:11px;color:var(--muted)}
+  .mbar .sp{flex:1}
+  #hamb,#mAsk{border:1px solid var(--line);background:var(--bg);border-radius:8px;
+        font-size:15px;line-height:1;padding:7px 10px;cursor:pointer;color:var(--fg)}
+  .wrap{display:block;height:auto}
+  aside{position:fixed;top:0;bottom:0;left:0;width:84%;max-width:330px;z-index:60;
+        transform:translateX(-102%);transition:transform .22s ease;border-right:1px solid var(--line);
+        background:var(--bg);max-height:none;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.18)}
+  body.nav-open aside{transform:none}
+  body.nav-open .mask{display:block;position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.35)}
+  main{padding:14px 14px 90px;margin-left:0}
+  h1{font-size:24px}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:8px 10px 6px}
+  .tabs button{flex:0 0 auto}
+  #filters{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:6px 10px 8px}
+  #filters>*{flex:0 0 auto}
+  table.grid{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}
+  ul.pts{font-size:13.5px}
+  .askpanel{left:8px;right:8px;bottom:66px;width:auto;max-height:72vh}
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .stat-n{font-size:22px}
+  .askbtn{padding:9px 14px;font-size:13.5px}
+  .chnav{gap:8px;font-size:13px}
+}
+
+/* 章节页 */
+.crumb{font-size:12px;color:var(--muted);margin-bottom:10px}
+.crumb a{color:var(--accent);cursor:pointer;text-decoration:none}
+.atom{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:10px 0;background:var(--card);cursor:pointer;transition:border-color .15s}
+.atom:hover{border-color:var(--accent)}
+.atom-h{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.atom-h .more{margin-left:auto;color:var(--accent);cursor:pointer;font-size:12px;white-space:nowrap}
+.atom-h .more:hover{text-decoration:underline}
+.atom-h b{font-size:14.5px}
+.atom-h span{font-size:12.5px;color:var(--muted)}
+ul.pts{margin:8px 0 0;padding-left:18px;font-size:13.5px}
+ul.pts li{margin:3px 0}
+.tip{margin-top:8px;font-size:12.5px;color:var(--muted);border-left:2px solid var(--line);padding-left:8px}
+.relrow{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 0}
+textarea#chnote{width:100%;min-height:92px;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--fg);font:14px/1.6 inherit;resize:vertical}
+.chnav{display:flex;justify-content:space-between;gap:10px;margin:26px 0 0;font-size:13px}
+.chnav a{color:var(--accent);cursor:pointer;text-decoration:none}
+/* 问答 */
+.askbtn{position:fixed;right:26px;bottom:26px;z-index:40;border:none;border-radius:999px;padding:11px 18px;
+  background:var(--accent);color:#fff;font-size:14px;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.askpanel[hidden]{display:none}
+.askpanel{position:fixed;right:26px;bottom:26px;width:min(430px,calc(100vw - 40px));height:min(620px,calc(100vh - 60px));
+  background:var(--card);border:1px solid var(--line);border-radius:14px;z-index:41;display:flex;flex-direction:column;
+  box-shadow:0 18px 48px rgba(0,0,0,.22)}
+.askhead{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line);font-weight:600;font-size:14px}
+.askhead small{font-weight:400;color:var(--muted);font-size:11.5px}
+.askhead button{margin-left:auto;border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer}
+#askLog{flex:1;overflow:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.msg{font-size:13.5px;line-height:1.6;border-radius:10px;padding:9px 11px;max-width:92%}
+.msg.u{align-self:flex-end;background:var(--accent);color:#fff}
+.msg.a{align-self:flex-start;background:var(--soft)}
+.reslist{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.res{display:block;text-decoration:none;color:var(--fg);background:var(--card);border:1px solid var(--line);
+  border-radius:8px;padding:6px 9px;font-size:12.5px;cursor:pointer}
+.res:hover{border-color:var(--accent)}
+.res b{color:var(--accent);font-weight:600;margin-right:6px}
+.asksug{display:flex;gap:5px;flex-wrap:wrap;padding:8px 14px 0}
+.asksug button{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;
+  font-size:11.5px;padding:3px 8px;cursor:pointer}
+.askfoot{display:flex;gap:8px;padding:10px 14px 12px;border-top:1px solid var(--line)}
+#askInput{flex:1;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--fg);font-size:13.5px;outline:none}
+#askInput:focus{border-color:var(--accent)}
+#askSend{border:none;border-radius:9px;padding:0 16px;background:var(--accent);color:#fff;font-size:13.5px;cursor:pointer}
+</style></head>
+<body>
+<div class="mbar"><button id="hamb" aria-label="目录">☰</button><b>康复知识库</b><span class="sp"></span><small id="mbarSub">21 位点</small><button id="mAsk" aria-label="问知识库">问</button></div>
+<div class="mask" id="mask"></div>
+<div class="wrap">
+<aside>
+  <div class="top">
+    <div class="brand">康复知识库 <small id="brandSub">21 位点 / 22 版次</small></div>
+    <div class="who"><select id="whoSel" title="选一个身份，相关的内容会被标成本阶段重点"><option value="">身份：不指定（全部内容）</option></select></div>
+    <input id="search" type="search" placeholder="搜索：脑卒中 / 吞咽 / Berg / C1 …">
+  </div>
+  <div class="tabs">
+    <button class="tab on" data-tab="books">教材</button>
+    <button class="tab" data-tab="topics">主题延伸</button>
+    <button class="tab" data-tab="paths">学习路径</button>
+    <button class="tab" data-tab="scales">量表速查</button>
+    <button class="tab" data-tab="diseases">病种速查</button>
+    <button class="tab" data-tab="overlaps">重合取舍</button>
+    <button class="tab" data-tab="ident">身份适配</button>
+    <button class="tab" data-tab="cert">资格证</button>
+  </div>
+  <div id="filters">
+    <button class="chipbtn on" data-level="all">全部</button>
+    <button class="chipbtn" data-level="L0">L0</button>
+    <button class="chipbtn" data-level="L1">L1</button>
+    <button class="chipbtn" data-level="L2">L2</button>
+    <button class="chipbtn" data-level="L3">L3</button>
+    <button class="chipbtn" data-level="L4">L4</button>
+    <span class="sep"></span>
+    <button class="chipbtn on" data-cat="all">全类</button>
+    <button class="chipbtn" data-cat="A">A 入门</button>
+    <button class="chipbtn" data-cat="B">B 基础</button>
+    <button class="chipbtn" data-cat="C">C 评定</button>
+    <button class="chipbtn" data-cat="D">D 技术</button>
+    <button class="chipbtn" data-cat="E">E 专科</button>
+    <button class="chipbtn" data-cat="F">F 综合</button>
+    <span id="count"></span>
+  </div>
+  <div id="list"></div>
+</aside>
+<main id="main"></main>
+</div>
+<button id="askBtn" class="askbtn">问知识库</button>
+<section id="askPanel" class="askpanel" hidden>
+  <div class="askhead">问知识库 <small>检索 · 总结 · 直达章节</small><button id="askClose" title="收起">×</button></div>
+  <div id="askLog"></div>
+  <div class="asksug">
+    <button data-q="脑卒中手功能怎么练">脑卒中手功能</button>
+    <button data-q="膝置换术后多久能负重">膝置换术后</button>
+    <button data-q="吞咽障碍怎么评">吞咽评定</button>
+    <button data-q="肌力评定 MMT 分级">MMT 分级</button>
+    <button data-q="脊髓损伤并发症">脊髓损伤</button>
+  </div>
+  <div class="askfoot">
+    <input id="askInput" placeholder="说出你的需求，例如：偏瘫肩痛怎么处理" autocomplete="off">
+    <button id="askSend">发送</button>
+  </div>
+</section>
+<script id="kb-data" type="application/json">{"books": [{"code": "A1", "title": "康复医学概论（2018 / 2024 两版）", "cat": "A 入门与专业认知", "level": "L0", "level_name": "入门", "editor": "王宁华（2018）／陈立典、席家宁（2024）", "edition": "第3版（2018／2024）", "year": "2018 / 2024", "isbn": "978-7-117-25986-6（2018）／978-7-117-36241-2（2024）", "role": "专业入口书：康复医学是什么、残疾与功能怎么描述、科室怎么运转。两版同标“第3版”但 ISBN、主编、章目都不同，属两套独立修订，买书只认 ISBN。", "when": "入学第 1 学期，2 周内通读；先读 2024 版建立现行口径，2018 版留作旧大纲对照", "ebook": "人卫智慧服务商城有配套电子版（院校账号）；超星/读秀可试读", "extend": "读完接《康复医学（第7版）》第1—4章，看临床医学专业如何讲同一件事；再读 ICF 官方中文版分类。", "tags": ["概论", "ICF", "残疾学"], "related": ["F1", "C1"], "chapters": ["第一章 概述（康复/康复医学概念、发展史、学科内容、康复效益）", "第二章 流行病学（研究方法、在康复中的应用、残疾人分布特征）", "第三章 残疾学（致残原因、ICIDH→ICF、残疾分类与三级预防、政策法规）", "第四章 功能障碍", "第五章 康复医学的工作方式和流程", "第六章 康复医学地位", "第七章 康复伦理问题", "第八章 康复心理学", "第九章 康复医学中的科学研究", "第十章 康复医学科的设置和常用设备", "第十一章 康复医学科诊疗工作常规", "第一章 绪论（康复定义、中外发展简史、与临床医学关系、中医康复特色、新进展）", "第二章 康复医学基础理论（运动学与运动生理学、运动与制动的影响、发育学、中枢神经可塑性、脏器康复理论、中医康复理论）", "第三章 康复医疗的工作内容与工作方式（评定/治疗/预防/教科研、团队模式与职责）", "第四章 康复医疗文书与康复质控（病历、处方、评定记录、质控）", "第五章 临床康复（工作特点与模式、早期介入、老年慢病人群中的作用）", "第六章 功能评定与康复结局", "第七章 社区康复", "第八章 康复医学发展趋势"], "variants": [{"key": "2018", "label": "2018 版（第3版，11 章）", "editor": "王宁华 主编", "year": "2018", "isbn": "978-7-117-25986-6", "note": "旧大纲、二手书、多数院校旧题库对应此版；章目偏“学科要素”式罗列。", "chapters": ["第一章 概述（康复/康复医学概念、发展史、学科内容、康复效益）", "第二章 流行病学（研究方法、在康复中的应用、残疾人分布特征）", "第三章 残疾学（致残原因、ICIDH→ICF、残疾分类与三级预防、政策法规）", "第四章 功能障碍", "第五章 康复医学的工作方式和流程", "第六章 康复医学地位", "第七章 康复伦理问题", "第八章 康复心理学", "第九章 康复医学中的科学研究", "第十章 康复医学科的设置和常用设备", "第十一章 康复医学科诊疗工作常规"], "n": 11}, {"key": "2024", "label": "2024 版（同标第3版，8 章）", "editor": "陈立典、席家宁 主编", "year": "2024", "isbn": "978-7-117-36241-2", "note": "当前在售新版；章目重组为“基础理论—工作内容—文书质控—临床康复—评定与结局—社区—趋势”，并加入质控与结局。", "chapters": ["第一章 绪论（康复定义、中外发展简史、与临床医学关系、中医康复特色、新进展）", "第二章 康复医学基础理论（运动学与运动生理学、运动与制动的影响、发育学、中枢神经可塑性、脏器康复理论、中医康复理论）", "第三章 康复医疗的工作内容与工作方式（评定/治疗/预防/教科研、团队模式与职责）", "第四章 康复医疗文书与康复质控（病历、处方、评定记录、质控）", "第五章 临床康复（工作特点与模式、早期介入、老年慢病人群中的作用）", "第六章 功能评定与康复结局", "第七章 社区康复", "第八章 康复医学发展趋势"], "n": 8}], "path": "01-教材/A1-康复医学概论（2018-2024）.md"}, {"code": "A3", "title": "康复心理学（第2版）", "cat": "A 入门与专业认知", "level": "L1", "level_name": "基础", "editor": "李静、宋为群 主编", "edition": "第2版", "year": "2018", "isbn": "978-7-117-26326-9", "role": "康复对象几乎都伴随心理问题：伤残后的否认—愤怒—抑郁、慢病的依从性、家属支持系统。这本书给你评估与干预的框架，也是医患沟通的底稿。", "when": "第二学期起，与临床见习同步", "ebook": "人卫电子版；图书馆超星", "extend": "延伸读《医学心理学》教材的评估量表部分；实操看 PHQ-9、GAD-7、HAMA 原始量表。", "tags": ["心理", "评估", "沟通"], "related": ["E5", "E6", "F2"], "chapters": ["第一章 概述", "第二章 康复患者的基本心理活动与干预理论", "第三章 社会人际关系与社会支持", "第四章 临床心理评估", "第五章 心理干预方法", "第六章 应激相关障碍", "第七章 心身疾病", "第八章 肢体功能障碍患者的心理康复", "第九章 感觉器官障碍患者的心理康复", "第十章 精神障碍患者的心理康复", "第十一章 其他临床状况的心理康复", "第十二章 老年康复者的心理康复", "第十三章 特殊儿童的心理康复", "第十四章 妇女的心理康复"], "variants": null, "path": "01-教材/A3-康复心理学.md"}, {"code": "B1", "title": "功能解剖学（第3版）", "cat": "B 基础医学支撑", "level": "L1", "level_name": "基础", "editor": "汪华侨 主编", "edition": "第3版", "year": "2018", "isbn": "978-7-117-26799-1", "role": "不是背名词的系统解剖，而是“按功能组织”的解剖：肌肉起止点—力线—关节运动—神经支配。评定和手法治疗的每一句话都要回到这里。", "when": "第一学年，与系统解剖学并行或紧随", "ebook": "人卫电子版；超星", "extend": "与《人体运动学》B3 对读（解剖结构 → 运动学行为）；触诊与表面解剖建议配《奈特人体解剖彩色图谱》。", "tags": ["解剖", "触诊"], "related": ["B3", "C1", "D1"], "chapters": ["绪论（学习方法、方位术语、功能解剖学与临床的联系）", "上篇 基础解剖学：第一章 运动系统（骨、关节、骨骼肌）", "上篇：第二章 消化系统", "上篇：第三章 呼吸系统", "上篇：第四章 泌尿系统", "上篇：第五章 生殖系统", "上篇：第六章 脉管系统", "上篇：第七章 感觉器官", "上篇：第八章 神经系统", "上篇：第九章 内分泌系统", "下篇 应用解剖学（按头颈、上肢、躯干、下肢等局部，讲临床与康复操作相关的解剖路径）"], "variants": null, "path": "01-教材/B1-功能解剖学.md"}, {"code": "B2", "title": "康复生理学（第3版）", "cat": "B 基础医学支撑", "level": "L1", "level_name": "基础", "editor": "王瑞元 主编", "edition": "第3版", "year": "2018", "isbn": "978-7-117-26079-4", "role": "康复的生理学底座：骨骼肌收缩类型、运动单位、能量代谢、心肺对运动的应答、神经可塑性、运动促进健康的机制。理解“为什么这样练有效”。", "when": "第一学年，与生理学同步", "ebook": "人卫电子版；超星", "extend": "延伸读运动生理学（如《运动生理学》王瑞元）中有氧能力/乳酸阈章节；心肺康复者必看运动试验部分。", "tags": ["生理", "运动"], "related": ["B3", "E3", "D1"], "chapters": ["第一章 绪论", "第二章 细胞的基本功能", "第三章 骨骼肌的功能", "第四章 骨骼的功能", "第五章 血液", "第六章 血液循环", "第七章 呼吸", "第八章 消化与吸收", "第九章 能量代谢与体温", "第十章 尿的生成与排出", "第十一章 感觉器官的功能", "第十二章 神经系统的功能", "第十三章 内分泌", "第十四章 生殖", "第十五章 运动促进健康的生理学基础"], "variants": null, "path": "01-教材/B2-康复生理学.md"}, {"code": "B3", "title": "人体运动学（第3版）", "cat": "B 基础医学支撑", "level": "L1", "level_name": "基础", "editor": "黄晓琳、敖丽娟 主编", "edition": "第3版", "year": "2018", "isbn": "978-7-117-26800-4", "role": "把解剖变成运动：骨与关节的力学、肌肉的功能解剖与力偶、上肢/躯干/下肢的运动学、步态与行走。关节松动、牵伸、步态训练的说明书。", "when": "第一学年下—第二学年上", "ebook": "人卫电子版（配盘版含多媒体）；超星", "extend": "与《物理治疗学》D1 第3—5章（牵伸、关节松动）对读：先懂运动学，再学手法。步态部分接 C1 步态分析章。", "tags": ["运动学", "步态", "生物力学"], "related": ["B1", "C1", "D1", "E2"], "chapters": ["第一章 总论（运动学基础、骨与关节生物力学、肌肉结构与功能、运动生理生化基础）", "第二章 上肢（肩复合体、肘、腕手运动学）", "第三章 躯干（脊柱、骨盆运动学与稳定性）", "第四章 下肢（髋、膝、踝运动学；行走运动学与步态分析）"], "variants": null, "path": "01-教材/B3-人体运动学.md"}, {"code": "B4", "title": "人体发育学（第3版）", "cat": "B 基础医学支撑", "level": "L1", "level_name": "基础", "editor": "李晓捷 主编", "edition": "第3版", "year": "2018", "isbn": "978-7-117-26123-4", "role": "从胎儿到成人的功能发育时间轴：粗大运动、精细运动、言语语言、认知、情绪社会性。儿童康复（E4）和发育评估的判断尺。", "when": "第二学年，先于儿童康复学", "ebook": "人卫电子版；超星", "extend": "配 GMFCS/GMFM、Peabody、Alberta 婴儿运动量表原始手册使用；延伸读《儿童发育行为学》。", "tags": ["发育", "儿童"], "related": ["E4", "D3", "C1"], "chapters": ["第一章 概论（发育学概念、发育规律与影响因素、发育评定）", "第二章 胎儿期发育", "第三章 婴幼儿期粗大运动发育", "第四章 精细运动发育", "第五章 言语语言发育", "第六章 认知发育", "第七章 情绪情感与社会性发育", "第八章 学龄前期与学龄期发育", "第九章 青春期发育", "第十章 成人期发育"], "variants": null, "path": "01-教材/B4-人体发育学.md"}, {"code": "B5", "title": "临床疾病概要（第3版）", "cat": "B 基础医学支撑", "level": "L1", "level_name": "基础", "editor": "周蕾 主编", "edition": "第3版", "year": "2018", "isbn": "978-7-117-26065-7", "role": "康复治疗师必须懂病：诊断学基础 + 各系统常见病的病因、表现、治疗与康复切入点。查房、看病历、和医生对话的语言基础。", "when": "第二学年，与临床医学课程并行", "ebook": "人卫电子版；超星", "extend": "不必逐章精读：按 E 类目顺序反查（神经康复→第12章，肌骨→第14章，内外科→第4/5/9章）。", "tags": ["疾病", "诊断"], "related": ["E3", "E5", "F2"], "chapters": ["第一章 诊断学基础", "第二章 外科学基础", "第三章 危急重病", "第四章 呼吸系统疾病", "第五章 循环系统疾病", "第六章 消化系统疾病", "第七章 泌尿生殖系统疾病", "第八章 血液系统疾病", "第九章 内分泌与代谢性疾病", "第十章 风湿性疾病", "第十一章 传染病", "第十二章 神经系统疾病", "第十三章 精神疾病", "第十四章 运动系统疾病", "第十五章 妇产科疾病", "第十六章 儿科疾病", "第十七章 口腔疾病", "第十八章 耳鼻咽喉疾病", "第十九章 眼科疾病", "第二十章 皮肤性病", "第二十一章 肿瘤"], "variants": null, "path": "01-教材/B5-临床疾病概要.md"}, {"code": "C1", "title": "康复功能评定学（第3版）", "cat": "C 康复评定", "level": "L2", "level_name": "核心", "editor": "王玉龙 主编", "edition": "第3版", "year": "2018", "isbn": "978-7-117-27150-9", "role": "全书最重要的一本。22 章覆盖从人体形态到 ADL、生活质量、环境、各系统疾病评定，每个量表都给了操作方法与结果解释。评定决定治疗，评定错了后面全错。", "when": "第二学年下—第三学年，配实验课反复练", "ebook": "人卫电子版；湖北专升本指定参考书，二手与电子版流传广", "extend": "各量表原版手册（FIM、Barthel、Brunnstrom、MMT、Berg、TUG、6MWT）；神经电生理章接肌电图/诱发电位专著。", "tags": ["评定", "量表", "步态"], "related": ["D1", "D2", "D3", "E1", "F1"], "chapters": ["第一章 总论", "第二章 人体形态评定", "第三章 神经反射评定", "第四章 心肺功能评定", "第五章 认知功能评定", "第六章 言语-语言功能评定", "第七章 感觉功能评定", "第八章 肌张力评定", "第九章 肌力评定", "第十章 关节活动度评定", "第十一章 协调与平衡功能评定", "第十二章 步态分析", "第十三章 神经电生理评定", "第十四章 日常生活活动能力评定", "第十五章 生活质量与社会功能评定", "第十六章 环境评定", "第十七章 常见骨关节疾病评定", "第十八章 常见神经疾病评定", "第十九章 常见心肺疾病评定", "第二十章 常见儿童疾病评定", "第二十一章 老年疾病评定", "第二十二章 康复常见并发症评定"], "variants": null, "path": "01-教材/C1-康复功能评定学.md"}, {"code": "D1", "title": "物理治疗学（第3版）", "cat": "D 治疗技术", "level": "L2", "level_name": "核心", "editor": "燕铁斌 主编", "edition": "第3版", "year": "2018", "isbn": "978-7-117-26105-0", "role": "PT 的全部家当：29 章从关节活动技术、转移、牵伸、松动、肌力训练一直到电光声热磁、冲击波、rTMS、VR 与机器人。前半本是手法，后半本是物理因子。", "when": "第三学年，理论与实操 1:1 配比", "ebook": "人卫电子版；流传最广的康复教材之一", "extend": "手法章（2—14）配视频与实操；物理因子章（18—28）配设备说明书与安全禁忌；循证章接 PEDro/Cochrane。", "tags": ["PT", "物理因子", "手法"], "related": ["C1", "B3", "E1", "E2", "D5"], "chapters": ["第一章 绪论", "第二章 关节活动技术", "第三章 体位转移技术", "第四章 肌肉牵伸技术", "第五章 关节松动技术", "第六章 肌力训练技术", "第七章 牵引技术", "第八章 悬吊技术", "第九章 软组织贴扎技术", "第十章 平衡与协调训练", "第十一章 步行训练", "第十二章 神经发育技术", "第十三章 运动再学习技术", "第十四章 强制性使用运动治疗", "第十五章 心肺功能训练", "第十六章 虚拟现实技术", "第十七章 机器人辅助治疗", "第十八章 电疗法", "第十九章 光疗法", "第二十章 超声波疗法", "第二十一章 传导热疗法", "第二十二章 压力疗法", "第二十三章 磁疗法", "第二十四章 水疗法", "第二十五章 冷疗与冷冻疗法", "第二十六章 生物反馈疗法", "第二十七章 冲击波疗法", "第二十八章 非侵入性脑部刺激技术", "第二十九章 物理治疗中的循证医学"], "variants": null, "path": "01-教材/D1-物理治疗学.md"}, {"code": "D2", "title": "作业治疗学（第3版）", "cat": "D 治疗技术", "level": "L2", "level_name": "核心", "editor": "窦祖林 主编", "edition": "第3版", "year": "2018", "isbn": "978-7-117-26248-4", "role": "OT 的核心是“活动即治疗”：ADL、治疗性作业、感觉统合、上肢与手、认知感知、压力治疗、辅具与环境、职业康复，再按病种落地。", "when": "第三学年，与 D1 同期", "ebook": "人卫电子版；超星", "extend": "活动分析（Activity Analysis）专著、MOHO 模型、COPM 量表；手部接 D1 与矫形器（D5）。", "tags": ["OT", "ADL", "辅具"], "related": ["C1", "D5", "E3", "E1"], "chapters": ["第一章 概论", "第二章 作业评定", "第三章 日常生活活动训练", "第四章 治疗性作业活动", "第五章 感觉统合训练", "第六章 手及上肢功能康复", "第七章 认知与感知障碍的作业治疗", "第八章 压力治疗", "第九章 辅助器具与助行器", "第十章 环境调适", "第十一章 职业康复", "第十二章 神经系统疾病的作业治疗", "第十三章 肌骨损伤的作业治疗", "第十四章 肌骨疾病的作业治疗", "第十五章 精神障碍的作业治疗", "第十六章 儿科作业治疗", "第十七章 其他疾病的作业治疗", "第十八章 作业治疗记录撰写", "第十九章 作业治疗研究与创新"], "variants": null, "path": "01-教材/D2-作业治疗学.md"}, {"code": "D3", "title": "语言治疗学（第3版）", "cat": "D 治疗技术", "level": "L2", "level_name": "核心", "editor": "陈卓铭 主编", "edition": "第3版", "year": "2018", "isbn": "978-7-117-26388-7", "role": "ST 的主干：失语症、构音障碍、腭裂、嗓音、口吃、儿童语言发育迟缓、吞咽障碍、孤独症与痴呆的语言干预。评估—训练—家庭指导三位一体。", "when": "第三学年，与神经康复学 E1 同期", "ebook": "人卫电子版；超星", "extend": "WAB、ABC、Frenchay 构音评定原始手册；吞咽接 VFSS/FEES 判读；儿童接 B4 发育学。", "tags": ["ST", "失语", "吞咽"], "related": ["C1", "E1", "E4", "D2"], "chapters": ["第一章 概述", "第二章 语言治疗方法", "第三章 神经影像与电生理基础", "第四章 听力障碍", "第五章 失语症", "第六章 构音障碍", "第七章 腭裂", "第八章 嗓音障碍", "第九章 口吃", "第十章 儿童语言发育迟缓", "第十一章 吞咽障碍", "第十二章 孤独症谱系障碍语言康复", "第十三章 脑退化性疾病语言干预", "第十四章 其他语言障碍"], "variants": null, "path": "01-教材/D3-语言治疗学.md"}, {"code": "D4", "title": "传统康复方法学（第3版）", "cat": "D 治疗技术", "level": "L2", "level_name": "核心", "editor": "陈立典 主编", "edition": "第3版", "year": "2018", "isbn": "978-7-117-27151-6", "role": "国内康复体系特色模块：经络腧穴、针灸、推拿、传统运动疗法（太极、八段锦）、中药外治，最后落到常见功能障碍。不是替代循证 PT，而是叠加。", "when": "第三学年，作为技术补充", "ebook": "人卫电子版；超星", "extend": "《针灸学》《推拿学》规划教材；八段锦/太极用于老年与心肺康复的证据综述。", "tags": ["传统", "针灸", "推拿"], "related": ["E5", "E6", "F2"], "chapters": ["第一章 概述", "第二章 传统康复的原则和评定", "第三章 经络与腧穴", "第四章 针灸疗法", "第五章 推拿疗法", "第六章 传统运动疗法", "第七章 中药疗法", "第八章 临床常见功能障碍的传统康复治疗"], "variants": null, "path": "01-教材/D4-传统康复方法学.md"}, {"code": "D5", "title": "临床康复工程学（第2版）", "cat": "D 治疗技术", "level": "L3", "level_name": "专科", "editor": "舒彬 主编", "edition": "第2版", "year": "2018", "isbn": "978-7-117-26250-7", "role": "（L2→L3 桥梁教材）从技术走向产品：生物力学与人机工程、评定与治疗设备（含康复机器人、VR、FES）、矫形器、假肢、轮椅助行器、自助具、坐姿系统、无障碍、交流辅具。", "when": "第三学年下—第四学年，与实习辅具适配同步", "ebook": "人卫电子版；超星", "extend": "ISO 9999 辅具分类、假肢矫形器师考试教材；机器人/VR 接近三年综述。", "tags": ["工程", "矫形器", "假肢", "机器人"], "related": ["D1", "D2", "E2"], "chapters": ["第一章 绪论", "第二章 康复工程基础（生物力学、人机工程学）", "第三章 康复评定与治疗设备（含康复机器人、虚拟现实、功能性电刺激）", "第四章 矫形器", "第五章 假肢", "第六章 轮椅与助行器", "第七章 自助具", "第八章 坐姿系统与坐垫", "第九章 无障碍环境", "第十章 交流与智力障碍辅助器具"], "variants": null, "path": "01-教材/D5-临床康复工程学.md"}, {"code": "E1", "title": "神经康复学（第3版）", "cat": "E 临床专科康复", "level": "L3", "level_name": "专科", "editor": "倪朝民 主编", "edition": "第3版", "year": "2018", "isbn": "978-7-117-25810-4", "role": "康复最大的战场。脑卒中、颅脑损伤、帕金森、AD、MS、脊髓炎、GBS、面神经炎、癫痫、脑炎、脑肿瘤、HIE，每种病给评定+治疗+并发症。", "when": "第三学年上，与 D1/D3 同期", "ebook": "人卫电子版；流传广", "extend": "中国脑卒中康复治疗指南、脑卒中早期康复指南；Brunnstrom/PNF/Bobath 专著；CIMT 与 rTMS 的证据综述。", "tags": ["神经", "脑卒中"], "related": ["C1", "D1", "D3", "F2", "F1"], "chapters": ["第一章 概述", "第二章 脑卒中", "第三章 颅脑损伤", "第四章 帕金森病", "第五章 阿尔茨海默病", "第六章 多发性硬化", "第七章 脊髓炎", "第八章 吉兰-巴雷综合征", "第九章 面神经炎", "第十章 癫痫", "第十一章 脑炎与脑膜炎", "第十二章 胶质瘤与脑膜瘤", "第十三章 缺血缺氧性脑病", "第十四章 神经系统常见病症的康复"], "variants": null, "path": "01-教材/E1-神经康复学.md"}, {"code": "E2", "title": "肌肉骨骼康复学（第3版）", "cat": "E 临床专科康复", "level": "L3", "level_name": "专科", "editor": "岳寿伟 主编", "edition": "第3版", "year": "2018", "isbn": "978-7-117-26216-3", "role": "骨科与运动损伤的康复路径：四肢创伤、手外伤、脊柱脊髓损伤与骨盆骨折、颈椎病、腰痛、周围神经损伤、断肢再植、运动创伤、截肢、关节置换、OA、慢性劳损。", "when": "第三学年，与骨科见习同步", "ebook": "人卫电子版；超星", "extend": "骨科康复临床实践指南、术后加速康复（ERAS）路径；肩关节/膝关节功能训练专著。", "tags": ["肌骨", "骨科"], "related": ["C1", "D1", "D5", "F2"], "chapters": ["第一章 概论", "第二章 肌肉骨骼功能学概述", "第三章 上肢创伤康复", "第四章 手外伤康复", "第五章 下肢创伤康复", "第六章 脊柱脊髓损伤与骨盆骨折康复", "第七章 颈椎病康复", "第八章 腰痛康复", "第九章 周围神经损伤康复", "第十章 断肢断指再植康复", "第十一章 运动创伤康复", "第十二章 截肢康复", "第十三章 关节置换术后康复", "第十四章 骨关节炎康复", "第十五章 慢性运动系统疾患康复", "第十六章 肌肉骨骼康复的特殊问题"], "variants": null, "path": "01-教材/E2-肌肉骨骼康复学.md"}, {"code": "E3", "title": "内外科疾病康复学（第3版）", "cat": "E 临床专科康复", "level": "L3", "level_name": "专科", "editor": "何成奇、吴毅 主编", "edition": "第3版", "year": "2018", "isbn": "978-7-117-26601-7", "role": "内科与外科的康复切口：循环、呼吸、风湿、消化、泌尿生殖、内分泌代谢、肿瘤、感染、五官皮肤、慢性疼痛，并含重症康复与急诊康复。", "when": "第四学年上，与内科/ICU 实习同步", "ebook": "人卫电子版；超星", "extend": "心脏康复/肺康复指南（六大处方）、ICU 早期活动共识；肿瘤康复接淋巴水肿治疗。", "tags": ["内科", "外科", "重症"], "related": ["C1", "D1", "E5", "F2"], "chapters": ["第一章 概论", "第二章 循环系统疾病康复", "第三章 呼吸系统疾病康复", "第四章 风湿性疾病康复", "第五章 消化系统疾病康复", "第六章 泌尿生殖系统疾病康复", "第七章 内分泌与代谢性疾病康复", "第八章 恶性肿瘤康复", "第九章 感染性疾病康复", "第十章 眼耳鼻喉口腔疾病康复", "第十一章 皮肤科疾病康复", "第十二章 慢性疼痛康复", "第十三章 重症康复", "第十四章 急诊康复", "第十五章 精神心理康复"], "variants": null, "path": "01-教材/E3-内外科疾病康复学.md"}, {"code": "E4", "title": "儿童康复学", "cat": "E 临床专科康复", "level": "L3", "level_name": "专科", "editor": "李晓捷 主编", "edition": "第1版", "year": "2018", "isbn": "978-7-117-26422-8", "role": "儿童不是缩小版成人：评定、PT/OT/ST/心理四大技术、高危儿早期干预、神经发育障碍（脑瘫、孤独症、智力障碍）、神经系统疾病、脑脊髓损伤、肌骨、遗传病。", "when": "第四学年，与儿科实习同步；先修 B4", "ebook": "人卫电子版；超星", "extend": "GMFCS/GMFM、Peabody、Gesell 量表手册；脑瘫/孤独症康复指南；《儿童物理治疗学》。", "tags": ["儿童", "脑瘫"], "related": ["B4", "D3", "D2", "E5"], "chapters": ["第一章 概论", "第二章 儿童康复评定", "第三章 儿童康复治疗技术（物理治疗、作业治疗、言语治疗、心理治疗）", "第四章 高危儿早期干预", "第五章 神经发育障碍康复", "第六章 儿童神经系统疾病康复", "第七章 创伤性及中毒性脑脊髓损伤康复", "第八章 儿童肌肉骨骼系统疾病康复", "第九章 遗传性疾病康复", "第十章 其他疾病康复"], "variants": null, "path": "01-教材/E4-儿童康复学.md"}, {"code": "E5", "title": "老年康复学", "cat": "E 临床专科康复", "level": "L3", "level_name": "专科", "editor": "郑洁皎 主编", "edition": "第1版", "year": "2018", "isbn": "978-7-117-27229-2", "role": "九章按老年特点组织：总论、神经、运动、心肺、代谢、老年综合征（跌倒、失禁、卧床、肌少症）、康复护理、健康管理与康复管理。", "when": "第四学年，与老年科/社区实习同步", "ebook": "人卫电子版；超星", "extend": "老年综合评估（CGA）工具包、衰弱与肌少症共识、跌倒预防指南；长期照护与安宁疗护。", "tags": ["老年", "跌倒", "肌少症"], "related": ["E6", "E3", "D4", "F2"], "chapters": ["第一章 老年康复总论（衰老、老年综合评估、康复策略）", "第二章 老年神经系统常见疾病康复", "第三章 老年运动系统常见疾病康复（骨折后、骨关节炎、慢性软组织损伤、足痛症）", "第四章 老年心肺系统常见疾病康复", "第五章 老年代谢系统常见疾病康复", "第六章 老年综合征康复（跌倒、失禁、卧床综合征、肌肉衰减综合征）", "第七章 老年康复护理", "第八章 老年健康管理", "第九章 老年康复管理"], "variants": null, "path": "01-教材/E5-老年康复学.md"}, {"code": "E6", "title": "社区康复学（第2版）", "cat": "E 临床专科康复", "level": "L3", "level_name": "专科", "editor": "王刚 主编", "edition": "第2版", "year": "2018", "isbn": "978-7-117-25923-1", "role": "把康复送到家门口：社区康复管理评估、评定、各类残疾与疾病的社区康复、传统康复运用、器材辅具、无障碍改造。基层就业与公卫考试的主力书。", "when": "第四学年，与社区实习同步", "ebook": "人卫电子版；超星", "extend": "CBR 指南（WHO 社区康复指南五大领域）、家庭康复指导手册、残疾人精准康复服务目录。", "tags": ["社区", "CBR"], "related": ["E5", "D4", "E3"], "chapters": ["第一章 概论", "第二章 社区康复管理与评估", "第三章 社区康复评定", "第四章 神经系统疾病的社区康复", "第五章 骨关节疾病的社区康复", "第六章 内脏疾病的社区康复", "第七章 精神疾病的社区康复", "第八章 智力残疾的社区康复", "第九章 言语语言障碍的社区康复", "第十章 残疾儿童筛查与康复", "第十一章 传统康复在社区的应用", "第十二章 康复器材与辅助器具", "第十三章 无障碍环境改造"], "variants": null, "path": "01-教材/E6-社区康复学.md"}, {"code": "F1", "title": "康复医学（第7版）", "cat": "F 综合与拓展", "level": "L4", "level_name": "综合与拓展", "editor": "黄晓琳、王宁华 主编", "edition": "第7版", "year": "2024", "isbn": "978-7-117-36706-6", "role": "五年制临床医学专业教材，人卫第十轮规划。九章一气呵成：概论—基础—评定—治疗—神经—肌骨—内脏—其他人群—临床常见问题。最适合用来“横向串联”前面所有分册，也是考研与规培常引的框架来源。", "when": "第四学年起作为总复习主线；考研/规培必读", "ebook": "已核实可下载（人卫电子书镜像，PDF 约 198MB）", "extend": "与各专科分册对照做“一张表”；配合《康复医学临床指南》与规培结业考大纲。", "tags": ["综合", "考研", "规培"], "related": ["C1", "D1", "E1", "E2", "F2"], "chapters": ["第一章 康复概论", "第二章 康复医学相关基础", "第三章 康复医学评定", "第四章 康复治疗技术", "第五章 神经系统常见病损康复", "第六章 骨骼肌肉系统常见病损康复", "第七章 内脏疾病康复", "第八章 其他常见疾病及特殊人群康复", "第九章 临床常见问题的康复评定与处理"], "variants": null, "path": "01-教材/F1-康复医学第7版.md"}, {"code": "F2", "title": "临床康复学（第2版）", "cat": "F 综合与拓展", "level": "L4", "level_name": "综合与拓展", "editor": "张安仁、冯晓东 主编", "edition": "第2版", "year": "2018", "isbn": "978-7-117-26889-9", "role": "六章体例的“临床路径式”教材：总论 → 神经系统 → 骨骼肌肉 → 心肺 → 其他疾病（糖尿病、癌症、烧伤）→ 临床常见问题（痉挛、压疮、疼痛）。湖北多所院校专升本指定参考书，也是入职后查路径的快查书。", "when": "专升本备考核心；实习期随身工具书", "ebook": "人卫电子版；专升本资料市场流通多", "extend": "与 E1/E2/E3 交叉核对同一病种的评定表；背诵版接各校专升本真题。", "tags": ["临床路径", "专升本"], "related": ["E1", "E2", "E3", "C1", "F1"], "chapters": ["第一章 总论（临床康复学概述、工作特点与方式、资格与职责、ICF、康复医学整体观）", "第二章 神经系统疾病的康复（脑卒中、颅脑损伤、脊髓损伤、小儿脑瘫、周围神经损伤、帕金森病、老年痴呆）", "第三章 骨骼肌肉疾病的康复（骨折、关节炎、手外伤、颈椎病、腰椎间盘突出症、肩周炎、骨质疏松症）", "第四章 心肺疾病的康复（冠心病、高血压病、COPD）", "第五章 其他疾病的康复（糖尿病、癌症、烧伤）", "第六章 临床康复中常见问题处理（痉挛、压疮、疼痛）"], "variants": null, "path": "01-教材/F2-临床康复学.md"}], "topics": [{"topic": "神经康复", "sub": "脑卒中为主", "l2": "《神经康复学》第3版 第2章（脑卒中）+《临床康复学》第2章", "l3": "《康复医学》第7版 第5章 神经系统常见病损康复", "l4": "《中国脑卒中康复治疗指南》《中国脑卒中早期康复治疗指南》；Brunnstrom、Bobath、PNF 专著", "l5": "《中国康复医学杂志》《Neurorehabilitation》；PEDro 关键词 stroke+rehabilitation", "codes": ["E1", "F2", "F1", "D1"]}, {"topic": "肌骨与术后康复", "sub": "骨科/运动损伤", "l2": "《肌肉骨骼康复学》第3版 第3—6、13章", "l3": "《康复医学》第7版 第6章 +《临床康复学》第3章", "l4": "骨科康复临床实践指南、ERAS 共识；关节置换/肩袖术后康复路径", "l5": "《中华物理医学与康复杂志》；JOSPT 临床实践指南", "codes": ["E2", "F1", "F2"]}, {"topic": "评定与量表", "sub": "评定的方法论", "l2": "《康复功能评定学》第3版 第1—16章（通用评定）；逐项量表清单见 04-速查/量表速查，此处不重复", "l3": "各专科教材的疾病评定章（E1—E6）", "l4": "FIM、Barthel、Brunnstrom、MMT、Berg、TUG、6MWT 原始量表与信效度文献", "l5": "量表中文版验证论文；COSMIN 方法学", "codes": ["C1", "E1", "E2"]}, {"topic": "PT技术", "sub": "手法与运动学习", "l2": "《物理治疗学》第3版 第2—14章", "l3": "《人体运动学》第3版（力学基础）+《临床康复工程学》第3章（设备）", "l4": "关节松动术（Maitland/Kaltenborn）、McKenzie、PNF、Bobath 专著", "l5": "JOSPT、Physical Therapy；Cochrane 运动治疗综述", "codes": ["D1", "B3", "D5"]}, {"topic": "儿童发育与儿童康复", "sub": "0—18 岁", "l2": "《人体发育学》第3版 +《儿童康复学》", "l3": "《康复医学》第7版 第8章 特殊人群", "l4": "GMFCS/GMFM、Peabody、Gesell 手册；脑瘫与孤独症康复指南", "l5": "Developmental Medicine & Child Neurology；《中国儿童保健杂志》", "codes": ["B4", "E4", "D3"]}, {"topic": "科研循证与工程", "sub": "证据与设备", "l2": "《康复医学概论》科研章 +《物理治疗学》第29章 循证", "l3": "《临床康复工程学》第2版（机器人/VR/FES）", "l4": "Cochrane Handbook、GRADE；康复机器人/VR 系统综述", "l5": "IEEE TNSRE、JNER、Archives of Physical Medicine and Rehabilitation", "codes": ["A1", "D1", "D5"]}], "paths": [{"name": "本科四年主线", "desc": "康复治疗学专业四年制课程与书单对应", "rows": [["大一", "建地图 + 打地基", "A1（2018／2024 任一版）、B1 功能解剖学", "A3 康复心理学（下学期起）"], ["大二", "基础收口 + 评定入门", "B2 康复生理学、B3 人体运动学、B4 人体发育学、B5 临床疾病概要（按需）", "B5 全书通读（时间紧则按病种反查）"], ["大三", "核心技术 + 首个专科", "C1 康复功能评定学、D1 物理治疗学、D2 作业治疗学、D3 语言治疗学、E1 神经康复学", "D4 传统康复、D5 康复工程"], ["大四", "专科铺开 + 综合串联", "E2 肌骨、E3 内外科、E4 儿童、E5 老年、E6 社区、F1 康复医学第7版", "F2 临床康复学（按就业方向）"]]}, {"name": "专升本备考", "desc": "以湖北为例（荆楚理工/恩施学院/荆州学院等）", "rows": [["第一轮 2 个月", "吃透指定两本", "C1 康复功能评定学（第1—16章通用评定）", "F2 临床康复学 第1—2章"], ["第二轮 2 个月", "按病种过临床康复", "F2 临床康复学 第2—6章", "E1 神经康复学 对应章节"], ["第三轮 1 个月", "真题 + 默写量表", "C1 各量表操作与正常值；F2 各病评定/治疗要点", "解剖、生理基础题回看 B1/B2"]]}, {"name": "考研", "desc": "康复医学与理疗学 / 医学技术", "rows": [["专业课", "框架 + 深度", "F1 康复医学第7版（主线）、C1 评定、D1/D2 技术", "E1/E2 专科教材；目标院校真题与参考书目"], ["复试/临床", "病例思维", "F2 临床康复学（路径化表达）", "近三年学科综述与指南"]]}, {"name": "规培与执业", "desc": "康复治疗师规培 / 入职前 3 个月", "rows": [["入科 1 个月", "流程与文书", "A1 概论（工作流程；文书质控见 2024 版）、C1 评定", "本院评定单与治疗记录模板"], ["轮转期", "各专科速查", "F2 临床康复学、E1—E6 按轮转科室取用", "D1 物理因子安全禁忌"], ["独立值班", "应急与禁忌", "D1 第18—28章（物理因子禁忌）、E3 重症/急诊康复", "相关指南与共识更新"]]}], "scales": [["ICF 分类", "功能与残疾的统一框架", "A1 2018 版第3章／2024 版第2章；F2 第1章"], ["Barthel 指数 / MBI", "基础日常生活活动能力", "C1 第14章；D2 第3章"], ["FIM", "功能独立性（18 项）", "C1 第14章"], ["MMT 徒手肌力", "肌力 0—5 级", "C1 第9章；E2 第9章"], ["改良 Ashworth", "肌张力分级", "C1 第8章"], ["关节活动度（量角器）", "ROM 测量", "C1 第10章；B3 第2—4章"], ["Brunnstrom 分期", "偏瘫运动功能恢复六阶段", "C1 第18章；E1 第2章"], ["Fugl-Meyer / ARAT", "上肢运动功能", "C1 第18章；E1 第2章"], ["Berg 平衡量表", "静态/动态平衡", "C1 第11章"], ["TUG 起立-行走", "移动能力与跌倒风险", "C1 第11章；E5 第6章"], ["6MWT / 心肺运动试验", "心肺耐力", "C1 第4章；E3 第2—3章"], ["步态分析（三维/足印/视频）", "步态周期与异常步态", "C1 第12章；B3 第4章"], ["MMSE / MoCA", "认知筛查", "C1 第5章；E1 第5章"], ["WAB / ABC", "失语症类型与严重度", "C1 第6章；D3 第5章"], ["Frenchay 构音评定", "构音障碍", "D3 第6章"], ["洼田饮水 / VFSS / FEES", "吞咽障碍筛查与金标准", "D3 第11章；C1 第6章"], ["GMFM / GMFCS", "脑瘫粗大运动与分级", "B4 第3章；E4 第2章"], ["Peabody（PDMS-2）", "儿童运动发育", "E4 第2章"], ["Gesell 发育量表", "发育商（DQ）", "B4 第1章；E4 第2章"], ["肌电图 / NCV / SEP / MEP", "神经电生理", "C1 第13章；D1 第26章"], ["ASIA 脊髓损伤评定", "神经平面与损伤分级", "E2 第6章；F2 第2章"], ["COPM / 活动分析", "OT 作业表现与目标", "D2 第2章"], ["VAS / NRS", "疼痛强度", "E3 第12章；F2 第6章"], ["Braden 压疮风险", "压疮风险筛查", "C1 第22章；F2 第6章"], ["Morse 跌倒风险", "跌倒风险筛查", "E5 第6章"]], "diseases": [["脑卒中", "E1 第2章；F2 第2章", "F1 第5章；D1 第12—14章"], ["颅脑损伤", "E1 第3章；F2 第2章", "F1 第5章"], ["脊髓损伤", "E2 第6章；F2 第2章", "E1 第7章（脊髓炎）；D5 第6章"], ["帕金森病", "E1 第4章；F2 第2章", "F1 第5章"], ["阿尔茨海默病/痴呆", "E1 第5章；D3 第13章", "F2 第2章；E5 第2章"], ["多发性硬化", "E1 第6章", "F1 第5章"], ["吉兰-巴雷综合征", "E1 第8章", "F1 第5章"], ["面神经炎", "E1 第9章", "D1 第18章（电疗）"], ["癫痫", "E1 第10章", "B5 第12章"], ["脑炎/脑膜炎", "E1 第11章", "B5 第11章"], ["脑肿瘤（胶质瘤/脑膜瘤）", "E1 第12章", "E3 第8章"], ["缺血缺氧性脑病", "E1 第13章", "E4 第7章"], ["小儿脑性瘫痪", "E4 第5章；F2 第2章", "B4 第3章；D1 第12章"], ["孤独症谱系障碍", "E4 第5章；D3 第12章", "B4 第7章"], ["智力障碍/发育迟缓", "E4 第5章；E6 第8章", "B4 第1章"], ["高危儿", "E4 第4章", "B4 第3章"], ["遗传性疾病", "E4 第9章", "B4 第2章"], ["颈椎病", "E2 第7章；F2 第3章", "D1 第5章（松动）"], ["腰痛/腰椎间盘突出症", "E2 第8章；F2 第3章", "D1 第7章（牵引）"], ["肩关节周围炎", "E2 第15章；F2 第3章", "D1 第4章（牵伸）"], ["四肢骨折", "E2 第3、5章；F2 第3章", "E5 第3章"], ["手外伤", "E2 第4章；F2 第3章", "D2 第6章"], ["断肢断指再植", "E2 第10章", "D2 第6章"], ["运动创伤", "E2 第11章", "D1 第9章（贴扎）"], ["截肢", "E2 第12章；D5 第5章", "D2 第9章"], ["关节置换术后", "E2 第13章", "D1 第6章"], ["骨关节炎", "E2 第14章；E5 第3章", "F2 第3章"], ["骨质疏松症", "E2 第15章；F2 第3章", "E5 第5章"], ["周围神经损伤", "E2 第9章；F2 第2章", "D1 第18章"], ["冠心病", "E3 第2章；F2 第4章", "D1 第15章"], ["高血压", "E3 第2章；F2 第4章", "E5 第4章"], ["COPD/呼吸疾病", "E3 第3章；F2 第4章", "D1 第15章"], ["风湿性疾病/类风湿关节炎", "E3 第4章", "E2 第14章"], ["糖尿病", "E3 第7章；F2 第5章", "E5 第5章"], ["恶性肿瘤", "E3 第8章；F2 第5章", "E5 第8章"], ["烧伤", "F2 第5章；E3 第11章", "D2 第8章（压力治疗）"], ["慢性疼痛", "E3 第12章；F2 第6章", "D1 第27章（冲击波）"], ["痉挛", "C1 第8章；F2 第6章", "D1 第18章；D4 第4章"], ["压疮", "C1 第22章；F2 第6章", "E5 第7章"], ["吞咽障碍", "D3 第11章；C1 第6章", "E1 第2章"], ["失语症", "D3 第5章；C1 第6章", "E1 第2章"], ["构音障碍", "D3 第6章", "E1 第2章"], ["腭裂", "D3 第7章", "E4 第9章"], ["嗓音障碍", "D3 第8章", "D3 第4章"], ["口吃", "D3 第9章", "A3 第13章"], ["儿童语言发育迟缓", "D3 第10章", "B4 第5章"], ["听力障碍", "D3 第4章", "E4 第2章"], ["感觉统合失调", "D2 第5章", "E4 第5章"], ["精神障碍", "D2 第15章；A3 第10章", "E3 第15章"], ["重症/ICU 康复", "E3 第13章", "D1 第15章"], ["急诊康复", "E3 第14章", "F2 第6章"], ["老年综合征（跌倒/失禁/卧床/肌少症）", "E5 第6章", "E5 第7章；C1 第21章"], ["长期照护与健康管理", "E5 第8—9章", "E6 全篇"], ["社区康复/CBR", "E6 全篇", "F2 第1章；A1 第5章"], ["无障碍改造", "E6 第13章；D5 第9章", "D2 第10章"], ["辅助器具适配", "D5 第4—8章；D2 第9章", "E2 第12章"], ["矫形器", "D5 第4章", "D1 第9章"], ["假肢", "D5 第5章", "E2 第12章"], ["轮椅与助行器", "D5 第6章", "E5 第6章"], ["职业康复", "D2 第11章", "E6 第2章"], ["康复机器人/VR", "D1 第16—17章；D5 第3章", "E1 第2章"]], "overlaps": [["康复医学概论", "A1 2024 版全篇", "A1 2018 版（旧大纲对照）", "两版同读等于读两遍同一门课；认 ISBN 选一版精读"], ["脑卒中", "E1 第2章", "F2 第2章（路径式，背题用）／F1 第5章（综合口径）", "三本讲同一病；E1 与 F2 择一精读，F1 只查差异"], ["颅脑损伤", "E1 第3章", "F2 第2章", "儿童颅脑损伤另见 E4 第7章，不重复"], ["脊髓损伤", "E2 第6章", "F2 第2章", "E1 第7章是脊髓炎，属不同病，别当重复跳过"], ["帕金森病/痴呆等神经变性病", "E1 第4—5章", "D3 第13章（痴呆的语言干预）／E5 第2章（老年视角）", "E5 与 E1 重合部分只读老年特有的管理"], ["小儿脑性瘫痪", "E4 第5章", "F2 第2章／B4 第3章（发育基础）", "B4 只补发育规律，不读康复方案"], ["孤独症/智力障碍", "E4 第5章", "D3 第12章（语言）／E6 第8章（社区）", "E6 只取社区转介与支持体系"], ["颈椎病/腰痛/肩周炎", "E2 第7、8、15章", "F2 第3章", "D1 只取手法与牵引技术，不重读病理"], ["骨折/关节置换/截肢", "E2 第3、5、12、13章", "E5 第3章（老年骨折后）／F2 第3章", "老年版只补骨质疏松与跌倒后管理"], ["骨关节炎/骨质疏松", "E2 第14、15章", "E5 第3、5章", "E5 侧重长期管理与预防"], ["手外伤/周围神经损伤", "E2 第4、9章", "D2 第6章（手功能 OT）", "D2 只取作业训练与支具"], ["冠心病/高血压/COPD", "E3 第2—3章", "F2 第4章", "D1 第15章只取运动处方与监护"], ["糖尿病/肿瘤/烧伤", "E3 第7、8、11章", "F2 第5章", "F2 为压缩版，考前背它"], ["慢性疼痛/痉挛/压疮", "E3 第12章（疼痛）、C1 第8章（痉挛评定）、C1 第22章（压疮）", "F2 第6章（三者合并的临床处理）", "F2 第6章已把三者压成临床路径，读完可跳过 E3 疼痛章的治疗细节"], ["吞咽障碍", "D3 第11章", "C1 第6章（评定部分）", "C1 只取评定工具，评估后回 D3 学训练"], ["失语症/构音障碍/口吃/嗓音/腭裂", "D3 第5—9章", "C1 第6章（评定）", "B5 第18章只查病因，不读康复"], ["认知障碍", "C1 第5章（评定）", "D2 第7章（作业治疗）／B4 第6章（发育）", "三本分工：评、治、发育，别互相替代"], ["平衡与步态", "C1 第11—12章（评定）", "D1 第10章（训练）／B3 第4章（力学）", "B3 只读行走运动学与步态周期"], ["精神障碍", "D2 第15章（OT 视角）", "A3 第10章（心理）／E3 第15章（临床）／E6 第7章（社区）", "五本重合最多的一组；只精读一本，其余按场景查"], ["辅助器具/无障碍", "D5 第4—10章", "D2 第9章／E6 第12—13章", "E6 只取社区层面的适配与改造流程"], ["社区康复", "E6 全篇", "A1 2024 第7章（概览）", "A1 只读概念，不读 E6 的管理细则"], ["老年康复", "E5 全篇", "E3 第13章（重症）／E6 第9章（长期照护）", "E5 与 E3 重合处只取老年特有评估"], ["重症/急诊康复", "E3 第13—14章", "F2 第6章", "内容量小，两本择一即可"], ["康复评定（总）", "C1 第1—16章", "各专科书末的疾病评定章（E1—E6）", "专科评定章多为 C1 方法的具体化，读 C1 后只查差异"]], "know": [{"k": "gaishu", "n": "学科概论", "c": "康复医学的研究对象、目标与在医学体系中的位置", "p": ["服务对象是功能障碍者，不是单一疾病患者", "目标：功能恢复与社会参与，不是治愈疾病", "团队：康复医师、PT、OT、ST、护士、假肢矫形师、心理、社工", "服务形式：机构—社区—家庭连续，强调早期介入"], "t": "概论题只考定义、对象、分工：临床治病，康复治人（功能）。", "kw": ["概论", "概述", "总论", "绪论", "学科", "康复医疗", "工作方式", "工作流程", "地位", "发展趋势"], "d": [["怎么理解", "p", "康复医学是与预防、保健、临床并列的「第四医学」。它不把「治好病」当终点，而是问：这个人现在能做什么、还差什么、怎样把功能推到他能达到的最好水平。所以它的服务对象不是「病人」这个身份，而是「有功能障碍的人」这一状态——急性期、恢复期、后遗症期都在范围内。"], ["逐条展开", "ul", ["研究对象：损伤、疾病、发育缺陷导致的功能障碍者；不含单纯「想更强壮」的健康人训练（那属于体适能）。", "目标三层：身体功能与结构 → 活动（ADL、行走）→ 参与（上学、上班、社会角色）。三层里任何一层改善都算有效。", "与临床医学的分工：临床管「病因与病理」，康复管「病后剩下的功能」；同一个病人两条线并行，不是先后关系。", "工作方式：团队 + 闭环。医师定诊断与目标，治疗师做评定与干预，护士管并发症与照护，社工/家属管出院后的环境。", "闭环四步：评定 → 定目标（SMART）→ 干预 → 再评定；没有「再评定」就不是康复，只是训练。"]], ["和临床医学对照", "table", [["维度", "临床医学", "康复医学"], ["目标", "治愈或控制疾病", "恢复功能、提高参与"], ["对象", "病人", "有功能障碍者（含慢性期）"], ["时间窗", "以急性期为主", "全程，含后遗症期"], ["主要手段", "药物、手术", "训练、辅具、环境改造"], ["效果指标", "治愈率、生存率", "功能独立性、生活质量"]]], ["提示", "p", "新生最容易把「康复」等同于「按摩 + 理疗」。理疗只是物理治疗里的一类手段；康复的核心是功能评定与训练，不是被动放松。"]]}, {"k": "canji", "n": "残疾学与 ICF", "c": "残疾分类、ICF 框架与三级预防", "p": ["ICF 三成分：身体功能与结构、活动、参与；环境与个人因素是背景", "残损—活动受限—参与限制，对应残疾三级预防", "ICD 说病因，ICF 说功能，二者互补不替代", "评定落到“能做什么”，不停在诊断名上"], "t": "常考 ICF 成分举例、三级预防对应措施。", "kw": ["残疾", "ICF", "功能", "残损", "预防", "分类"], "d": [["怎么理解", "p", "残疾不是「身体坏了」这么简单，而是个人能力与环境要求之间不匹配。ICF 把这件事拆成两层：功能与残疾（身体功能 b、结构 s、活动与参与 d），以及背景因素（环境 e、个人因素）。同一个脊髓损伤者，在有坡道和无坡道的城市里，残疾程度完全不同——这就是 ICF 想表达的。"], ["逐条展开", "ul", ["三层旧分类：impairment（损伤，器官层面）→ disability（活动受限，个人层面）→ handicap（参与限制，社会层面）。", "ICF 两部分：第一部分「功能与残疾」含 b 身体功能、s 身体结构、d 活动与参与；第二部分「背景因素」含 e 环境因素与个人因素。", "限定值：每个编码后面加 .0—.4，表示问题严重度——0 无问题、1 轻度、2 中度、3 重度、4 完全。", "举例：偏瘫患者 b730 肌力功能 .2（中度下降）、d450 步行 .3（重度受限）、e120 公共交通 .4（完全障碍）。", "用途：ICF 不是诊断，而是「功能画像」，用来定目标、写评定报告、比较干预前后。"]], ["三级预防", "table", [["层级", "防什么", "典型措施"], ["一级", "防发生", "产前筛查、疫苗、交通安全、工伤防护"], ["二级", "防残疾（早诊早治）", "卒中溶栓、骨折早期固定、糖尿病足筛查"], ["三级", "防残障（功能与参与）", "假肢、步行训练、辅具、无障碍改造"]]], ["提示", "p", "考题里出现「残疾分类」先分清是器官层（损伤）还是社会层（参与）；出现「ICF 限定值」一定要写 0—4，别写成 1—5。"]]}, {"k": "liuxing", "n": "流行病学与需求", "c": "康复需求的人群分布与统计口径", "p": ["残疾率、患病率、致残原因构成比三组指标", "数据来源：抽样调查、登记报告、医保结算", "用于配置床位、人力与社区服务", "不同口径不可直接相加比较"], "t": "记定义与用途，不背具体百分比。", "kw": ["流行病", "统计", "调查", "致残原因", "分布"], "d": [["怎么理解", "p", "康复的「客户量」来自带残生存的人：慢病活得久了、创伤救回来了、老人多了，三条线叠加，康复需求就持续上升。流行病学这一章真正要记的不是具体数字，而是口径——残疾率、康复需求率、服务利用率是三件事。"], ["逐条展开", "ul", ["三次口径：患病率（有多少病人）→ 残疾率（留下多少功能障碍）→ 康复服务利用率（真正得到服务的人），逐级递减。", "我国残疾人基数按第二次全国残疾人抽样调查约 8500 万，肢体残疾占比最高，其次听力、视力、智力、精神。", "需求最集中的五类：脑卒中（年新发 200 万以上）、脊髓损伤、脑瘫、骨关节炎/骨折术后、颈腰痛。", "老龄化带来增量：65 岁以上跌倒、失能、长期照护；康复床位与治疗师数量仍明显不足。", "供给侧两个抓手：急性期早期介入（缩短住院日）+ 社区康复网络（承接出院后）。"]], ["提示", "p", "这一章不考背数字，考「为什么康复需求会持续增长」和「三个率为什么递减」——把慢病化、创伤存活率提高、老龄化三条讲清楚即可。"]]}, {"k": "lunli", "n": "伦理、文书与质控", "c": "康复伦理问题、医疗文书规范与质量控制", "p": ["伦理：知情同意、隐私保护、资源分配、终止治疗", "文书：入院评定、治疗记录、阶段小结、出院小结", "质控：评定完成率、目标达成率、并发症与再入院", "记录必须可复现：谁、何时、做了什么、反应如何"], "t": "文书类题答“客观、及时、完整、可追溯”。", "kw": ["伦理", "文书", "质控", "记录", "知情同意", "科研", "科学研究", "设备", "循证"], "d": [["怎么理解", "p", "康复伦理的特殊性在于三件事同时存在：治疗周期长（几个月到几年）、资源有限（床位与治疗师都紧张）、患者自主性可能受损（认知障碍、抑郁）。文书与质控则是把这些抽象原则变成可查、可追责的记录。"], ["逐条展开", "ul", ["四原则：尊重自主、不伤害、有利、公正。康复里最常冲突的是「有利」（多练一点好得快）与「不伤害」（练过头会疼、会伤）。", "知情同意：评定与治疗前说明目的、风险、替代方案；患者拒绝治疗，要记录「已告知、患者拒绝、后果说明」。", "常见冲突场景：家属要求继续住院但功能已平台期、患者想回家但家居环境不安全、医保额度与治疗强度。", "文书四件套：评定记录（初评/中评/末评）、治疗记录（每次）、阶段小结、出院小结；治疗记录常用 SOAP（主观/客观/评估/计划）。", "质控指标：平均住院日、功能改善率（如 Barthel 变化）、不良事件率（跌倒、压疮、训练中受伤）、满意度。"]], ["提示", "p", "案例题问「患者拒绝训练怎么办」，标准答法是：先沟通找原因（疼痛？恐惧？抑郁？）→ 调整方案 → 仍拒绝则记录并请团队/家属共同决策；不能强制，也不能不管。"]]}, {"k": "jiepou-gu", "n": "骨关节解剖", "c": "骨骼、关节、韧带与关节运动学基础", "p": ["骨性标志是触诊与手法的定位依据", "关节类型决定活动方向与生理性限制", "关节运动：滚动、滑动、旋转；生理运动与附属运动", "关节囊、韧带决定稳定方向与损伤机制"], "t": "先记标志点与运动轴，再记肌与神经支配。", "kw": ["解剖", "骨骼", "骨", "关节", "韧带", "标志"], "d": [["怎么理解", "p", "骨关节是康复的「杠杆与支点」。评定关节活动度、判断疼痛来源、设计训练动作，都要先知道这个关节有几个自由度、由谁稳定、正常活动范围多少。"], ["逐条展开", "ul", ["骨：长骨（杠杆）、短骨（腕踝，灵活）、扁骨（颅骨胸骨，保护）、不规则骨（椎骨）。", "关节三型：纤维连接（不动，如颅缝）、软骨连接（微动，如椎间盘、耻骨联合）、滑膜关节（自由活动，康复主要对象）。", "滑膜关节的基本结构：关节面与软骨、关节囊、关节腔、韧带；辅助结构有半月板、盂唇、滑囊、脂肪垫。", "自由度：单轴（肘、指间）、双轴（膝近似、腕）、三轴（肩、髋）。自由度决定能做哪些方向的 ROM 训练。", "稳定结构：韧带限制方向、关节囊限制范围、肌肉提供动态稳定；康复里「稳定」往往比「灵活」更该先练。"]], ["正常活动度速记", "table", [["关节", "主要方向与正常值"], ["肩", "前屈 180°、后伸 60°、外展 180°、内外旋各 90°"], ["肘", "屈 150°、伸 0°（过伸 5—10°）"], ["腕", "背伸 70°、掌屈 80°、桡偏 20°、尺偏 30°"], ["髋", "屈 120°、伸 30°、外展 45°、内收 30°"], ["膝", "屈 135°、伸 0°"], ["踝", "背屈 20°、跖屈 50°"]]], ["提示", "p", "评定 ROM 一定要写「主动 / 被动」两个值：主动明显小于被动 = 肌力或疼痛问题；两者都小 = 关节本身或软组织挛缩。"]]}, {"k": "jiepou-ji", "n": "肌肉解剖与功能", "c": "肌肉起止、配布与协同分工", "p": ["起止点决定力矩与运动方向", "原动肌、拮抗肌、固定肌、中和肌四种角色", "肌纤维走向与羽状角影响力量与速度", "神经支配节段决定损伤后的表现"], "t": "按“关节—运动—肌—神经节段”四列表格记忆。", "kw": ["肌肉", "肌群", "起止", "神经支配", "配布"], "d": [["怎么理解", "p", "肌肉是康复训练的执行器。要知道一块肌肉「起点在哪、止点在哪、跨过哪个关节」，才能判断它收缩时产生什么动作、该用哪个体位去练、拉长位和缩短位分别是什么。"], ["逐条展开", "ul", ["起点（origin）通常在近端/固定侧，止点（insertion）在远端/活动侧；起止点不是绝对的，取决于哪个环节固定。", "跨关节数决定功能：单关节肌管精细动作（如肱肌），双关节肌在两端同时收缩时会产生「主动不足/被动不足」。", "主动不足：双关节肌在一个关节缩短后，对另一个关节的力矩下降（如屈肘后肩屈力量下降）。", "被动不足：双关节肌在一个关节被拉长后，对另一个关节的牵伸受限（如伸膝位屈髋受限，腘绳肌）。", "配布与协同：主动肌、拮抗肌、协同肌、固定肌四种角色；康复训练要按角色设计，而不是只练「那块肌肉」。"]], ["提示", "p", "考「为什么伸膝位屈髋角度变小」答腘绳肌被动不足；考「为什么屈肘后肩屈无力」答肱二头肌主动不足。这两个词几乎每年出。"]]}, {"k": "jiepou-shen", "n": "神经解剖", "c": "中枢与周围神经通路、传导束与定位", "p": ["皮质脊髓束、锥体外系、小脑三条运动通路", "感觉通路：脊髓后索、脊髓丘脑束、三叉", "周围神经丛与关键神经（桡、正中、尺、坐骨、腓总）", "定位诊断：损伤平面决定肌群与反射改变"], "t": "把通路和临床体征对上：上/下运动神经元损伤的区别。", "kw": ["神经", "脑", "脊髓", "传导", "通路", "感觉器", "内分泌"], "d": [["怎么理解", "p", "神经解剖是康复定位的底层地图：哪条通路断了，就出现哪种模式的瘫痪、感觉缺失或反射改变。上运动神经元与下运动神经元的区别，是整本神经康复的第一块砖。"], ["逐条展开", "ul", ["皮质脊髓束（锥体束）：控制精细随意运动，损伤→痉挛性瘫痪、腱反射亢进、病理征阳性（上运动神经元）。", "锥体外系：调节肌张力与协调，损伤→肌张力异常（齿轮样、铅管样）、舞蹈样动作（如帕金森）。", "小脑三对脚：上脚（结合臂）协调、中脚（脑桥臂）传入、下脚（绳状体）平衡；损伤→共济失调、意向性震颤。", "感觉通路：后索（精细触觉、本体觉，薄束/楔束）→ 内侧丘系；脊髓丘脑束（痛温觉、粗触觉）→ 交叉后上行。", "周围神经：颈丛（C1—C4）、臂丛（C5—T1）、腰丛（L1—L4）、骶丛（L4—S4）；常见损伤神经：桡、正中、尺、坐骨、腓总。"]], ["上下运动神经元鉴别", "table", [["体征", "上运动神经元（中枢）", "下运动神经元（周围/前角）"], ["肌张力", "增高（痉挛）", "降低（弛缓）"], ["腱反射", "亢进", "减弱或消失"], ["病理征", "阳性（Babinski）", "阴性"], ["肌萎缩", "晚期轻度", "早期明显"], ["肌电图", "正常或募集减少", "失神经电位、纤颤"]]], ["提示", "p", "定位题先分「上还是下」，再看「哪条通路」：偏瘫 + 面舌瘫 = 皮质脊髓束；单肢弛缓 + 肌萎缩 = 周围神经或前角。"]]}, {"k": "jiepou-zang", "n": "内脏与系统解剖", "c": "呼吸、循环、消化、泌尿生殖系统结构要点", "p": ["呼吸：肺叶分段、胸膜腔、膈肌", "循环：心腔、瓣膜、冠脉、体肺循环", "消化泌尿：腹部分区与脏器体表投影", "康复相关：体位引流、胸廓活动、腹压管理"], "t": "只记与评定/治疗操作相关的解剖，不做外科式记忆。", "kw": ["呼吸", "循环", "消化", "泌尿", "生殖", "血液", "脉管"], "d": [["怎么理解", "p", "内脏解剖在康复里主要服务于两件事：心肺康复（知道通气与循环的路径）+ 盆底与吞咽（知道管道与括约肌）。不需要背到外科手术层面，但要能说出「哪里窄、哪里会漏、哪里该练」。"], ["逐条展开", "ul", ["呼吸：上呼吸道（鼻—咽—喉）→ 气管支气管树 → 肺泡；右主支气管更陡更粗，误吸更易进右下叶。", "呼吸肌：膈肌（主，C3—C5）、肋间外肌、腹肌（呼气）、辅助肌（斜角肌、胸锁乳突肌）。", "循环：体循环（左心—动脉—毛细血管—静脉—右心）与肺循环；康复训练要盯心率、血压、摄氧量。", "消化与吞咽：咽期（软腭上抬、喉上抬、会厌翻转、声门关闭）→ 食管期；吞咽障碍的评估就按这个顺序查。", "泌尿生殖：膀胱（逼尿肌 + 括约肌）、盆底肌；脊髓损伤后的神经源性膀胱分痉挛型与弛缓型。"]], ["提示", "p", "吞咽题优先看「咽期四件事」：软腭上抬、喉上抬、会厌翻转、声门关闭——漏一个就会误吸。"]]}, {"k": "shengli-ji", "n": "骨骼肌生理", "c": "肌纤维类型、收缩形式与疲劳", "p": ["I 型慢肌耐力、II 型快肌爆发", "等长、等张（向心/离心）、等速四种收缩", "力量—长度、力量—速度关系", "疲劳与恢复：中枢与外周机制"], "t": "训练处方要能对上收缩形式与强度。", "kw": ["骨骼肌", "肌纤维", "收缩", "疲劳", "生理"], "d": [["怎么理解", "p", "骨骼肌是「可训练的组织」：不同的收缩形式、不同的负荷与速度，会带来不同的适应。康复开处方时选等长、等张还是等速，取决于这个阶段能不能动、要不要保护关节。"], ["逐条展开", "ul", ["肌纤维：I 型（慢、抗疲劳、耐力）、IIa（快、中等耐力）、IIx/IIb（快、爆发、易疲劳）。", "收缩形式：等长（长度不变、张力增）、等张（张力不变、长度变，分向心/离心）、等速（角速度恒定，需设备）。", "离心收缩力量最大、也最易造成延迟性肌肉酸痛（DOMS），早期康复要慎用大强度离心。", "长度—张力关系：肌肉在静息长度略被拉长时产生最大张力；过短或过长都下降。", "疲劳与恢复：力量训练后 24—48 小时为超量恢复窗口；神经适应先于肌肉肥大（前 4 周力量增长主要靠神经）。"]], ["训练参数速记", "table", [["目标", "强度", "次数/组", "组数", "频率"], ["肌力（力量）", "1—6 RM 或 80—90% 1RM", "1—8 次", "3—6", "每周 3—4 次"], ["肌耐力", "40—60% 1RM", "15—25 次", "2—4", "每周 3—5 次"], ["肥大", "60—80% 1RM", "8—12 次", "3—6", "每周 3—5 次"], ["早期/术后", "等长，20—30% MVC", "5—10 秒/次", "5—10", "每日 2—3 次"]]], ["提示", "p", "术后早期为什么练等长不练等张？答：等长不产生关节运动，剪切力小，能在保护修复组织的前提下维持肌力与神经募集。"]]}, {"k": "shengli-xf", "n": "心肺与代谢生理", "c": "氧运输、能量代谢与运动反应", "p": ["最大摄氧量、无氧阈、心率储备", "运动时心输出量、血压、通气反应", "三大供能系统与运动时间对应", "运动处方的 FITT 生理依据"], "t": "把 FITT 四个字母和生理指标一一对应。", "kw": ["能量代谢", "体温", "血液循环", "尿生成", "尿的生成", "心肺", "生理", "细胞"], "d": [["怎么理解", "p", "心肺与代谢生理决定运动处方的「安全边界」。同样一套训练，对健康人是热身，对心衰患者可能是过量——差别在氧运输能力与代谢储备。"], ["逐条展开", "ul", ["氧运输链：肺通气/换气 → 心输出量（心率×每搏量）→ 血红蛋白携氧 → 肌肉利用（线粒体）。", "最大摄氧量 VO₂max：心肺适能的金标准；康复中常用 6 分钟步行距离、运动试验间接推算。", "能量系统：磷酸原（0—10 秒）、糖酵解（10 秒—2 分钟）、有氧氧化（>2 分钟）；康复训练以有氧为主。", "运动反应：心率上升、血压收缩压上升（舒张压不应明显升）、每搏量增加、通气量增加。", "危险信号：运动中胸痛、明显气促（说话断句）、头晕、血压异常升高或下降、心律失常——立即停止。"]], ["提示", "p", "心衰患者为什么用「说话试验」定强度？因为 Borg 评分主观、心率受 β 受体阻滞剂影响，能连贯说话说明还在无氧阈以下。"]]}, {"k": "shengli-shen", "n": "神经生理", "c": "神经元、突触、反射与可塑性", "p": ["兴奋传递、突触可塑性（LTP/LTD）", "牵张反射、屈伸反射、姿势反射", "中枢可塑性：使用依赖、重组、代偿", "抑制与易化的临床对应（痉挛、协同运动）"], "t": "神经发育疗法与运动再学习的理论根在这里。", "kw": ["神经系统", "反射", "突触", "可塑", "感觉器官"], "d": [["怎么理解", "p", "神经生理里最该带走的一个词是「可塑性」：中枢损伤后，残存通路会重排、突触会增强，训练就是在给这种重排提供信号。所以康复不是「等它自己好」，而是「用正确输入去塑形」。"], ["逐条展开", "ul", ["神经元：胞体、树突（输入）、轴突（输出）、髓鞘（传导速度）；周围神经可再生（约 1 mm/天），中枢再生很有限。", "突触传递：兴奋性（谷氨酸）与抑制性（GABA）递质；长时程增强（LTP）是学习与运动记忆的细胞基础。", "反射：牵张反射（肌梭→Ia→α 运动神经元）、屈肌反射、交叉伸肌反射；痉挛就是牵张反射亢进。", "可塑性机制：轴突侧支发芽、突触效能改变、皮层代表区重组、去抑制（损伤后抑制解除导致过度兴奋）。", "训练原则对应：重复（量）、任务导向（特异性）、强度（接近极限）、及时反馈——四条都指向「用进废退」。"]], ["提示", "p", "解释「为什么早期训练要任务导向而不是单纯被动活动」：被动活动维持关节与软组织，但不会产生有效的突触重塑信号；任务导向 + 主动参与才有。"]]}, {"k": "shengwu", "n": "生物力学与运动学", "c": "力、力矩、杠杆与人体运动分析", "p": ["力矩=力×力臂；三类杠杆在人体中的例子", "重心、支撑面、稳定角决定平衡", "步态周期：支撑相/摆动相，时空参数", "异常步态的生物力学解释（代偿、短缩、疼痛）"], "t": "步态参数（步长、步频、步速、对称性）要能和病理对上。", "kw": ["生物力学", "运动学", "力学", "杠杆", "重心", "行走"], "d": [["怎么理解", "p", "生物力学把人体当杠杆系统：力、力矩、力臂决定「这个人为什么搬不动、为什么膝会疼、为什么拐杖要那样用」。康复里的体位、辅具、转移技术，背后都是力矩。"], ["逐条展开", "ul", ["三类杠杆：第一类（支点在中间，如寰枕关节）、第二类（阻力在中间，如提踵）、第三类（力在中间，人体最多，如屈肘）。", "力矩 = 力 × 力臂；力臂是「力的作用线到支点的垂直距离」，不是肌肉到关节的距离。", "增大稳定性的办法：降低重心、扩大支撑面、重力线落在支撑面内——拐杖、助行器、站位训练都按这个设计。", "脊柱负荷：弯腰提物时腰椎负荷可达体重的数倍；搬物要「屈膝屈髋、物体贴近身体」。", "步态生物力学：髋膝踝的力矩与地面反作用力决定异常步态的代偿方式（如臀中肌步态、跨阈步态）。"]], ["提示", "p", "考「为什么膝关节炎患者上下楼比平地疼」：上下楼时髌股关节反作用力可达体重的 3—7 倍，力臂与屈曲角度共同放大负荷。"]]}, {"k": "fayu", "n": "发育", "c": "胎儿期到青春期的发育规律与评定", "p": ["发育遵循头尾、近远、整体到分化顺序", "关键期与里程碑（抬头、坐、爬、走、语）", "发育商（DQ）与筛查工具", "早产矫正月龄、高危儿监测"], "t": "儿童康复所有判断都以“矫正年龄 + 里程碑”为基准。", "kw": ["发育", "胎儿", "婴幼儿", "儿童发育", "青春期", "学龄"], "d": [["怎么理解", "p", "发育是「按顺序出现的里程碑」。儿童康复的第一件事不是治疗，而是判断「这个孩子落后了没有、落后在哪个能区」——所以里程碑与关键期必须背熟。"], ["逐条展开", "ul", ["发育规律：头尾方向（先会抬头再会走）、近端到远端（先会抬臂再会抓握）、整体到分化、由粗到细。", "关键期：0—3 岁脑发育最快，语言关键期约 0—6 岁；错过关键期不是不能学，而是效率下降。", "粗大运动里程碑：2 月抬头、4—6 月翻身、6—8 月独坐、8—10 月爬、10—12 月扶站、12—15 月独走。", "精细运动：3—4 月抓握、6—7 月换手、9—10 月拇食指对捏、18 月叠 2—3 块积木、3 岁画圆。", "语言：3 月咿呀、6—9 月无意义音节、1 岁有意识叫爸妈、2 岁 50 词 + 两词句、3 岁短句可懂。"]], ["提示", "p", "判断「发育迟缓」的常用线：3 月不会抬头、6 月不会翻身、9 月不会独坐、18 月不会独走、2 岁无有意义单词——任一条都建议转诊评估。"]]}, {"k": "pd-zhong", "n": "评定总论与形态/反射", "c": "评定的目的、流程与人体形态、反射检查", "p": ["评定三问：能不能、差多少、为什么", "形态：长度、围度、姿势、脊柱曲度", "反射：深浅反射、病理反射、脑膜刺激征", "评定记录要能复查对比"], "t": "评定总论题答“目的—方法—结果解释—记录”四段。", "kw": ["评定", "形态", "反射", "姿势", "测量", "总论", "人体形态"], "d": [["怎么理解", "p", "评定不是「做检查」，而是回答三个问题：能不能（能力）、差多少（量化）、为什么（原因）。总论要记住评定的流程与「信度、效度、灵敏度、特异度」这四个质量指标。"], ["逐条展开", "ul", ["流程：采集病史 → 观察与视诊 → 选择量表 → 实施 → 记录与解释 → 定目标 → 复评。", "评定三问：能不能（有无障碍）、差多少（程度/分级）、为什么（原因与机制）。", "四个质量指标：信度（重复测一致）、效度（测的是想测的）、灵敏度（有病能查出）、特异度（没病不误判）。", "人体形态：长度（下肢真/假性短缩）、围度（肌萎缩、水肿）、姿势（脊柱侧弯、骨盆倾斜）。", "反射检查：深反射（腱反射，分级 0—4+）、浅反射（腹壁、提睾）、病理反射（Babinski、Hoffmann、Chaddock）。"]], ["深反射分级", "table", [["分级", "表现"], ["0（−）", "消失"], ["1+", "减弱，需加强法"], ["2+", "正常"], ["3+", "增强，无阵挛"], ["4+", "亢进，伴阵挛"]]], ["提示", "p", "评定记录最容易失分的是「只写结果不写条件」：ROM 要写主动/被动与体位，肌力要写体位与是否抗阻，反射要写是否加强法。"]]}, {"k": "pd-jili", "n": "肌力评定", "c": "MMT 与等速/握力等定量方法", "p": ["MMT 0—5 级判断标准与体位固定", "等长、等张、等速测试的适用与差异", "握力计、背力计、便携式测力", "禁忌：骨折未稳、术后早期、疼痛剧烈"], "t": "MMT 的 3 级与 4 级最容易混：能否抗重力、能否抗阻力。", "kw": ["肌力", "MMT", "徒手肌力", "等速", "握力"], "d": [["怎么理解", "p", "肌力评定是康复的「血糖仪」：所有力量训练、术后负重、出院标准都靠它量化。MMT 是床旁筛查，等速与握力是精确计量，两者不能互相替代。"], ["逐条展开", "ul", ["MMT 0—5 级：0 无收缩、1 有收缩无运动、2 消除重力可动、3 抗重力可动、4 抗部分阻力、5 正常。", "3 级与 4 级的分界是「能不能抗阻力」，不是「能不能动」——这是最常错的地方。", "等速测试：角速度设定（60°/s 测力量、180°/s 测耐力），输出峰力矩、总功、疲劳指数。", "握力计：握力体重指数（握力/体重）低于 0.5 提示肌少症风险（不同标准略有差异）。", "徒手肌力测定的信度在 3—4 级之间较差，进展判断建议用「同一测试者 + 同一体位 + 定量工具」。"]], ["提示", "p", "考试爱问「MMT 3 级和 4 级的区别」：3 级能抗重力完成全范围但不能抗阻力；4 级能抗一定阻力但弱于健侧。答「能动就是 3 级」是错的。"]]}, {"k": "pd-jizhangli", "n": "肌张力评定", "c": "肌张力的定义、Ashworth 分级与痉挛处理思路", "p": ["肌张力是静息状态下的肌肉阻力", "改良 Ashworth 0—4 级（含 1+）", "痉挛与僵硬、齿轮样、折刀样的区别", "评定要固定体位与速度，减少主观误差"], "t": "1+ 级是高频考点：ROM 后 1/2 出现阻力。", "kw": ["肌张力", "Ashworth", "痉挛", "僵硬", "张力"], "d": [["怎么理解", "p", "肌张力是「静息状态下的肌肉阻力」，不是力量。增高（痉挛、强直）与降低（弛缓）都会破坏运动控制；评定的目的是决定「要不要降张力、怎么降」。"], ["逐条展开", "ul", ["定义：被动活动肢体时感受到的阻力；与肌力是两个维度，可同时存在（如痉挛 + 无力）。", "Ashworth 分级 0—4：0 无增高、1 轻微增高（被动屈伸末端有阻力）、1+ 阻力小于一半范围、2 明显增高但被动活动容易、3 显著增高被动活动困难、4 僵直。", "改良 Ashworth（MAS）与原始 Ashworth 的差别在 1+ 这一级；临床多用 MAS。", "痉挛的处理顺序：先找诱因（疼痛、压疮、尿潴留、便秘、感染）→ 体位与牵伸 → 药物（巴氯芬、替扎尼定、肉毒毒素）→ 手术。", "肌张力评定要写「哪块肌、哪个方向、速度」——快速被动活动诱发的阻力才是痉挛的特征（速度依赖）。"]], ["提示", "p", "案例题给「下肢僵直、被动活动阻力大、快速活动更明显」，答痉挛（速度依赖）；若阻力均匀、铅管样，答强直（锥体外系）。"]]}, {"k": "pd-rom", "n": "关节活动度评定", "c": "ROM 测量方法与记录", "p": ["量角器三要素：轴心、固定臂、移动臂", "主动 ROM 与被动 ROM 的差值意义", "各关节正常参考值与测量体位", "记录格式：关节-运动-角度-体位"], "t": "主动<被动提示肌无力或疼痛；两者均限制提示关节本身。", "kw": ["关节活动度", "ROM", "量角器", "活动范围"], "d": [["怎么理解", "p", "关节活动度是康复里最客观、最可重复的指标之一：量角器一放，度数就是度数。关键在于测法标准化——体位、固定、轴心、量角器两臂怎么摆。"], ["逐条展开", "ul", ["主动 ROM（AROM）与被动 ROM（PROM）：AROM < PROM 提示肌力不足或疼痛；两者都小提示关节/软组织挛缩。", "测量三要素：轴心对准关节中心、固定臂对准近端骨、移动臂对准远端骨；读数为移动臂与固定臂夹角。", "记录格式：关节 + 方向 + 主动/被动 + 度数 + 有无疼痛（如「右膝屈 AROM 0—110°，末端痛」）。", "常见受限原因：关节囊挛缩、肌肉短缩、瘢痕粘连、骨性阻挡、疼痛保护性痉挛。", "干预对应：关节松动（关节源性）、牵伸（肌源性）、瘢痕松解（软组织）、镇痛后训练（疼痛性）。"]], ["提示", "p", "「主动 90°、被动 130°」这种差距要写清是肌力问题还是疼痛；只写一个数等于没评。"]]}, {"k": "pd-pingheng", "n": "平衡与协调评定", "c": "平衡分级、Berg/TUG 与协调测试", "p": ["静态、动态、反应性平衡三类", "支撑面、重心、感觉整合（视/前庭/本体）", "Berg（0—56）、TUG、单腿站立、功能性前伸", "协调：指鼻、跟膝胫、快速轮替"], "t": "Berg 分级线：<45 跌倒风险明显升高。", "kw": ["平衡", "协调", "Berg", "TUG", "跌倒"], "d": [["怎么理解", "p", "平衡不是「站得稳」，而是「在支撑面内控制重心」的能力。评定要分三级：静态（坐着/站着不动）、动态（主动移动重心）、反应性（被打扰后恢复）。"], ["逐条展开", "ul", ["平衡三要素：感觉输入（视觉、前庭、本体觉）、中枢整合、运动输出（肌力、ROM、协调）。", "支撑面（BOS）越大越稳；重心（COG）投影必须落在 BOS 内，摆动越少越好。", "Berg 平衡量表（BBS）14 项、56 分：<45 分跌倒风险升高，<40 分建议辅具/监护。", "TUG（起立—行走 3 米—返回）：≥12 秒提示跌倒风险，≥20 秒提示需辅助。", "协调：指鼻试验、跟膝胫试验、轮替动作；共济失调与平衡障碍要分开写。"]], ["提示", "p", "考「Berg 45 分意味着什么」：提示跌倒风险增加、需要评估辅具；不要答「正常」。"]]}, {"k": "pd-butai", "n": "步态分析", "c": "步态周期、时空参数与异常步态识别", "p": ["步态周期与各期占比（支撑 60%、摆动 40%）", "时空参数：步长、步频、步速、步宽、对称性", "定性（观察/视频）与定量（三维、足印、压力）", "常见异常：偏瘫、剪刀、跨阈、鸭步、疼痛步态"], "t": "先看对称性与步速，再看具体关节角度。", "kw": ["步态", "步行", "足印", "三维", "行走"], "d": [["怎么理解", "p", "步态分析是把「走路」拆成可测的周期与参数。正常步态是一个「稳定的失衡—再稳定」循环：每一步都在重心前移后靠支撑腿接住。"], ["逐条展开", "ul", ["步态周期：支撑相约占 60%、摆动相约 40%；双支撑期在正常步速下约 10%。", "时空参数：步长（同侧两次着地）、步幅（左右各一步）、步频（约 100—120 步/分）、步速（成人约 1.2—1.4 m/s）。", "关节运动要点：髋屈伸、膝屈曲（支撑相早期缓冲、摆动相屈曲过足）、踝背屈（足廓清）与跖屈（蹬离）。", "常见异常：跨阈步态（足下垂）、划圈步态（偏瘫伸肌模式）、臀中肌步态（Trendelenburg）、帕金森慌张步态、共济失调步态。", "分析工具：肉眼观察（关节角度与时相）→ 足印法/计时 → 三维步态分析（科研与复杂病例）。"]], ["提示", "p", "看到「足下垂 + 跨阈」先想腓总神经损伤或胫前肌无力；看到「划圈 + 上肢屈曲」想偏瘫共同运动模式。"]]}, {"k": "pd-adl", "n": "ADL、生活质量与环境评定", "c": "日常生活能力、参与与环境因素评定", "p": ["Barthel/MBI（0—100）与 FIM（18 项）差异", "IADL：购物、做饭、理财、用药", "生活质量：SF-36、WHOQOL", "环境：家居、无障碍、社区资源"], "t": "Barthel 分级的四个界值要背：60、40、20。", "kw": ["ADL", "日常生活", "生活质量", "社会功能", "环境评定", "Barthel", "FIM"], "d": [["怎么理解", "p", "ADL 是康复的「结果指标」——治疗做得再漂亮，患者能不能自己穿衣、上厕所、出门，才是他要的答案。Barthel 指数是最常用的床旁工具，简单、可重复、能算分。"], ["逐条展开", "ul", ["ADL 分基础 ADL（BADL：吃、穿、洗漱、如厕、转移、行走）与工具性 ADL（IADL：购物、做饭、打电话、理财、乘车）。", "Barthel 指数 10 项、满分 100：进食 10、洗澡 5、修饰 5、穿衣 10、大便 10、小便 10、如厕 10、床椅转移 15、平地行走 15、上下楼梯 10。", "分档：100 自理；61—99 轻度依赖；41—60 中度；21—40 重度；≤20 完全依赖。", "生活质量：SF-36、WHOQOL-BREF；参与：CHART、LIFE-H；环境：CHIEF、家居环境评估表。", "评 ADL 要问「实际怎么做」而不是「能不能做」——很多患者能走但报告「不出门」，那是环境与信心问题。"]], ["提示", "p", "Barthel 的两个 15 分项（转移与行走）最容易记混；考试若给分档，记得 60 分是「中度依赖」的分界（41—60 中度）。"]]}, {"k": "pd-renzhi", "n": "认知评定", "c": "注意、记忆、执行与筛查工具", "p": ["定向、注意、记忆、语言、视空间、执行六域", "MMSE（30 分）与 MoCA（30 分）的敏感度差异", "成套测验：RBMT、WCST、连线测验", "意识障碍：GCS 与 CRS-R"], "t": "MoCA 对轻度认知障碍更敏感，教育年限要校正。", "kw": ["认知", "MMSE", "MoCA", "记忆", "注意", "执行"], "d": [["怎么理解", "p", "认知评定决定「这个人能不能学会训练动作」。注意力不集中，教十遍也记不住；执行功能差，回家就出危险。所以认知筛查要放在康复早期，而不是出院前。"], ["逐条展开", "ul", ["认知域：注意、记忆、执行功能、语言、视空间、定向、计算、判断。", "筛查工具：MMSE（30 分，受教育年限影响）、MoCA（30 分，对轻度认知障碍更敏感，<26 提示异常）。", "注意：数字广度、划消试验；记忆：词语回忆、Rivermead 行为记忆测验。", "执行功能：连线测验（TMT-A/B）、Stroop、威斯康星卡片分类（WCST）。", "评定的前提是「能听见、能看见、能配合」：先排除听力、视力、失语、抑郁、谵妄。"]], ["提示", "p", "MoCA 与 MMSE 的区别常考：MoCA 对轻度认知障碍与血管性认知障碍更敏感，但受教育程度影响更大；筛查阳性要结合功能判断，不能直接下痴呆诊断。"]]}, {"k": "pd-yanyu", "n": "言语语言评定", "c": "失语、构音、嗓音与吞咽的评定框架", "p": ["失语：WAB、ABC、波士顿诊断性失语检查", "构音：Frenchay、音节清晰度", "嗓音：GRBAS、声学分析", "吞咽：洼田饮水、VFSS、FEES"], "t": "先分“语言（失语）”与“言语（构音）”两件事。", "kw": ["言语", "语言", "失语", "构音", "评定", "WAB"], "d": [["怎么理解", "p", "言语语言评定要先把「说不好」拆成三类：失语（语言中枢问题，听不懂/说不出/命名差）、构音障碍（发音器官执行问题，说得含糊）、嗓音障碍（声带与气息问题，声音嘶哑）。三类的训练完全不同。"], ["逐条展开", "ul", ["失语评定：自发语（流畅/非流畅）、听理解、复述、命名、阅读、书写六项；常用 WAB、波士顿诊断性失语检查（BDAE）。", "失语分类速记：Broca（非流畅、理解较好、复述差）、Wernicke（流畅、理解差、复述差）、传导性（复述最差）、经皮质（复述好）、命名性（只有命名差）。", "构音障碍：查呼吸、发声、共鸣、构音（唇舌齿腭）、韵律五环节；Frenchay 构音障碍评定常用。", "嗓音：GRBAS 听感评估（总嘶哑度、粗糙、气息、无力、紧张）+ 声学分析（基频、jitter、shimmer）。", "吞咽：反复唾液吞咽试验、洼田饮水试验、VFSS（金标准）、FEES。"]], ["提示", "p", "「复述差」是失语分类的关键线索：复述差 → Broca/Wernicke/传导性；复述好 → 经皮质或命名性。"]]}, {"k": "pd-xinfei", "n": "心肺功能评定", "c": "心功能、肺功能与运动试验", "p": ["心功能分级（NYHA）、6MWT、心肺运动试验", "肺功能：FEV1、FVC、MVV", "运动试验终止指征与禁忌", "监护指标：心率、血压、SpO₂、Borg"], "t": "6MWT 的禁忌与终止指征是高频考点。", "kw": ["心肺功能", "6MWT", "运动试验", "肺功能", "心功能"], "d": [["怎么理解", "p", "心肺评定回答两个问题：现在能承受多大运动量（安全边界），以及哪里限制了运动（心、肺还是肌肉）。前者决定处方强度，后者决定干预方向。"], ["逐条展开", "ul", ["心功能：NYHA 分级（I—IV）、6 分钟步行试验（6MWT，<300 m 提示预后差）、心肺运动试验（CPET 测峰值摄氧量）。", "肺功能：FVC、FEV1、FEV1/FVC（<0.7 提示阻塞）、MVV；COPD 按 GOLD 分级（FEV1 占预计值）。", "呼吸肌力量：最大吸气压（MIP）、最大呼气压（MEP）。", "运动试验终止指征：胸痛、明显心电图改变、血压异常、严重气促、头晕、患者要求停止。", "康复常用替代指标：Borg 评分（6—20）、说话试验、心率储备法（目标心率 = 静息 + 40—60% ×（最大 − 静息））。"]], ["提示", "p", "心衰患者做 6MWT 前后要测血压、心率、血氧与 Borg 评分；只报「走了 350 米」不报前后生命体征，等于没做安全评估。"]]}, {"k": "pd-dianshengli", "n": "神经电生理", "c": "肌电图、神经传导与诱发电位", "p": ["EMG：静息/轻收缩/重收缩三相", "NCV：运动与感觉传导，潜伏期与波幅", "SEP、MEP、VEP、BAEP 的用途", "判断：轴索损害 vs 脱髓鞘"], "t": "波幅降→轴索；潜伏期延→脱髓鞘。", "kw": ["电生理", "肌电图", "NCV", "诱发电位", "神经传导"], "d": [["怎么理解", "p", "神经电生理是「活的解剖」：肌电图告诉你哪块肌肉失神经，神经传导告诉你哪条神经断了、断得重不重，诱发电位告诉你通路通不通。康复里主要用它定损伤程度、判断预后、指导辅具。"], ["逐条展开", "ul", ["肌电图（EMG）：静息时找纤颤电位/正锐波（失神经）、插入电位延长；轻收缩看运动单位电位（时限、波幅），重收缩看募集型（单纯相/混合相/干扰相）。", "神经传导（NCS）：运动传导测潜伏期、波幅、传导速度；感觉传导测 SNAP。轴索损害以波幅下降为主，脱髓鞘以速度减慢为主。", "诱发电位：SEP（体感通路）、MEP（运动通路，经颅磁刺激）、BAEP（脑干听觉）、VEP（视觉）。", "常见结论：腕管综合征（正中神经远端潜伏期延长）、腓总神经损伤（趾短伸肌失神经 + 传导阻滞）、ALS（广泛失神经 + 传导正常）。", "评定时机：伤后 2—3 周做 EMG 最有价值（此时失神经电位已出现）。"]], ["提示", "p", "「波幅低、速度正常」= 轴索损害；「速度慢、波幅正常或轻度低」= 脱髓鞘。这一条能解大半电生理题。"]]}, {"k": "zl-huodong", "n": "关节活动与牵伸技术", "c": "维持/改善 ROM 的手法与牵伸", "p": ["被动、主动、主动助力 ROM 训练", "牵伸：静态、动态、PNF、器械", "剂量：30 秒×3—5 次，温热后更有效", "禁忌：新鲜骨折、异位骨化、急性炎症"], "t": "牵伸前先热身；疼痛评分 >4 不做强力牵伸。", "kw": ["关节活动技术", "牵伸", "肌肉牵伸", "ROM训练", "软组织"], "d": [["怎么理解", "p", "关节活动技术是所有训练的「地基」：不能动，就谈不上练力量与走路。手法分两类——被动活动（维持/恢复活动度）与牵伸（拉长短缩的软组织），目的不同。"], ["逐条展开", "ul", ["被动关节活动（PROM）：完全由治疗师完成，用于昏迷、瘫痪、术后制动；作用是防挛缩、促滑液循环、维持本体觉输入。", "主动助力（AAROM）与主动（AROM）：患者参与越多，神经肌肉收益越大；原则是「能主动就不助力」。", "牵伸三型：静态（保持 15—30 秒，重复 3—5 次）、动态（摆动，热身用）、PNF 牵伸（收缩—放松、保持—放松）。", "牵伸前要热身（热敷/低强度活动），牵伸时不应出现明显疼痛；「疼痛性牵伸」会引发保护性痉挛。", "禁忌：新鲜骨折、关节急性炎症、血肿、异位骨化活动期、严重骨质疏松、神经血管受压。"]], ["提示", "p", "考题常问「术后早期为什么不练 ROM 而要练等长」：早期目标是保护修复组织，ROM 训练会增加剪切力；等长收缩能在低剪切下维持肌力。"]]}, {"k": "zl-songsdong", "n": "关节松动与手法治疗", "c": "Maitland 分级与脊柱/四肢松动", "p": ["Maitland Ⅰ—Ⅴ 级判断", "附属运动：滚动、滑动、旋转的方向选择", "脊柱松动与神经松动术", "禁忌：不稳、肿瘤、感染、脊髓压迫"], "t": "Ⅴ 级是高速低幅（推扳），不是常规放松。", "kw": ["关节松动", "手法", "Maitland", "推拿", "松动术"], "d": [["怎么理解", "p", "关节松动是「在关节面上做的小幅度、节律性手法」，针对关节源性活动受限；它与牵伸（针对肌肉）是两件事。Maitland 四级是选择力度的标尺。"], ["逐条展开", "ul", ["Maitland 分级：I 级小幅度在起始端、II 级大幅度未到末端、III 级大幅度到末端、IV 级小幅度在末端；I—II 级止痛，III—IV 级改善活动度。", "常用技术：摆动（I—IV 级）、持续牵引、挤压、旋转、滑动（Kaltenborn 的 I—III 级滑移）。", "脊柱松动：颈椎后前位（PA）、腰椎 PA、旋转松动；四肢：肩关节前后向滑移、膝关节前后向滑移。", "适应证：关节僵硬、疼痛伴活动受限、退行性改变早期的活动度下降。", "禁忌/慎用：关节不稳、感染、肿瘤、骨折未愈、脊髓受压、严重骨质疏松、抗凝治疗中。"]], ["提示", "p", "「III 级和 IV 级的区别」常考：III 级是从中程到末端的大幅度，IV 级只在末端做小幅度；两者都用于改善活动度，但 IV 级更靠近终末感。"]]}, {"k": "zl-jili", "n": "肌力训练", "c": "力量训练的类型、强度与进阶", "p": ["等长/等张/等速训练的适用场景", "强度：1RM 的百分比与 RM 方案", "渐进抗阻（DeLorme/Oxford）与离心训练", "禁忌与监护：心血管反应、Valsalva"], "t": "术后早期多等长，中期等张，后期功能性。", "kw": ["肌力训练", "抗阻", "力量训练", "等速训练"], "d": [["怎么理解", "p", "肌力训练的核心是「超负荷 + 渐进 + 特异」：不给超过现有能力的负荷，肌肉不会变强；不按目标动作练，力量不会迁移到功能上。"], ["逐条展开", "ul", ["训练类型：等长（不产生运动）、等张（向心/离心）、等速（恒定角速度）、开链/闭链（OKC/CKC）。", "渐进抗阻（DeLorme）：10RM 的 50% 做 10 次 → 75% 做 10 次 → 100% 做 10 次，逐步加重。", "闭链训练（如深蹲）关节剪切力小、本体觉输入多，适合早期与下肢功能训练；开链（如坐位伸膝）更针对单块肌肉。", "神经肌肉电刺激（NMES）可在主动收缩不足时辅助；生物反馈提高募集。", "训练后 24—48 小时延迟性酸痛正常；若关节肿胀、疼痛持续超过 2 小时，说明负荷过量。"]], ["提示", "p", "「为什么早期用闭链不用开链」：闭链时关节面受压、剪切力相对小，且多关节协同，更接近功能动作；开链在关节不稳或术后早期可能增加剪切应力。"]]}, {"k": "zl-qianyin", "n": "牵引与悬吊", "c": "颈椎/腰椎牵引与悬吊训练", "p": ["牵引力、时间、体位三要素", "适应证：神经根型颈椎病、腰椎间盘突出", "禁忌：脊髓型、骨质疏松、肿瘤、妊娠", "悬吊：闭链训练与核心稳定"], "t": "牵引中出现新神经症状立刻停止。", "kw": ["牵引", "悬吊", "颈椎牵引", "腰椎牵引"], "d": [["怎么理解", "p", "牵引的本质是「拉开间隙、减轻压迫」：颈椎牵引拉开椎间孔与关节突关节，腰椎牵引拉开椎间隙、降低椎间盘内压。悬吊则是借助绳带减重，让患者在低负荷下完成动作。"], ["逐条展开", "ul", ["颈椎牵引：常用 体重的 7—10%（约 5—10 kg），坐位或仰卧，角度按病变节段调（上颈段略屈、下颈段略伸），每次 15—20 分钟。", "腰椎牵引：常用体重的 40—60%，间歇或持续，每次 20—30 分钟；急性椎间盘突出早期慎用。", "适应证：神经根型颈椎病、腰椎间盘突出症（非急性）、椎间孔狭窄、肌肉痉挛。", "禁忌：脊髓型颈椎病、椎体骨折/滑脱、严重骨质疏松、肿瘤/感染、孕妇、严重心肺疾病。", "悬吊训练（SET）：通过绳带减重与不稳定支撑，训练核心稳定与运动控制；常用于腰痛与肩痛。"]], ["提示", "p", "脊髓型颈椎病是牵引的绝对禁忌——出现「走路踩棉花感、手笨拙、腱反射亢进」先停牵引，转诊评估。"]]}, {"k": "zl-zhuanyi", "n": "转移与步行训练", "c": "床—椅—厕转移与步行辅助", "p": ["转移：独立、辅助、机械三类", "偏瘫转移的技巧侧（健侧带动）", "步行训练：平行杠—助行器—拐—独立", "拐杖高度与三点/四点步"], "t": "偏瘫患者“健侧先动”的规则要能举例。", "kw": ["转移", "步行训练", "体位转移", "助行", "拐"], "d": [["怎么理解", "p", "转移与步行训练解决「从床上到厕所」这一段路。原则只有一句话：让患者用残存能力做最大程度的自主转移，治疗师的手只是「保险」而不是「起重机」。"], ["逐条展开", "ul", ["转移方式：床—椅（站起-转身-坐下）、床—轮椅（侧移/滑板）、轮椅—厕、地面—椅（跌倒后起身）。", "偏瘫患者转移：健侧靠近目标、健手支撑、患腿负重；治疗师站在患侧保护。", "截瘫患者：C6 以下可做支撑转移，T4 以上需评估体位性低血压。", "步行训练顺序：平行杠内 → 助行器 → 拐杖 → 独立；先练站立平衡与重心转移，再练迈步。", "拐杖使用：三点步（一侧下肢不能负重）、四点步（稳定但慢）、两点步（快）、摆至/摆过步（截瘫）。"]], ["提示", "p", "「患侧还是健侧靠近床」是高频考点：转移时健侧靠近目标、健手支撑；治疗师保护患侧。"]]}, {"k": "zl-shenjing", "n": "神经发育疗法与运动再学习", "c": "Bobath、PNF、Brunnstrom、MRP、MCIMT", "p": ["Bobath：抑制异常模式、促通正常运动", "PNF：对角线模式、节律启动、收缩-放松", "Brunnstrom 六阶段与协同运动", "运动再学习（MRP）与强制性使用（MCIMT）"], "t": "各疗法共同的底层是“任务导向 + 大量重复”。", "kw": ["神经发育", "Bobath", "PNF", "Brunnstrom", "运动再学习", "强制性使用", "易化"], "d": [["怎么理解", "p", "神经发育疗法是一组「利用神经可塑性重塑运动模式」的方法，不是四套互斥的技术。共同底层是三件事：任务导向、大量重复、感觉输入。差别在于「从哪切入」。"], ["逐条展开", "ul", ["Bobath（NDT）：抑制异常模式、促通正常运动；强调关键点控制（躯干、肩胛、骨盆）与「不让患者练错」。", "PNF：对角线模式（D1/D2 屈伸）、节律启动、等张组合、收缩—放松、保持—放松；利用牵伸与阻力促进。", "Brunnstrom：按恢复六阶段训练，利用共同运动与联合反应「借力」再逐步脱离。", "运动再学习（MRP）：把动作拆成任务成分，练缺失成分再整合；强调闭链、真实任务与反馈。", "强制性使用（CIMT）：限制健手、强制用患手，适用于卒中后 3—6 个月、有一定主动伸展的患者。"]], ["Brunnstrom 六阶段", "table", [["阶段", "表现"], ["I", "弛缓，无随意运动"], ["II", "出现联合反应/共同运动雏形"], ["III", "共同运动可随意完成（屈肌/伸肌模式）"], ["IV", "出现部分分离运动（如手触腰后）"], ["V", "分离运动更明显（如伸肘时前臂旋前）"], ["VI", "接近正常，协调性略差"]]], ["提示", "p", "CIMT 的三个门槛常考：患侧腕背伸 ≥10°、指伸 ≥10°、无明显忽略；不满足就做改良版（mCIMT）。"]]}, {"k": "zl-wuli", "n": "物理因子治疗", "c": "电、光、声、热、磁、水、冷、压力的应用与禁忌", "p": ["低频/中频/高频电疗的作用深度与适应证", "超声波、激光、红外/紫外", "热疗与冷疗的生理反应与时机", "禁忌：恶性肿瘤局部、出血倾向、心脏起搏器、感觉丧失区"], "t": "物理因子题最爱考禁忌证，先背禁忌再背适应证。", "kw": ["电疗", "光疗", "超声波", "传导热", "磁疗", "水疗", "冷疗", "物理因子", "冷冻", "压力治疗"], "d": [["怎么理解", "p", "物理因子是「不开药的治疗」：电、光、声、热、磁、水、冷、压力各有靶组织与禁忌。考试与临床都要先问「这个因子的剂量与禁忌是什么」。"], ["逐条展开", "ul", ["电疗：直流电（离子导入）、低频（TENS 止痛、NMES 肌力）、中频（干扰电、调制中频）、高频（短波、微波，深部产热）。", "光疗：红外线（浅表热）、紫外线（杀菌、促愈合）、激光（低强度激光促修复）。", "超声：0.8—3 MHz，深度越深频率越低；用于软组织粘连、瘢痕、疼痛；禁用于心前区、孕妇腹部、骨骺、眼球。", "热疗：蜡疗、热敷、超短波；冷疗：冰敷、冷浴（急性期消肿止痛）。", "水疗：利用浮力减重、温热放松；压力治疗：气压泵、压力衣（淋巴水肿、瘢痕）。"]], ["高频电疗禁忌", "table", [["项目", "要点"], ["绝对禁忌", "恶性肿瘤局部、出血倾向、心脏起搏器、孕妇腹部、金属植入物局部（部分）"], ["慎用", "感觉障碍区、急性感染、严重心肺疾病"], ["操作", "去除金属饰品、干燥皮肤、患者不得移动"]]], ["提示", "p", "「超声能不能用在孕妇腹部/心前区/眼球」是标准送分题：都不能。频率越高作用越浅，这是另一条常考点。"]]}, {"k": "zl-shengwu", "n": "生物反馈、冲击波与神经调控", "c": "反馈训练、体外冲击波、经颅磁/直流电", "p": ["肌电生物反馈用于再教育与放松", "冲击波：肌腱病、骨不连、足底筋膜炎", "rTMS/tDCS 用于卒中后运动与抑郁", "禁忌：起搏器、癫痫史、颅内金属"], "t": "冲击波不是“哪里痛打哪里”，要打在病变组织。", "kw": ["生物反馈", "冲击波", "经颅", "磁刺激", "电刺激"], "d": [["怎么理解", "p", "这一组是「用信号或能量去调神经」：生物反馈把看不见的生理信号变成看得见的反馈，冲击波用机械能松解组织，经颅磁/直流电直接调节皮层兴奋性。"], ["逐条展开", "ul", ["生物反馈：肌电、压力、角度反馈；用于卒中后腕伸、盆底肌、吞咽、痉挛放松。", "体外冲击波（ESWT）：聚焦/放射状，能量 0.1—0.3 mJ/mm²，用于网球肘、跟痛症、钙化性肌腱炎、骨折不愈合。", "重复经颅磁刺激（rTMS）：高频（≥5 Hz）兴奋患侧皮层、低频（≤1 Hz）抑制健侧皮层，用于卒中后运动与失语。", "经颅直流电（tDCS）：阳极兴奋、阴极抑制，电流 1—2 mA，20 分钟；注意电极位置与皮肤。", "禁忌：癫痫病史、颅内金属、心脏起搏器、妊娠、颅骨缺损（局部）。"]], ["提示", "p", "rTMS 的「高频兴奋、低频抑制」是高频考点；注意是「刺激侧」与「抑制健侧」的组合，别写反。"]]}, {"k": "zl-tieza", "n": "贴扎与压力治疗", "c": "肌内效贴、白贴与压力衣", "p": ["贴扎方向决定促通/抑制/支持", "压力治疗用于瘢痕、水肿、淋巴", "压力梯度：远高近低", "皮肤检查与过敏监测"], "t": "贴扎是辅助，不替代训练。", "kw": ["贴扎", "压力衣", "压力治疗", "压力疗法", "肌内效"], "d": [["怎么理解", "p", "贴扎与压力治疗都是「用外部材料改内部力学或循环」：肌内效贴改变皮肤与筋膜的滑动、提供感觉输入；白贴限制关节；压力衣给瘢痕与水肿一个持续的压力梯度。"], ["逐条展开", "ul", ["肌内效贴（K-tape）：拉力 0—25%（感觉/循环）、25—50%（肌肉促进/抑制）、50—75%（力学矫正）；贴法有 I/Y/X/爪形。", "白贴（运动贴）：限制关节活动度、保护韧带，用于踝扭伤防护、肩关节不稳。", "压力治疗：压力衣 15—25 mmHg（瘢痕）、淋巴水肿用多层绷带/气压泵；压力应「远端大、近端小」。", "禁忌：皮肤破损、感染、过敏、深静脉血栓急性期、心衰（大量加压）。", "贴扎不是「贴了就好」：贴布 3—5 天更换，出现瘙痒、水泡立即去除。"]], ["提示", "p", "压力治疗的方向常考：远端压力大于近端，形成梯度，才能把液体往回推；反过来会加重水肿。"]]}, {"k": "zl-xinfei", "n": "心肺训练与运动处方", "c": "有氧训练、呼吸训练与 FITT 处方", "p": ["FITT：频率、强度、时间、类型", "强度：心率储备法、Borg、无氧阈", "呼吸训练：缩唇、腹式、排痰", "监护与终止指征"], "t": "处方必须写出强度依据（心率/功率/Borg）。", "kw": ["心肺功能训练", "运动处方", "有氧", "呼吸训练", "耐力"], "d": [["怎么理解", "p", "心肺训练用 FITT 框架开处方：频率、强度、时间、类型。核心是有氧 + 抗阻 + 呼吸训练三件套，强度靠心率储备或 Borg 评分定。"], ["逐条展开", "ul", ["有氧：每周 3—5 次、40—60% 心率储备起步、20—40 分钟、快走/功率车/上肢功率车。", "抗阻：每周 2—3 次、60—70% 1RM、8—12 次 × 2—3 组，注意瓦氏动作（憋气）要避免。", "呼吸训练：缩唇呼吸（COPD）、腹式呼吸、呼吸肌训练（阈负荷装置，30% MIP 起步）。", "运动强度监测：心率、Borg 12—14（稍累）、说话试验、血氧（<88% 停止）。", "住院期早期活动：床上踝泵 → 坐起 → 床边站 → 步行；术后（CABG/瓣膜）按胸骨愈合分期限制上肢负重。"]], ["提示", "p", "「缩唇呼吸为什么有效」：增加气道内压、防止小气道过早塌陷、延长呼气，改善气体陷闭——答这三句即可。"]]}, {"k": "zl-vr", "n": "虚拟现实与康复机器人", "c": "VR、外骨骼、上肢/下肢机器人", "p": ["VR 提供任务重复与即时反馈", "外骨骼：步态训练、减重", "机器人：上肢、手、踝", "证据：剂量与强度是疗效关键"], "t": "技术章节答题要落到“训练剂量与适应证”。", "kw": ["虚拟现实", "机器人", "外骨骼", "VR"], "d": [["怎么理解", "p", "VR 与机器人解决的是「重复量」与「趣味性」：卒中康复需要上千次重复，人盯不住，机器可以；虚拟场景把枯燥的重复变成游戏，提高参与度。"], ["逐条展开", "ul", ["VR 分类：沉浸式（头显）、半沉浸式（大屏/投影）、非沉浸式（平板）；康复多用半沉浸与平板。", "适用：上肢功能、平衡与步态、认知训练、恐惧回避（如卒中后怕走路）。", "外骨骼：下肢外骨骼用于脊髓损伤、卒中步态训练；上肢外骨骼用于肩肘腕。", "末端执行器机器人（如 MIT-Manus 类）vs 外骨骼（关节对齐要求高）：前者结构简单、后者更接近生理运动。", "证据与限制：对上肢功能有中等证据；对步行独立性的证据仍在积累；成本高、需治疗师在场。"]], ["提示", "p", "VR 的禁忌常考：严重认知障碍不能配合、癫痫（部分沉浸式）、严重眩晕、皮肤破损处佩戴设备。"]]}, {"k": "ot-gailun", "n": "作业治疗概论与 ADL 训练", "c": "作业表现、活动分析与 ADL 训练", "p": ["作业表现三要素：人、环境、作业", "活动分析：步骤分解与难度调整", "ADL 训练：进食、穿衣、洗漱、如厕、洗澡", "代偿与改造并重"], "t": "OT 的核心是“做事情”，不是“练动作”。", "kw": ["作业治疗", "ADL训练", "作业活动", "活动分析"], "d": [["怎么理解", "p", "作业治疗的核心不是「做手工」，而是「用有意义的作业活动恢复生活能力」。它的独特视角是「活动分析」：把一个任务拆成步骤、能力要求与环境条件，找出卡在哪一步。"], ["逐条展开", "ul", ["作业表现三要素：人（身体、认知、心理）、环境、作业活动；三者交互决定表现。", "活动分析：把「穿衣服」拆成坐稳、取衣、套患侧、拉过肩、系扣、整理；每步对应不同能力。", "ADL 训练原则：从患者最想做的活动开始、在真实环境练、逐步撤除辅助。", "治疗性作业活动：木工、编织、园艺、书法——目的在训练成分（力量、协调、认知），不是产出作品。", "OT 与 PT 的分工：PT 管「能不能动」，OT 管「能不能做生活里的事」。"]], ["提示", "p", "问「OT 与 PT 的区别」不要答「一个上肢一个下肢」；正确答案是「PT 以运动功能与移动为主，OT 以日常生活活动、认知与参与为主」。"]]}, {"k": "ot-shou", "n": "手与上肢功能", "c": "手功能评定与 OT 训练", "p": ["抓握类型：柱状、球状、钩状、捏", "评定：ARAT、九孔柱、握力/捏力", "训练：镜像、任务练习、支具", "水肿与瘢痕管理"], "t": "手外伤早期防挛缩，后期练精细。", "kw": ["手功能", "上肢", "抓握", "支具", "手外伤"], "d": [["怎么理解", "p", "手是「精细动作的执行器」，也是康复里最难恢复的部分。评手要看三件事：能不能抓（力量）、能不能捏（精细）、能不能用（协调与感觉）。"], ["逐条展开", "ul", ["抓握模式：柱状、球状、钩状、侧捏、指腹捏、三指捏、掌指捏。", "评定：握力（Jamar）、捏力（三指/侧捏）、九孔柱试验（灵活度）、盒块试验、Purdue 钉板。", "手功能分级（偏瘫常用）：Brunnstrom 手分期、Fugl-Meyer 上肢部分、ARAT。", "训练：任务导向（拿杯子、系扣、开瓶）、镜像治疗、CIMT、感觉再训练（触觉辨别、脱敏）。", "支具：腕手矫形器（WHS）保持功能位、防挛缩；动态支具辅助伸展。"]], ["提示", "p", "「九孔柱试验测什么」：手指灵活度与手眼协调，不是力量；力量用握力计/捏力计。"]]}, {"k": "ot-gantong", "n": "感觉统合", "c": "感觉统合理论与训练", "p": ["前庭、本体、触觉三大系统", "失调表现：过敏、迟钝、寻求", "训练：秋千、滑板、触觉箱", "儿童多见，成人用于感觉再教育"], "t": "感觉统合是 OT 的专有评估域，别与知觉训练混。", "kw": ["感觉统合", "前庭", "本体", "触觉"], "d": [["怎么理解", "p", "感觉统合（SI）是「大脑把触觉、前庭、本体觉等输入组织起来并做出适应反应」的能力。SI 训练主要用在儿童（感统失调、孤独症、ADHD），成人用得少。"], ["逐条展开", "ul", ["三大基础感觉：触觉（辨别与防御）、前庭觉（平衡与重力安全）、本体觉（身体位置与用力）。", "失调表现：触觉防御（怕标签、怕理发）、前庭敏感（怕荡秋千）、本体觉寻求（撞、跳、咬）。", "训练器材：秋千、滑板、蹦床、触觉箱、重力背心；原则是「以儿童为主导、有挑战但可成功」。", "Ayres 感觉统合理论强调「适应性反应」——不是单纯给刺激，而是让孩子在挑战中组织反应。", "证据边界：对孤独症的核心症状证据有限，主要改善感觉处理与参与；不要夸大疗效。"]], ["提示", "p", "考题若给「怕剪指甲、怕洗头、挑食」，先想触觉防御；给「转圈不晕、爱撞墙」，想前庭/本体觉寻求。"]]}, {"k": "ot-fuju", "n": "辅助器具、环境与职业康复", "c": "辅具适配、环境改造与重返工作", "p": ["辅具：自助具、助行、轮椅、矫形器", "环境：家居、无障碍、工作场所", "职业康复：工作分析、岗位调整、渐进复工", "适配流程：评定—试用—随访"], "t": "辅具选配先看“目标活动”，再看器材参数。", "kw": ["辅助器具", "助行器", "环境调适", "职业康复", "自助具", "无障碍", "轮椅"], "d": [["怎么理解", "p", "辅助器具是把「做不到」变成「换个方式做到」：一把加粗的勺子、一个马桶增高器、一根拐杖，常常比训练更快改善生活。适配的核心是「人—具—环境」三者匹配。"], ["逐条展开", "ul", ["分类：助行（拐杖、助行器）、生活自助具（加粗柄、长柄取物器、穿袜器）、轮椅、矫形器、沟通辅具、环境改造。", "选择顺序：先环境改造（坡道、扶手）→ 再自助具 → 最后才是高成本设备。", "轮椅：手动（轻量、可折叠）、电动（长距离、上肢无力）；座宽、座深、靠背高度要量体裁衣，防压疮。", "职业康复：工作分析 → 岗位调整/辅具 → 渐进复工；目标不是「回去上班」一句话，而是具体岗位任务。", "随访：辅具用 1—2 周后要复查（压疮、疼痛、是否真的在用）；不用等于没配。"]], ["提示", "p", "「先训练还是先配辅具」没有绝对答案：以「安全 + 早期参与」为原则——能练就练，但别为了练而让患者困在家里。"]]}, {"k": "st-shiyu", "n": "失语症", "c": "失语类型、评定与训练", "p": ["Broca、Wernicke、传导、命名、完全性", "评定：WAB、ABC、自发语言/理解/复述/命名", "训练：Schuell 刺激法、旋律语调、交流板", "预后：病因、病灶、年龄、动机"], "t": "复述好→传导性/命名性；复述差→Broca/Wernicke。", "kw": ["失语", "语言治疗", "WAB", "命名"], "d": [["怎么理解", "p", "失语是「语言中枢受损」导致的获得性语言障碍，不是智力下降，也不是构音问题。评定要回答三件事：哪几项语言功能受损（流畅度、理解、复述、命名）、是什么类型、日常沟通还剩多少。"], ["逐条展开", "ul", ["六项评定：自发语、听理解、复述、命名、阅读、书写；这六项决定失语类型。", "流畅 / 非流畅：非流畅（<50 词/分、费力、电报式）多为前部（Broca）；流畅（语量多但空洞、错语）多为后部（Wernicke）。", "复述是关键分水岭：复述差 → Broca、Wernicke、传导性失语；复述好 → 经皮质（运动/感觉/混合）与命名性。", "训练方法：语义治疗（词义网络）、语音治疗（音素）、旋律语调治疗（MIT，非流畅型）、交流板/手势（重度）、群体治疗。", "评定工具：WAB（失语商 AQ）、BDAE、中国康复研究中心汉语标准失语症检查（CRRCAE）。"]], ["四类速查", "table", [["类型", "流畅度", "理解", "复述"], ["Broca（运动性）", "非流畅", "较好", "差"], ["Wernicke（感觉性）", "流畅", "差", "差"], ["传导性", "流畅", "较好", "最差"], ["经皮质运动性", "非流畅", "较好", "好"], ["命名性", "流畅", "好", "好"]]], ["提示", "p", "「复述差 + 理解差 + 流畅」= Wernicke；「复述差 + 理解好 + 非流畅」= Broca；「复述好 + 命名差」先想命名性失语。"]]}, {"k": "st-gouyin", "n": "构音、嗓音、口吃与腭裂", "c": "运动性构音障碍与嗓音/流畅性", "p": ["构音：痉挛、弛缓、共济失调、混合型", "训练：口部运动、发音、韵律", "嗓音：GRBAS、共鸣、呼吸支持", "口吃：流畅性塑造与认知行为"], "t": "构音器官检查先看“能不能动”，再看“准不准”。", "kw": ["构音", "嗓音", "口吃", "腭裂", "发音"], "d": [["怎么理解", "p", "构音障碍是「发音动作的执行问题」：大脑、小脑、脑干或周围神经的病变让唇、舌、软腭、声带动作不准，但语言内容本身正常。与失语的最大区别是：他知道自己想说什么（理解与用词正常），只是说不清。"], ["逐条展开", "ul", ["五环节：呼吸（气息不足）、发声（声带闭合差）、共鸣（鼻音过重/不足）、构音（唇舌齿腭）、韵律（语调平板）。", "类型：痉挛型（上运动神经元，粗糙费力）、弛缓型（下运动神经元，鼻音重、气息声）、共济失调型（小脑，忽大忽小、节律乱）、运动过多/过少型（锥体外系）、混合型。", "评定：Frenchay 构音障碍评定（8 项）、言语清晰度（词/句可懂度）、口颜面检查（舌肌萎缩、震颤、软腭上抬）。", "训练：呼吸训练（腹式、延长呼气）、口部运动（唇舌操）、发音训练（音素—音节—词—句）、语速与韵律训练、代偿策略。", "器械辅助：语音放大器、交流板、AAC（重度）。"]], ["提示", "p", "「鼻音重 + 气息声 + 软腭上抬差」= 弛缓型（延髓/周围神经）；「说话费力 + 粗糙 + 腱反射亢进」= 痉挛型。"]]}, {"k": "st-tunyan", "n": "吞咽障碍", "c": "分期、筛查与训练", "p": ["四期：口腔准备、口腔、咽、食管", "筛查：洼田饮水；金标准 VFSS/FEES", "训练：门德尔松、超声门上吞咽、舌骨上肌训练", "安全：体位、食物质地、误吸征象"], "t": "进食体位与质地调整是最快见效的干预。", "kw": ["吞咽", "洼田", "VFSS", "FEES", "误吸"], "d": [["怎么理解", "p", "吞咽是「把食物安全送进胃」的四期动作，任何一期出问题都可能误吸。康复要做的第一件事不是训练，而是判断「现在能不能经口吃、吃什么性状、用什么姿势」。"], ["逐条展开", "ul", ["四期：口腔准备期（咀嚼、混唾液）、口腔期（舌推食物向后）、咽期（软腭上抬、喉上抬、会厌翻转、声门关闭、环咽肌开放）、食管期。", "筛查：反复唾液吞咽试验（30 秒内吞咽次数 <3 次提示异常）、洼田饮水试验（1—5 级）、EAT-10 问卷。", "金标准：VFSS（吞钡透视，可看误吸与残留）、FEES（纤维内镜，床旁可做）。", "训练：间接训练（冰刺激、舌肌力量、Shaker 训练、门德尔松手法）、直接训练（体位、食物性状、一口量）。", "食物性状：糊状→浓稠→稀薄，从最安全的一档开始；液体最易误吸（可用增稠剂）。"]], ["误吸危险信号", "ul", ["进食中咳嗽、声音变湿、血氧下降 3% 以上", "餐后发热、肺部感染反复", "咽部残留感、食物从鼻腔返流", "隐性误吸：无咳嗽但 VFSS 见造影剂入气道（最危险）"]], ["提示", "p", "「隐性误吸」是高频考点：没有咳嗽不代表安全；卒中后 3 天内建议全部筛查，吞咽筛查不过关禁经口进食。"]]}, {"k": "st-ertong", "n": "儿童语言与孤独症", "c": "语言发育迟缓、孤独症谱系的语言干预", "p": ["语言发育里程碑与迟缓判断", "孤独症：社交沟通、刻板行为", "干预：ESDM、PRT、AAC", "家长参与与自然环境训练"], "t": "先排除听力，再谈语言训练。", "kw": ["儿童语言", "孤独症", "语言发育迟缓", "AAC", "谱系", "听力障碍", "听力"], "d": [["怎么理解", "p", "儿童语言问题要分两层：语言本身（理解与表达）与言语动作（发音）。语言发育迟缓是「按顺序但在慢车道上」，孤独症谱系是「社交沟通动机与语用异常」，两者训练重点不同。"], ["逐条展开", "ul", ["语言发育迟缓（DLD）：理解与表达落后于同龄，但没有孤独症的核心社交缺陷；训练以「语言输入、扩充、情景教学」为主。", "孤独症谱系（ASD）：社交沟通缺陷 + 重复刻板行为 + 兴趣狭窄；语言训练重点在「沟通意图、轮流、共同注意」。", "筛查：语言里程碑（1 岁单词、2 岁两词句）、M-CHAT（18—24 月孤独症筛查）、听力检查必须先做。", "干预：早期密集行为干预（ESDM、ABA）、图片交换沟通系统（PECS）、家长培训（关键：家长是主力）。", "预后：越早干预越好（3 岁前最佳）；「贵人语迟」是最常见的延误借口。"]], ["提示", "p", "2 岁仍无有意义单词 = 语言发育迟缓的警戒线；但同时要看「有没有共同注意、指物、眼神」——这三样缺失要警惕孤独症。"]]}, {"k": "kf-shenjing", "n": "神经康复", "c": "脑卒中、颅脑损伤、脊髓损伤、帕金森病的康复", "p": ["脑卒中：急性期—恢复期—后遗症期三段管理", "脊髓损伤：ASIA、平面、并发症（压疮、痉挛、自主神经反射异常）", "颅脑损伤：意识、认知、行为", "帕金森：节律提示、姿势、冻结步态"], "t": "神经康复题按“评定—目标—方案—并发症”四段答。", "kw": ["脑卒中", "颅脑损伤", "脊髓", "帕金森", "神经康复", "偏瘫", "脑炎", "多发性硬化", "吉兰", "癫痫", "阿尔茨海默", "痴呆"], "d": [["怎么理解", "p", "神经康复是康复里最大的板块，因为它同时具备「发病率高、致残率高、可塑性强」三个特点。核心思路是：急性期防并发症，恢复期抢功能，后遗症期保参与。"], ["逐条展开", "ul", ["脑卒中：发病 24—48 小时生命体征稳定即开始床边康复；坐位耐受 → 站立 → 步行；上肢按 Brunnstrom 分期推进。", "颅脑损伤：先促醒（意识评估用 GCS），再处理认知、行为与吞咽；注意颅骨缺损处的保护。", "脊髓损伤：按 ASIA 定平面与分级；急性期防压疮、深静脉血栓、自主神经反射异常；呼吸训练（C4 以上）优先。", "帕金森病：药物「开期」练动作、大强度幅度训练（LSVT-BIG）、防跌倒、步态提示（节拍器、视觉提示）。", "多发性硬化/吉兰-巴雷：以「节能技术 + 渐进负荷」为主，避免过度疲劳诱发症状加重。"]], ["ASIA 分级速记", "table", [["分级", "含义"], ["A", "完全损伤，骶段（S4—S5）无感觉无运动"], ["B", "不完全，骶段有感觉无运动"], ["C", "不完全，损伤平面以下半数以上关键肌肌力 <3 级"], ["D", "不完全，半数以上关键肌肌力 ≥3 级"], ["E", "正常"]]], ["提示", "p", "脊髓损伤题必考「并发症」：压疮、尿路感染、深静脉血栓、自主神经反射异常（T6 以上，表现为突发高血压 + 头痛 + 出汗）、异位骨化、痉挛。"]]}, {"k": "kf-jigu", "n": "肌骨康复", "c": "骨折、关节置换、截肢、颈腰痛与运动损伤", "p": ["骨折三期：炎症、修复、塑形；对应训练强度", "关节置换：术前教育、术后早期活动、防脱位", "截肢：残端塑形、假肢、幻肢痛", "颈腰痛：分层（特异性/非特异性）、运动疗法"], "t": "肌骨康复的“保护—活动—强化—功能”四阶段要背熟。", "kw": ["骨折", "关节置换", "截肢", "颈椎", "腰痛", "肩", "骨关节炎", "骨质疏松", "运动创伤", "再植", "周围神经", "下肢创伤", "慢性运动系统"], "d": [["怎么理解", "p", "肌骨康复的关键是「分期」：术前/术后早期保护、中期恢复活动度、后期强化与功能。搞错分期就会「该保护时练太猛、该强化时不敢练」。"], ["逐条展开", "ul", ["骨折：早期等长 + 邻近关节活动；愈合期（4—6 周）逐步负重；临床愈合后强化。负重必须在影像与医嘱下进行。", "关节置换：髋置换防脱位（屈髋 <90°、不内收内旋、不交叉腿）；膝置换术后当日/次日下地，重点伸膝与股四头肌。", "截肢：术后即刻/早期假肢（弹性绷带塑形）、残端脱敏与肌力；假肢处方按残肢长度与活动水平定。", "颈腰痛：急性期避免长时间卧床；以「保持活动 + 核心训练 + 宣教」为主，影像不是治疗依据。", "运动损伤：POLICE 原则（保护、适度负荷、冰敷、加压、抬高）替代旧 RICE；重返运动按功能测试而非时间。"]], ["提示", "p", "「髋置换后三个禁止动作」是送分题：屈髋超过 90°、内收过中线、内旋；三者都增加后脱位风险（后侧入路）。"]]}, {"k": "kf-xinfei", "n": "心肺康复", "c": "冠心病、心衰、COPD 的康复", "p": ["冠心病：PCI/CABG 后分期运动", "心衰：低强度起步、监测", "COPD：肺康复、运动+教育+营养", "危险分层与监护"], "t": "心肺康复第一件事是危险分层。", "kw": ["冠心病", "高血压", "COPD", "心衰", "心肺康复", "呼吸疾病"], "d": [["怎么理解", "p", "心肺康复的证据最硬：心梗后、心衰、COPD 患者做康复能降低再入院与死亡。核心不是「多运动」，而是「在安全窗口内、按处方运动 + 危险因素管理」。"], ["逐条展开", "ul", ["冠心病：心梗后 1—2 周开始门诊康复；PCI/CABG 后按分期；运动强度 40—70% 心率储备，Borg 12—14。", "心衰：NYHA II—III 级做有氧 + 抗阻；监测体重（3 天涨 2 kg 提示液体潴留）、血压、心率。", "COPD：缩唇呼吸 + 腹式呼吸 + 呼吸肌训练 + 下肢有氧；急性加重期以排痰与早期活动为主。", "危险分层：低危（无并发症、运动试验正常）可居家；中高危需监护下训练。", "二级预防：戒烟、他汀、抗血小板、血压血糖管理——运动不能替代药物。"]], ["提示", "p", "CABG 术后 6—8 周内避免上肢负重与大幅度肩关节活动（胸骨愈合）；这是常见考点。"]]}, {"k": "kf-ertong", "n": "儿童康复", "c": "脑瘫、高危儿、遗传性疾病的康复", "p": ["脑瘫：GMFCS 分级、痉挛管理、矫形", "高危儿：早期干预窗口", "遗传病：多学科、长期随访", "家庭为中心、游戏化训练"], "t": "脑瘫分型（痉挛/手足徐动/共济失调/混合）必考。", "kw": ["脑瘫", "高危儿", "儿童康复", "遗传", "发育障碍", "孤独症"], "d": [["怎么理解", "p", "儿童康复的两条主线：脑瘫（运动障碍为主）与高危儿（早产、缺氧缺血性脑病，需早期干预）。核心原则是「早期、家庭为中心、功能导向」。"], ["逐条展开", "ul", ["脑瘫分型：痉挛型（最多，占 70%）、不随意运动型（手足徐动）、共济失调型、混合型；按分布分单瘫、双瘫、偏瘫、四肢瘫。", "GMFCS 五级：I 独立行走、II 长距离需辅具、III 助行器、IV 轮椅 + 部分自主移动、V 完全依赖。", "高危儿：早产 <32 周、低体重、窒息、黄疸、颅内出血；干预从 NICU 开始（袋鼠式护理、体位管理、喂养）。", "训练：任务导向、游戏化、家长培训（家庭训练量决定效果）、辅具（AFO、站立架）。", "遗传性疾病：DMD（进行性肌无力，禁高强度离心）、SMA（SMA 药物 + 呼吸管理）、唐氏（肌张力低、关节松弛）。"]], ["提示", "p", "DMD 患儿「能不能练力量」常考：可做低强度、次最大量训练，禁高强度离心与过度牵伸（肌肉脆弱易损伤）。"]]}, {"k": "kf-laonian", "n": "老年康复", "c": "老年综合征与长期照护", "p": ["老年综合征：跌倒、失禁、卧床、肌少症、多重用药", "综合评估（CGA）", "跌倒预防、防压疮、防废用", "长期照护与安宁疗护"], "t": "老年人先做 CGA 再定方案，不按单病种处理。", "kw": ["老年", "跌倒", "失禁", "肌少", "长期照护", "健康管理", "综合征"], "d": [["怎么理解", "p", "老年康复的对象不是「某个病」，而是「多种慢病 + 老年综合征 + 环境」的组合。目标常常不是恢复原状，而是「维持独立、防跌倒、防失能」。"], ["逐条展开", "ul", ["老年综合征：跌倒、肌少症、衰弱、失禁、认知障碍、多重用药、压疮、营养不良。", "衰弱（frailty）：Fried 五条（体重下降、疲乏、握力下降、行走慢、活动少），3 条以上为衰弱。", "肌少症：握力（男 <28 kg、女 <18 kg）+ 肌肉量 + 步速（<1.0 m/s）；干预 = 抗阻训练 + 蛋白质（1.0—1.2 g/kg）。", "跌倒预防：平衡训练（太极、Otago）、环境改造、视力与药物评估、维生素 D。", "长期照护：机构 vs 居家；ADL 维持优先于功能提高，防「越练越累」。"]], ["提示", "p", "老年人训练强度要「低起点、慢进展、多次短时」；一次 40 分钟不如两次 20 分钟——耐力与恢复能力都下降。"]]}, {"k": "kf-shequ", "n": "社区康复 CBR", "c": "社区康复的组织、评估与三级网络", "p": ["CBR 五要素：健康、教育、生计、社会、赋权", "三级网络：县—乡—村", "社区评定与家庭训练计划", "转介与档案管理"], "t": "社区康复考“可及性”与“可持续”，不是技术细节。", "kw": ["社区", "CBR", "基层", "家庭康复", "转介"], "d": [["怎么理解", "p", "社区康复（CBR）是「把康复搬到家门口」：以社区为平台，用最低成本覆盖最多人。它不是「低配版医院康复」，而是另一套组织逻辑——自助、互助、社会参与。"], ["逐条展开", "ul", ["CBR 五大支柱：健康、教育、生计、社会、赋权（WHO 2010 指南）。", "三级网络：县/区级康复中心（技术指导）→ 乡镇/街道康复站（训练与随访）→ 村/社区康复点（家庭训练）。", "核心工具：简易评定（Barthel、ADL）、家庭训练计划、辅具适配、环境改造、照顾者培训。", "人员：社区康复协调员、全科医生、治疗师（巡回指导）、残疾人专职委员。", "我国现状：服务能力不均、人才短缺；「家庭医生签约 + 康复服务包」是常见落地形式。"]], ["提示", "p", "CBR 与机构康复的区别常考：CBR 强调「社区参与与赋权」，不只是训练技术；答题要提到「自助、互助、社会融入」。"]]}, {"k": "kf-gongcheng", "n": "康复工程", "c": "假肢、矫形器、轮椅与无障碍", "p": ["假肢：接受腔、悬吊、对线", "矫形器：AFO/KAFO、脊柱矫形", "轮椅：座宽、座深、靠背、防压疮坐垫", "无障碍：坡道、门宽、扶手、卫浴"], "t": "坐垫与轮椅参数是压疮预防的关键考点。", "kw": ["假肢", "矫形器", "轮椅", "无障碍", "坐垫", "康复工程", "自助具"], "d": [["怎么理解", "p", "康复工程是「用工程技术补功能」：缺了腿给假肢，关节不稳给矫形器，走不远给轮椅，进不了门改环境。评价标准只有一个——患者是否真的在用、是否更独立。"], ["逐条展开", "ul", ["假肢：按截肢平面（小腿、大腿、膝离断、上肢）选；组件有储能脚、液压膝、肌电手；处方看活动水平（K 级）。", "矫形器（AFO/KAFO/WHSO/TLSO）：AFO 用于足下垂与踝不稳；KAFO 用于膝不稳/股四头肌无力；TLSO 用于脊柱侧弯与术后。", "轮椅：手动/电动、倾斜/后仰、减压坐垫；座宽座深按体型，防压疮。", "无障碍：坡道坡度 ≤1:12、门宽 ≥80 cm、扶手高度 85—90 cm。", "评估顺序：需求（要做什么）→ 功能（残存能力）→ 环境（家里/工作）→ 选型 → 试用 → 随访。"]], ["提示", "p", "「K 级」是假肢功能分级（K0—K4），K3 以上才考虑高性能组件；考试若问「为什么有人装了假肢不用」，答适配（残端条件）与训练（步态）两方面。"]]}, {"k": "kf-xinli", "n": "心理康复", "c": "伤残后的心理反应与干预", "p": ["五阶段：否认、愤怒、抑郁、接受、适应", "评估：HADS、SDS/SAS、SCL-90", "干预：支持性、认知行为、团体", "家庭与社会支持"], "t": "心理康复题答“评估—干预—支持”三层。", "kw": ["心理", "情绪", "抑郁", "焦虑", "应激", "心身", "社会支持", "人际关系"], "d": [["怎么理解", "p", "伤残后的心理反应是有规律的「适应过程」，不是「想不开」。康复要提高的是「应对能力」，而不是消灭负面情绪；识别抑郁与病理性哀伤是重点。"], ["逐条展开", "ul", ["反应阶段（非严格线性）：震惊/否认 → 愤怒 → 抑郁/哀伤 → 接受与适应；不要机械套阶段。", "常见问题：抑郁（卒中后约 1/3）、焦虑、创伤后应激、病耻感、体像障碍、家属照护负担。", "筛查：PHQ-9（抑郁）、GAD-7（焦虑）、HADS；卒中后抑郁要主动问，不要等患者说。", "干预：认知行为治疗（CBT）、动机访谈、团体治疗、家属参与；药物由精神科评估。", "沟通要点：先共情再给方案；避免「想开点」「比你惨的人多」这类无效安慰。"]], ["提示", "p", "「患者拒绝康复训练是不是抑郁」：先排除疼痛、疲劳、认知障碍与环境因素，再考虑抑郁；抑郁的诊断需要量表 + 临床判断，不能凭一次拒绝。"]]}, {"k": "kf-chuantong", "n": "传统康复", "c": "针灸、推拿、中药与导引", "p": ["经络与腧穴定位", "针灸：选穴、手法、电针", "推拿：滚法、揉法、点按、扳法", "导引：八段锦、五禽戏、太极"], "t": "传统康复按“辨证+选穴+手法+疗程”答。", "kw": ["传统", "针灸", "推拿", "中药", "经络", "腧穴", "导引", "太极"], "d": [["怎么理解", "p", "传统康复是「针灸、推拿、中药、导引」四件套，优势在疼痛、痉挛、失眠与亚健康，常与现代康复叠加使用。学它要抓「适应证 + 禁忌 + 与现代训练如何配合」。"], ["逐条展开", "ul", ["经络：十二正经 + 奇经八脉；常用穴位（合谷、足三里、阳陵泉、曲池、百会、风池）定位与主治。", "针灸：毫针、电针（用于卒中后瘫痪、面瘫）、温针；注意晕针、气胸（胸背部深刺）、感染。", "推拿：滚法、揉法、按法、拿法；用于肌肉痉挛、腰痛、肩周炎；禁忌骨折、肿瘤、感染、皮肤破损、抗凝中。", "中药：补阳还五汤（气虚血瘀）、黄芪桂枝五物汤（血痹）；必须在中医辨证下用。", "导引：八段锦、太极拳——平衡与心肺的循证支持较好，适合老年人群体训练。"]], ["提示", "p", "「电针」与「普通针刺」的区别常考：电针用微量电流持续刺激，适合瘫痪、疼痛；但心脏起搏器、颈动脉窦处禁用。"]]}, {"k": "kf-zhongzheng", "n": "重症与急诊康复", "c": "ICU 早期活动与急诊后康复", "p": ["ICU：早期活动、呼吸肌训练、谵妄管理", "禁忌与安全：血流动力学、管路", "急诊后：功能评估与转介", "团队协作与分级"], "t": "重症康复答题强调“安全边界”与“逐步进阶”。", "kw": ["重症", "ICU", "急诊", "谵妄", "早期活动"], "d": [["怎么理解", "p", "重症康复是「在 ICU 里做康复」：患者带着呼吸机、管路、镇静，康复要回答「现在能不能动、动多少、怎么防并发症」。核心收益是减少 ICU 获得性衰弱（ICU-AW）。"], ["逐条展开", "ul", ["早期活动分级：被动关节活动 → 床上主动 → 床边坐 → 坐站 → 步行；在血流动力学稳定下尽早开始。", "ICU-AW：危重病后全身肌无力，表现为脱机困难、四肢无力；预防靠早期活动 + 营养 + 控制血糖。", "安全标准：平均动脉压 ≥65 mmHg（或升压药稳定）、FiO₂ ≤60%、SpO₂ ≥90%、无活动性出血、颅内压可控。", "管路管理：气管插管、深静脉、动脉置管、引流管——活动前固定，活动中专人看护。", "呼吸康复：体位引流、排痰、呼吸肌训练、脱机训练（SBT）。"]], ["提示", "p", "「重症患者能不能坐起来」的关键不是诊断，而是「血流动力学是否稳定 + 管路是否安全」；答题要写具体阈值。"]]}, {"k": "kf-tengtong", "n": "疼痛康复", "c": "疼痛机制与综合干预", "p": ["伤害性、神经病理性、混合性", "评估：VAS/NRS、DN4、压痛阈", "干预：物理因子、运动、认知行为、注射", "慢性疼痛的生物心理社会模型"], "t": "先分疼痛类型，再选干预，别只会做理疗。", "kw": ["疼痛", "VAS", "神经病理", "慢性疼痛"], "d": [["怎么理解", "p", "疼痛康复的目标不是「完全无痛」，而是「可耐受、可活动、可睡眠」。慢性疼痛是「生物—心理—社会」三因素模型，单靠止痛药或单靠训练都难奏效。"], ["逐条展开", "ul", ["分类：伤害性（组织损伤，如骨折）、神经病理性（神经损伤，如带状疱疹后）、伤害可塑性（中枢敏化，如纤维肌痛）。", "评估：NRS/VAS、DN4（神经病理性筛查）、疼痛 catastrophizing 量表（PCS）、睡眠与功能。", "干预：运动疗法（渐进有氧 + 力量）、物理因子、认知行为治疗、正念、药物（按阶梯）、神经阻滞/射频。", "中枢敏化特征：痛阈下降、扩散痛、异常性疼痛（轻触即痛）、情绪与睡眠恶化。", "避免：长期卧床、过度依赖被动治疗、反复影像检查「找原因」。"]], ["提示", "p", "「轻触就痛、范围超过损伤区」提示中枢敏化/神经病理性，不是「装病」；治疗要转向运动 + 认知干预，而不是继续加止痛药。"]]}, {"k": "linchuang-jichu", "n": "临床医学基础", "c": "诊断学、外科学与各临床科室要点", "p": ["诊断：病史、查体、实验室、影像、鉴别思路", "外科：无菌、创伤、围手术期、并发症", "危急重：休克、呼衰、心衰、急救流程", "各科（妇产、儿科、精神、运动系统）的康复相关点"], "t": "临床概要只记“影响康复决策”的部分：禁忌、危险信号、转介时机。", "kw": ["诊断学", "外科", "危急重", "妇产", "儿科", "精神疾病", "运动系统疾病", "临床疾病", "鉴别"], "d": [["怎么理解", "p", "临床医学基础是康复的「上游」：不知道疾病怎么发生、怎么治，就判断不了康复的时机与禁忌。这部分内容宽而浅，抓「常见病的康复相关要点」即可。"], ["逐条展开", "ul", ["诊断学：症状（发热、疼痛、水肿）、体征（血压、心肺听诊、神经查体）、常用化验与影像。", "外科基础：无菌、清创、骨折固定、术后并发症（感染、血栓、肺不张）。", "内科要点：高血压、糖尿病（低血糖识别）、冠心病、COPD、脑卒中的急性期处理。", "其他科室：妇产（产后盆底）、儿科（发育）、五官（听力/吞咽）、皮肤（压疮）。", "康复相关红线：发热/感染期不训练、血压过高不训练、急性血栓不训练、骨折未愈合不负重。"]], ["提示", "p", "康复评定前必须看的四项：生命体征、疼痛、皮肤（压疮/破损）、管路；缺一项都可能出安全问题。"]]}, {"k": "zonghe", "n": "综合串讲", "c": "以《康复医学》为代表的整合式叙述", "p": ["把评定、技术、专科串成一条临床路径", "同一病在综合书里更强调流程与转介", "用于考研与执业：口径统一、条目完整", "与规划教材分工：综合书定框架，专科书补细节"], "t": "综合书适合“最后一遍”过框架，第一遍别用它打基础。", "kw": ["相关基础", "治疗技术", "内脏疾病", "特殊人群", "综合", "康复医学相关"], "d": [["怎么理解", "p", "《康复医学》（第 7 版）是「整合式」教材：它不按治疗技术分章，而按「概论—基础—评定—技术—病损」五段组织，把前面各本单科教材的知识串成临床路径。"], ["逐条展开", "ul", ["九章结构：康复概论、相关基础、评定、治疗技术、神经病损、肌骨病损、内脏疾病、其他疾病与特殊人群、常见问题处理。", "它的价值在「横向对照」：同一个病，评定用哪张表、治疗用哪几项技术、出院标准是什么，一章讲完。", "与前 19 本规划教材的关系：那 19 本是「按学科拆细」，这本是「按病人整合」；复习后期用来串讲最有效。", "考研与执医常引它的框架；专升本则更依赖《康复功能评定学》与《临床康复学》。"]], ["提示", "p", "如果只读一本，先读它建立框架；但要做题，仍要回到单科教材找细节——两者互补，不能替代。"]]}, {"k": "kf-qita", "n": "其他系统疾病康复", "c": "肿瘤、糖尿病、风湿、烧伤与五官皮肤", "p": ["肿瘤：术前预康复、术后、淋巴水肿", "糖尿病：运动处方与足部保护", "风湿：关节保护与能量节省", "烧伤：体位、压力、瘢痕"], "t": "这组病按“系统损害→功能问题→方案”答。", "kw": ["肿瘤", "糖尿病", "风湿", "烧伤", "皮肤", "五官", "口腔", "眼科", "耳鼻咽喉", "传染病", "感染", "其他疾病"], "d": [["怎么理解", "p", "除神经、肌骨、心肺之外的病种康复，考频低但常以「病例题背景」出现：肿瘤、糖尿病、风湿、烧伤、五官与皮肤。共同点是「多系统受累 + 需跨科协作」。"], ["逐条展开", "ul", ["肿瘤康复：术前预康复（呼吸训练、肌力）、术后肩关节（乳癌）、淋巴水肿（压力 + 手法引流）、癌性疲乏（有氧运动）。", "糖尿病：运动降糖（餐后 1 小时）、防低血糖（随身糖）、糖尿病足（减压鞋、伤口护理、禁热疗）。", "风湿：类风湿（晨僵、关节保护、避免高强度负重）、强直性脊柱炎（伸展、呼吸训练、姿势）。", "烧伤：抗挛缩体位、压力衣、关节活动度维持、瘢痕按摩。", "五官与皮肤：面瘫（表情肌训练、保护角膜）、眩晕（前庭康复）、压疮（分期与减压）。"]], ["提示", "p", "「糖尿病足能不能做热疗/蜡疗」不能——感觉减退易烫伤；「烧伤后为什么穿压力衣」防瘢痕增生与挛缩。"]]}], "chinfo": {"A1:1": ["gaishu"], "A1:2": ["liuxing", "canji"], "A1:3": ["canji", "liuxing"], "A1:4": ["canji"], "A1:5": ["gaishu"], "A1:6": ["gaishu"], "A1:7": ["lunli"], "A1:8": ["kf-xinli"], "A1:9": ["lunli"], "A1:10": ["gaishu", "lunli"], "A1:11": ["gaishu"], "A1:12": ["gaishu"], "A1:13": ["shengwu", "jiepou-shen"], "A1:14": ["gaishu", "canji"], "A1:15": ["gaishu", "lunli"], "A1:16": ["kf-laonian"], "A1:17": ["canji", "pd-zhong"], "A1:18": ["kf-shequ"], "A1:19": ["gaishu"], "A3:1": ["gaishu"], "A3:2": ["kf-xinli"], "A3:3": ["kf-xinli"], "A3:4": ["kf-xinli"], "A3:5": ["kf-xinli"], "A3:6": ["kf-xinli"], "A3:7": ["kf-xinli"], "A3:8": ["canji", "kf-xinli"], "A3:9": ["shengli-shen", "jiepou-shen"], "A3:10": ["kf-xinli"], "A3:11": ["kf-xinli"], "A3:12": ["kf-laonian", "kf-xinli"], "A3:13": ["kf-xinli"], "A3:14": ["kf-xinli"], "B1:1": ["gaishu", "canji"], "B1:2": ["jiepou-gu", "shengli-ji"], "B1:3": ["jiepou-zang"], "B1:4": ["jiepou-zang"], "B1:5": ["jiepou-zang"], "B1:6": ["jiepou-zang"], "B1:7": ["jiepou-zang"], "B1:8": ["shengli-shen", "jiepou-shen"], "B1:9": ["shengli-shen", "jiepou-shen"], "B1:10": ["jiepou-shen"], "B1:11": ["jiepou-gu", "ot-shou"], "B2:1": ["gaishu"], "B2:2": ["shengli-xf", "canji"], "B2:3": ["jiepou-gu", "shengli-ji"], "B2:4": ["jiepou-gu", "canji"], "B2:5": ["jiepou-zang"], "B2:6": ["shengli-xf", "jiepou-zang"], "B2:7": ["jiepou-zang"], "B2:8": ["jiepou-zang"], "B2:9": ["shengli-xf"], "B2:10": ["shengli-xf"], "B2:11": ["shengli-shen", "jiepou-shen"], "B2:12": ["shengli-shen", "jiepou-shen"], "B2:13": ["jiepou-shen"], "B2:14": ["jiepou-zang"], "B2:15": ["shengli-ji", "shengli-xf"], "B3:1": ["gaishu", "pd-zhong"], "B3:2": ["ot-shou", "shengwu"], "B3:3": ["shengwu", "jiepou-gu"], "B3:4": ["shengwu", "pd-butai"], "B4:1": ["gaishu", "fayu"], "B4:2": ["fayu"], "B4:3": ["fayu"], "B4:4": ["fayu"], "B4:5": ["pd-yanyu", "fayu"], "B4:6": ["pd-renzhi", "fayu"], "B4:7": ["kf-xinli", "fayu"], "B4:8": ["fayu"], "B4:9": ["fayu"], "B4:10": ["fayu"], "B5:1": ["linchuang-jichu"], "B5:2": ["linchuang-jichu"], "B5:3": ["linchuang-jichu"], "B5:4": ["jiepou-zang"], "B5:5": ["jiepou-zang"], "B5:6": ["jiepou-zang"], "B5:7": ["jiepou-zang"], "B5:8": ["jiepou-zang"], "B5:9": ["jiepou-shen"], "B5:10": ["kf-qita"], "B5:11": ["kf-qita"], "B5:12": ["shengli-shen", "jiepou-shen"], "B5:13": ["linchuang-jichu"], "B5:14": ["linchuang-jichu"], "B5:15": ["linchuang-jichu"], "B5:16": ["linchuang-jichu"], "B5:17": ["kf-qita"], "B5:18": ["kf-qita"], "B5:19": ["kf-qita"], "B5:20": ["kf-qita"], "B5:21": ["kf-qita"], "C1:1": ["gaishu", "pd-zhong"], "C1:2": ["pd-zhong", "pd-yanyu"], "C1:3": ["jiepou-shen", "pd-zhong"], "C1:4": ["pd-xinfei", "shengli-xf"], "C1:5": ["pd-renzhi", "canji"], "C1:6": ["pd-yanyu", "canji"], "C1:7": ["canji", "pd-zhong"], "C1:8": ["pd-jizhangli", "pd-zhong"], "C1:9": ["pd-jili", "pd-zhong"], "C1:10": ["pd-rom", "jiepou-gu"], "C1:11": ["pd-pingheng", "canji"], "C1:12": ["pd-butai"], "C1:13": ["jiepou-shen", "pd-dianshengli"], "C1:14": ["pd-adl", "pd-zhong"], "C1:15": ["pd-adl", "canji"], "C1:16": ["pd-adl", "pd-zhong"], "C1:17": ["jiepou-gu", "pd-zhong"], "C1:18": ["jiepou-shen", "pd-zhong"], "C1:19": ["shengli-xf", "pd-zhong"], "C1:20": ["pd-zhong", "pd-yanyu"], "C1:21": ["kf-laonian", "pd-zhong"], "C1:22": ["pd-zhong", "pd-yanyu"], "D1:1": ["gaishu"], "D1:2": ["zl-huodong", "jiepou-gu"], "D1:3": ["zl-zhuanyi"], "D1:4": ["zl-huodong", "jiepou-ji"], "D1:5": ["zl-songsdong", "jiepou-gu"], "D1:6": ["zl-jili", "pd-jili"], "D1:7": ["zl-qianyin"], "D1:8": ["zl-qianyin"], "D1:9": ["zl-huodong", "zl-tieza"], "D1:10": ["pd-pingheng"], "D1:11": ["zl-zhuanyi", "pd-butai"], "D1:12": ["zl-shenjing", "jiepou-shen"], "D1:13": ["zl-shenjing"], "D1:14": ["zl-shenjing"], "D1:15": ["zl-xinfei", "pd-xinfei"], "D1:16": ["zl-vr"], "D1:17": ["zl-vr"], "D1:18": ["zl-wuli"], "D1:19": ["zl-wuli"], "D1:20": ["zl-wuli"], "D1:21": ["zl-wuli", "jiepou-shen"], "D1:22": ["zl-tieza"], "D1:23": ["zl-wuli"], "D1:24": ["zl-wuli"], "D1:25": ["zl-wuli"], "D1:26": ["zl-shengwu"], "D1:27": ["zl-shengwu"], "D1:28": ["jiepou-shen"], "D1:29": ["lunli"], "D2:1": ["gaishu"], "D2:2": ["pd-zhong", "pd-yanyu"], "D2:3": ["pd-adl"], "D2:4": ["ot-gailun"], "D2:5": ["ot-gantong"], "D2:6": ["canji", "ot-shou"], "D2:7": ["pd-renzhi", "ot-gailun"], "D2:8": ["zl-wuli", "zl-tieza"], "D2:9": ["ot-fuju", "zl-zhuanyi"], "D2:10": ["ot-fuju"], "D2:11": ["ot-fuju"], "D2:12": ["shengli-shen", "jiepou-shen"], "D2:13": ["ot-gailun", "jiepou-gu"], "D2:14": ["ot-gailun", "jiepou-gu"], "D2:15": ["ot-gailun"], "D2:16": ["linchuang-jichu", "ot-gailun"], "D2:17": ["kf-qita", "ot-gailun"], "D2:18": ["ot-gailun", "lunli"], "D2:19": ["ot-gailun"], "D3:1": ["gaishu"], "D3:2": ["st-shiyu", "pd-yanyu"], "D3:3": ["jiepou-shen", "pd-dianshengli"], "D3:4": ["st-ertong"], "D3:5": ["pd-yanyu", "st-shiyu"], "D3:6": ["pd-yanyu", "st-gouyin"], "D3:7": ["st-gouyin"], "D3:8": ["st-gouyin"], "D3:9": ["st-gouyin"], "D3:10": ["st-ertong", "fayu"], "D3:11": ["st-tunyan"], "D3:12": ["st-ertong", "kf-ertong"], "D3:13": ["jiepou-shen", "pd-yanyu"], "D3:14": ["pd-yanyu"], "D4:1": ["gaishu"], "D4:2": ["kf-chuantong", "pd-zhong"], "D4:3": ["kf-chuantong"], "D4:4": ["kf-chuantong"], "D4:5": ["zl-songsdong", "kf-chuantong"], "D4:6": ["kf-chuantong"], "D4:7": ["kf-chuantong"], "D4:8": ["canji", "kf-chuantong"], "D5:1": ["gaishu"], "D5:2": ["kf-gongcheng", "shengwu"], "D5:3": ["zl-vr", "zl-shengwu"], "D5:4": ["kf-gongcheng"], "D5:5": ["kf-gongcheng"], "D5:6": ["ot-fuju", "kf-gongcheng"], "D5:7": ["ot-fuju", "kf-gongcheng"], "D5:8": ["kf-gongcheng"], "D5:9": ["ot-fuju", "kf-gongcheng"], "D5:10": ["ot-fuju"], "E1:1": ["gaishu"], "E1:2": ["kf-shenjing", "jiepou-shen"], "E1:3": ["kf-shenjing", "jiepou-shen"], "E1:4": ["kf-shenjing"], "E1:5": ["kf-shenjing"], "E1:6": ["kf-shenjing"], "E1:7": ["jiepou-shen", "kf-shenjing"], "E1:8": ["kf-shenjing", "kf-laonian"], "E1:9": ["jiepou-shen"], "E1:10": ["kf-shenjing"], "E1:11": ["kf-shenjing", "jiepou-shen"], "E1:12": ["jiepou-shen"], "E1:13": ["jiepou-shen"], "E1:14": ["shengli-shen", "jiepou-shen"], "E2:1": ["gaishu"], "E2:2": ["jiepou-ji", "jiepou-gu"], "E2:3": ["ot-shou"], "E2:4": ["ot-shou"], "E2:5": ["kf-jigu"], "E2:6": ["jiepou-shen", "kf-shenjing"], "E2:7": ["kf-jigu"], "E2:8": ["kf-jigu"], "E2:9": ["kf-jigu", "jiepou-shen"], "E2:10": ["kf-jigu"], "E2:11": ["kf-jigu"], "E2:12": ["kf-jigu"], "E2:13": ["kf-jigu", "jiepou-gu"], "E2:14": ["kf-jigu", "jiepou-gu"], "E2:15": ["kf-jigu"], "E2:16": ["jiepou-ji", "jiepou-gu"], "E3:1": ["gaishu"], "E3:2": ["jiepou-zang"], "E3:3": ["jiepou-zang"], "E3:4": ["kf-qita"], "E3:5": ["jiepou-zang"], "E3:6": ["jiepou-zang"], "E3:7": ["jiepou-shen"], "E3:8": ["kf-qita"], "E3:9": ["kf-qita"], "E3:10": ["kf-qita"], "E3:11": ["kf-qita"], "E3:12": ["kf-tengtong"], "E3:13": ["kf-zhongzheng"], "E3:14": ["kf-zhongzheng"], "E3:15": ["kf-xinli"], "E4:1": ["gaishu"], "E4:2": ["kf-ertong", "pd-zhong"], "E4:3": ["kf-ertong", "ot-gailun"], "E4:4": ["kf-ertong"], "E4:5": ["zl-shenjing", "jiepou-shen"], "E4:6": ["shengli-shen", "jiepou-shen"], "E4:7": ["jiepou-shen", "kf-shenjing"], "E4:8": ["jiepou-gu", "jiepou-ji"], "E4:9": ["kf-ertong"], "E4:10": ["kf-qita"], "E5:1": ["kf-laonian", "gaishu"], "E5:2": ["kf-laonian", "shengli-shen"], "E5:3": ["kf-laonian", "kf-jigu"], "E5:4": ["kf-laonian", "shengli-xf"], "E5:5": ["kf-laonian"], "E5:6": ["kf-laonian", "jiepou-ji"], "E5:7": ["kf-laonian"], "E5:8": ["kf-laonian"], "E5:9": ["kf-laonian"], "E6:1": ["gaishu"], "E6:2": ["kf-shequ"], "E6:3": ["kf-shequ", "pd-zhong"], "E6:4": ["shengli-shen", "jiepou-shen"], "E6:5": ["jiepou-gu", "kf-shequ"], "E6:6": ["zonghe", "kf-shequ"], "E6:7": ["linchuang-jichu", "kf-shequ"], "E6:8": ["canji", "kf-shequ"], "E6:9": ["pd-yanyu", "kf-shequ"], "E6:10": ["canji"], "E6:11": ["kf-chuantong", "kf-shequ"], "E6:12": ["ot-fuju"], "E6:13": ["ot-fuju", "kf-gongcheng"], "F1:1": ["gaishu"], "F1:2": ["zonghe"], "F1:3": ["pd-zhong", "pd-yanyu"], "F1:4": ["zonghe"], "F1:5": ["shengli-shen", "jiepou-shen"], "F1:6": ["jiepou-gu", "shengli-ji"], "F1:7": ["zonghe"], "F1:8": ["zonghe"], "F1:9": ["pd-zhong", "pd-yanyu"], "F2:1": ["gaishu", "pd-zhong"], "F2:2": ["shengli-shen", "jiepou-shen"], "F2:3": ["jiepou-gu", "shengli-ji"], "F2:4": ["shengli-xf", "kf-xinfei"], "F2:5": ["kf-qita"], "F2:6": ["pd-jizhangli", "kf-tengtong"]}, "chref": {"F2:1": {"sc": [0], "ds": [53], "ov": []}, "C1:14": {"sc": [1, 2], "ds": [], "ov": [23]}, "D2:3": {"sc": [1], "ds": [], "ov": []}, "C1:9": {"sc": [3], "ds": [], "ov": [23]}, "E2:9": {"sc": [3], "ds": [28], "ov": [10]}, "C1:8": {"sc": [4], "ds": [37], "ov": [13, 23]}, "C1:10": {"sc": [5], "ds": [], "ov": [23]}, "B3:2": {"sc": [5], "ds": [], "ov": []}, "B3:3": {"sc": [5], "ds": [], "ov": []}, "B3:4": {"sc": [5, 11], "ds": [], "ov": [17]}, "C1:18": {"sc": [6, 7], "ds": [], "ov": []}, "E1:2": {"sc": [6, 7], "ds": [0, 39, 40, 41, 60], "ov": [1]}, "C1:11": {"sc": [8, 9], "ds": [], "ov": [17, 23]}, "E5:6": {"sc": [9, 24], "ds": [51, 58], "ov": [21]}, "C1:4": {"sc": [10], "ds": [], "ov": [23]}, "E3:2": {"sc": [10], "ds": [29, 30], "ov": [11]}, "E3:3": {"sc": [10], "ds": [31], "ov": [11]}, "C1:12": {"sc": [11], "ds": [], "ov": [17, 23]}, "C1:5": {"sc": [12], "ds": [], "ov": [16, 23]}, "E1:5": {"sc": [12], "ds": [4], "ov": [4]}, "C1:6": {"sc": [13, 15], "ds": [39, 40], "ov": [14, 15, 23]}, "D3:5": {"sc": [13], "ds": [40], "ov": [15]}, "D3:6": {"sc": [14], "ds": [41], "ov": [15]}, "D3:11": {"sc": [15], "ds": [39], "ov": [14]}, "B4:3": {"sc": [16], "ds": [12, 15], "ov": [5]}, "E4:2": {"sc": [16, 17, 18], "ds": [46], "ov": []}, "B4:1": {"sc": [18], "ds": [14], "ov": []}, "C1:13": {"sc": [19], "ds": [], "ov": [23]}, "D1:26": {"sc": [19], "ds": [], "ov": []}, "E2:6": {"sc": [20], "ds": [2], "ov": [3]}, "F2:2": {"sc": [20], "ds": [0, 1, 2, 3, 4, 12, 28], "ov": [1, 2, 3, 5]}, "D2:2": {"sc": [21], "ds": [], "ov": []}, "E3:12": {"sc": [22], "ds": [36], "ov": [13]}, "F2:6": {"sc": [22, 23], "ds": [36, 37, 38, 50], "ov": [13, 22]}, "C1:22": {"sc": [23], "ds": [38], "ov": [13]}, "F1:5": {"sc": [], "ds": [0, 1, 3, 5, 6], "ov": [1]}, "D1:12": {"sc": [], "ds": [0, 12], "ov": []}, "D1:13": {"sc": [], "ds": [0], "ov": []}, "D1:14": {"sc": [], "ds": [0], "ov": []}, "E1:3": {"sc": [], "ds": [1], "ov": [2]}, "E1:7": {"sc": [], "ds": [2], "ov": []}, "D5:6": {"sc": [], "ds": [2, 55, 58], "ov": [19]}, "E1:4": {"sc": [], "ds": [3], "ov": [4]}, "D3:13": {"sc": [], "ds": [4], "ov": [4]}, "E5:2": {"sc": [], "ds": [4], "ov": [4, 21]}, "E1:6": {"sc": [], "ds": [5], "ov": []}, "E1:8": {"sc": [], "ds": [6], "ov": []}, "E1:9": {"sc": [], "ds": [7], "ov": []}, "D1:18": {"sc": [], "ds": [7, 28, 37], "ov": []}, "E1:10": {"sc": [], "ds": [8], "ov": []}, "B5:12": {"sc": [], "ds": [8], "ov": []}, "E1:11": {"sc": [], "ds": [9], "ov": []}, "B5:11": {"sc": [], "ds": [9], "ov": []}, "E1:12": {"sc": [], "ds": [10], "ov": []}, "E3:8": {"sc": [], "ds": [10, 34], "ov": [12]}, "E1:13": {"sc": [], "ds": [11], "ov": []}, "E4:7": {"sc": [], "ds": [11], "ov": []}, "E4:5": {"sc": [], "ds": [12, 13, 14, 47], "ov": [5, 6]}, "D3:12": {"sc": [], "ds": [13], "ov": [6]}, "B4:7": {"sc": [], "ds": [13], "ov": []}, "E6:8": {"sc": [], "ds": [14, 52, 53], "ov": [6, 20]}, "E4:4": {"sc": [], "ds": [15], "ov": []}, "E4:9": {"sc": [], "ds": [16, 42], "ov": []}, "B4:2": {"sc": [], "ds": [16], "ov": []}, "E2:7": {"sc": [], "ds": [17], "ov": [7]}, "F2:3": {"sc": [], "ds": [17, 18, 19, 20, 21, 26, 27], "ov": [7, 8]}, "D1:5": {"sc": [], "ds": [17], "ov": []}, "E2:8": {"sc": [], "ds": [18], "ov": [7]}, "D1:7": {"sc": [], "ds": [18], "ov": []}, "E2:15": {"sc": [], "ds": [19, 27], "ov": [7, 9]}, "D1:4": {"sc": [], "ds": [19], "ov": []}, "E2:3": {"sc": [], "ds": [20], "ov": [8]}, "E2:5": {"sc": [], "ds": [20], "ov": [8]}, "E5:3": {"sc": [], "ds": [20, 26], "ov": [8, 9, 21]}, "E2:4": {"sc": [], "ds": [21], "ov": [10]}, "D2:6": {"sc": [], "ds": [21, 22], "ov": [10]}, "E2:10": {"sc": [], "ds": [22], "ov": []}, "E2:11": {"sc": [], "ds": [23], "ov": []}, "D1:9": {"sc": [], "ds": [23, 56], "ov": []}, "E2:12": {"sc": [], "ds": [24, 55, 57], "ov": [8]}, "D5:5": {"sc": [], "ds": [24, 55, 57], "ov": [19]}, "D2:9": {"sc": [], "ds": [24, 55], "ov": [19]}, "E2:13": {"sc": [], "ds": [25], "ov": [8]}, "D1:6": {"sc": [], "ds": [25], "ov": []}, "E2:14": {"sc": [], "ds": [26, 32], "ov": [9]}, "E5:5": {"sc": [], "ds": [27, 33], "ov": [9, 21]}, "F2:4": {"sc": [], "ds": [29, 30, 31], "ov": [11]}, "D1:15": {"sc": [], "ds": [29, 31, 49], "ov": []}, "E5:4": {"sc": [], "ds": [30], "ov": [21]}, "E3:4": {"sc": [], "ds": [32], "ov": []}, "E3:7": {"sc": [], "ds": [33], "ov": [12]}, "F2:5": {"sc": [], "ds": [33, 34, 35], "ov": [12]}, "E5:8": {"sc": [], "ds": [34, 52], "ov": [21]}, "E3:11": {"sc": [], "ds": [35], "ov": [12]}, "D2:8": {"sc": [], "ds": [35], "ov": []}, "D1:27": {"sc": [], "ds": [36], "ov": []}, "D4:4": {"sc": [], "ds": [37], "ov": []}, "E5:7": {"sc": [], "ds": [38, 51], "ov": [21]}, "D3:7": {"sc": [], "ds": [42], "ov": [15]}, "D3:8": {"sc": [], "ds": [43], "ov": [15]}, "D3:4": {"sc": [], "ds": [43, 46], "ov": []}, "D3:9": {"sc": [], "ds": [44], "ov": [15]}, "A3:13": {"sc": [], "ds": [44], "ov": []}, "D3:10": {"sc": [], "ds": [45], "ov": []}, "B4:5": {"sc": [], "ds": [45], "ov": []}, "D2:5": {"sc": [], "ds": [47], "ov": []}, "D2:15": {"sc": [], "ds": [48], "ov": [18]}, "A3:10": {"sc": [], "ds": [48], "ov": [18]}, "E3:15": {"sc": [], "ds": [48], "ov": [18]}, "E3:13": {"sc": [], "ds": [49], "ov": [21, 22]}, "E3:14": {"sc": [], "ds": [50], "ov": [22]}, "C1:21": {"sc": [], "ds": [51], "ov": []}, "E5:9": {"sc": [], "ds": [52], "ov": [21]}, "E6:1": {"sc": [], "ds": [52, 53], "ov": [20]}, "E6:2": {"sc": [], "ds": [59], "ov": []}, "E6:3": {"sc": [], "ds": [52, 53], "ov": [20]}, "E6:4": {"sc": [], "ds": [52, 53], "ov": [20]}, "E6:5": {"sc": [], "ds": [52, 53], "ov": [20]}, "E6:6": {"sc": [], "ds": [52, 53], "ov": [20]}, "E6:7": {"sc": [], "ds": [], "ov": [18]}, "E6:9": {"sc": [], "ds": [], "ov": [21]}, "E6:10": {"sc": [], "ds": [52, 53], "ov": [20]}, "E6:11": {"sc": [], "ds": [52, 53], "ov": [20]}, "E6:12": {"sc": [], "ds": [], "ov": [19]}, "E6:13": {"sc": [], "ds": [54], "ov": [19]}, "A1:5": {"sc": [], "ds": [53], "ov": []}, "D5:9": {"sc": [], "ds": [54], "ov": [19]}, "D2:10": {"sc": [], "ds": [54], "ov": []}, "D5:4": {"sc": [], "ds": [55, 56], "ov": [19]}, "D5:7": {"sc": [], "ds": [55], "ov": [19]}, "D5:8": {"sc": [], "ds": [55], "ov": [19]}, "D2:11": {"sc": [], "ds": [59], "ov": []}, "D1:16": {"sc": [], "ds": [60], "ov": []}, "D1:17": {"sc": [], "ds": [60], "ov": []}, "D5:3": {"sc": [], "ds": [60], "ov": []}, "D2:7": {"sc": [], "ds": [], "ov": [16]}, "B4:6": {"sc": [], "ds": [], "ov": [16]}, "D1:10": {"sc": [], "ds": [], "ov": [17]}, "D5:10": {"sc": [], "ds": [], "ov": [19]}, "E5:1": {"sc": [], "ds": [], "ov": [21]}, "C1:1": {"sc": [], "ds": [], "ov": [23]}, "C1:2": {"sc": [], "ds": [], "ov": [23]}, "C1:3": {"sc": [], "ds": [], "ov": [23]}, "C1:7": {"sc": [], "ds": [], "ov": [23]}, "C1:15": {"sc": [], "ds": [], "ov": [23]}, "C1:16": {"sc": [], "ds": [], "ov": [23]}}, "atomch": {"gaishu": [["A1", 1], ["A1", 5], ["A1", 6], ["A1", 10], ["A1", 11], ["A1", 12], ["A1", 14], ["A1", 15], ["A1", 19], ["A3", 1], ["B1", 1], ["B2", 1], ["B3", 1], ["B4", 1], ["C1", 1], ["D1", 1], ["D2", 1], ["D3", 1], ["D4", 1], ["D5", 1], ["E1", 1], ["E2", 1], ["E3", 1], ["E4", 1], ["E5", 1], ["E6", 1], ["F1", 1], ["F2", 1]], "liuxing": [["A1", 2], ["A1", 3]], "canji": [["A1", 2], ["A1", 3], ["A1", 4], ["A1", 14], ["A1", 17], ["A3", 8], ["B1", 1], ["B2", 2], ["B2", 4], ["C1", 5], ["C1", 6], ["C1", 7], ["C1", 11], ["C1", 15], ["D2", 6], ["D4", 8], ["E6", 8], ["E6", 10]], "lunli": [["A1", 7], ["A1", 9], ["A1", 10], ["A1", 15], ["D1", 29], ["D2", 18]], "kf-xinli": [["A1", 8], ["A3", 2], ["A3", 3], ["A3", 4], ["A3", 5], ["A3", 6], ["A3", 7], ["A3", 8], ["A3", 10], ["A3", 11], ["A3", 12], ["A3", 13], ["A3", 14], ["B4", 7], ["E3", 15]], "shengwu": [["A1", 13], ["B3", 2], ["B3", 3], ["B3", 4], ["D5", 2]], "jiepou-shen": [["A1", 13], ["A3", 9], ["B1", 8], ["B1", 9], ["B1", 10], ["B2", 11], ["B2", 12], ["B2", 13], ["B5", 9], ["B5", 12], ["C1", 3], ["C1", 13], ["C1", 18], ["D1", 12], ["D1", 21], ["D1", 28], ["D2", 12], ["D3", 3], ["D3", 13], ["E1", 2], ["E1", 3], ["E1", 7], ["E1", 9], ["E1", 11], ["E1", 12], ["E1", 13], ["E1", 14], ["E2", 6], ["E2", 9], ["E3", 7], ["E4", 5], ["E4", 6], ["E4", 7], ["E6", 4], ["F1", 5], ["F2", 2]], "kf-laonian": [["A1", 16], ["A3", 12], ["C1", 21], ["E1", 8], ["E5", 1], ["E5", 2], ["E5", 3], ["E5", 4], ["E5", 5], ["E5", 6], ["E5", 7], ["E5", 8], ["E5", 9]], "pd-zhong": [["A1", 17], ["B3", 1], ["C1", 1], ["C1", 2], ["C1", 3], ["C1", 7], ["C1", 8], ["C1", 9], ["C1", 14], ["C1", 16], ["C1", 17], ["C1", 18], ["C1", 19], ["C1", 20], ["C1", 21], ["C1", 22], ["D2", 2], ["D4", 2], ["E4", 2], ["E6", 3], ["F1", 3], ["F1", 9], ["F2", 1]], "kf-shequ": [["A1", 18], ["E6", 2], ["E6", 3], ["E6", 5], ["E6", 6], ["E6", 7], ["E6", 8], ["E6", 9], ["E6", 11]], "shengli-shen": [["A3", 9], ["B1", 8], ["B1", 9], ["B2", 11], ["B2", 12], ["B5", 12], ["D2", 12], ["E1", 14], ["E4", 6], ["E5", 2], ["E6", 4], ["F1", 5], ["F2", 2]], "jiepou-gu": [["B1", 2], ["B1", 11], ["B2", 3], ["B2", 4], ["B3", 3], ["C1", 10], ["C1", 17], ["D1", 2], ["D1", 5], ["D2", 13], ["D2", 14], ["E2", 2], ["E2", 13], ["E2", 14], ["E2", 16], ["E4", 8], ["E6", 5], ["F1", 6], ["F2", 3]], "shengli-ji": [["B1", 2], ["B2", 3], ["B2", 15], ["F1", 6], ["F2", 3]], "jiepou-zang": [["B1", 3], ["B1", 4], ["B1", 5], ["B1", 6], ["B1", 7], ["B2", 5], ["B2", 6], ["B2", 7], ["B2", 8], ["B2", 14], ["B5", 4], ["B5", 5], ["B5", 6], ["B5", 7], ["B5", 8], ["E3", 2], ["E3", 3], ["E3", 5], ["E3", 6]], "ot-shou": [["B1", 11], ["B3", 2], ["D2", 6], ["E2", 3], ["E2", 4]], "shengli-xf": [["B2", 2], ["B2", 6], ["B2", 9], ["B2", 10], ["B2", 15], ["C1", 4], ["C1", 19], ["E5", 4], ["F2", 4]], "pd-butai": [["B3", 4], ["C1", 12], ["D1", 11]], "fayu": [["B4", 1], ["B4", 2], ["B4", 3], ["B4", 4], ["B4", 5], ["B4", 6], ["B4", 7], ["B4", 8], ["B4", 9], ["B4", 10], ["D3", 10]], "pd-yanyu": [["B4", 5], ["C1", 2], ["C1", 6], ["C1", 20], ["C1", 22], ["D2", 2], ["D3", 2], ["D3", 5], ["D3", 6], ["D3", 13], ["D3", 14], ["E6", 9], ["F1", 3], ["F1", 9]], "pd-renzhi": [["B4", 6], ["C1", 5], ["D2", 7]], "linchuang-jichu": [["B5", 1], ["B5", 2], ["B5", 3], ["B5", 13], ["B5", 14], ["B5", 15], ["B5", 16], ["D2", 16], ["E6", 7]], "kf-qita": [["B5", 10], ["B5", 11], ["B5", 17], ["B5", 18], ["B5", 19], ["B5", 20], ["B5", 21], ["D2", 17], ["E3", 4], ["E3", 8], ["E3", 9], ["E3", 10], ["E3", 11], ["E4", 10], ["F2", 5]], "pd-xinfei": [["C1", 4], ["D1", 15]], "pd-jizhangli": [["C1", 8], ["F2", 6]], "pd-jili": [["C1", 9], ["D1", 6]], "pd-rom": [["C1", 10]], "pd-pingheng": [["C1", 11], ["D1", 10]], "pd-dianshengli": [["C1", 13], ["D3", 3]], "pd-adl": [["C1", 14], ["C1", 15], ["C1", 16], ["D2", 3]], "zl-huodong": [["D1", 2], ["D1", 4], ["D1", 9]], "zl-zhuanyi": [["D1", 3], ["D1", 11], ["D2", 9]], "jiepou-ji": [["D1", 4], ["E2", 2], ["E2", 16], ["E4", 8], ["E5", 6]], "zl-songsdong": [["D1", 5], ["D4", 5]], "zl-jili": [["D1", 6]], "zl-qianyin": [["D1", 7], ["D1", 8]], "zl-tieza": [["D1", 9], ["D1", 22], ["D2", 8]], "zl-shenjing": [["D1", 12], ["D1", 13], ["D1", 14], ["E4", 5]], "zl-xinfei": [["D1", 15]], "zl-vr": [["D1", 16], ["D1", 17], ["D5", 3]], "zl-wuli": [["D1", 18], ["D1", 19], ["D1", 20], ["D1", 21], ["D1", 23], ["D1", 24], ["D1", 25], ["D2", 8]], "zl-shengwu": [["D1", 26], ["D1", 27], ["D5", 3]], "ot-gailun": [["D2", 4], ["D2", 7], ["D2", 13], ["D2", 14], ["D2", 15], ["D2", 16], ["D2", 17], ["D2", 18], ["D2", 19], ["E4", 3]], "ot-gantong": [["D2", 5]], "ot-fuju": [["D2", 9], ["D2", 10], ["D2", 11], ["D5", 6], ["D5", 7], ["D5", 9], ["D5", 10], ["E6", 12], ["E6", 13]], "st-shiyu": [["D3", 2], ["D3", 5]], "st-ertong": [["D3", 4], ["D3", 10], ["D3", 12]], "st-gouyin": [["D3", 6], ["D3", 7], ["D3", 8], ["D3", 9]], "st-tunyan": [["D3", 11]], "kf-ertong": [["D3", 12], ["E4", 2], ["E4", 3], ["E4", 4], ["E4", 9]], "kf-chuantong": [["D4", 2], ["D4", 3], ["D4", 4], ["D4", 5], ["D4", 6], ["D4", 7], ["D4", 8], ["E6", 11]], "kf-gongcheng": [["D5", 2], ["D5", 4], ["D5", 5], ["D5", 6], ["D5", 7], ["D5", 8], ["D5", 9], ["E6", 13]], "kf-shenjing": [["E1", 2], ["E1", 3], ["E1", 4], ["E1", 5], ["E1", 6], ["E1", 7], ["E1", 8], ["E1", 10], ["E1", 11], ["E2", 6], ["E4", 7]], "kf-jigu": [["E2", 5], ["E2", 7], ["E2", 8], ["E2", 9], ["E2", 10], ["E2", 11], ["E2", 12], ["E2", 13], ["E2", 14], ["E2", 15], ["E5", 3]], "kf-tengtong": [["E3", 12], ["F2", 6]], "kf-zhongzheng": [["E3", 13], ["E3", 14]], "zonghe": [["E6", 6], ["F1", 2], ["F1", 4], ["F1", 7], ["F1", 8]], "kf-xinfei": [["F2", 4]]}, "ident": [{"key": "zk", "name": "大专在读 · 打基础", "who": "大一到大三，专业课刚开，升学方向还没定", "exams": "院校期末 → 康复治疗师（士）预备", "subjects": [["专业核心课（评定 / 治疗技术）", 55], ["基础医学（解剖 / 生理）", 30], ["临床疾病概要", 15]], "focus": {"C1": 40, "D1": 25, "B1": 20, "E1": 15}, "must": "C1 全篇；D1 第1—14章；B1 全篇", "timeline": [["第1学年", "解剖、生理、康复概论"], ["第2学年", "评定学 + 物理 / 作业 / 语言治疗"], ["第3学年", "临床专科康复 + 实习"]], "note": "先打穿 C1《康复功能评定学》与 D1《物理治疗学》：专升本、卫生资格、规培都从这两本起。", "src": ["https://www.zhida100.com/News/Details/289713", "https://www.carm.org.cn/cms_files/filemanager/1026720528/attach/202312/1f7c70edd2134ee6ab13bd03cfe0be40.pdf"], "file": "大专在读 · 打基础"}, {"key": "zsb", "name": "专升本 · 康复治疗学", "who": "大专应届 / 往届，目标升入本科康复治疗学", "exams": "各省统考专升本：公共英语 + 专业课（各省、各校不同）", "subjects": [["公共英语", 30], ["康复功能评定学（核心）", 40], ["临床康复学 / 解剖 · 生理", 30]], "focus": {"C1": 45, "F2": 25, "B1": 20, "B2": 10}, "must": "C1 第1—22章；F2 第1—6章；B1 全篇", "timeline": [["大二下", "英语 + 评定学第一轮"], ["大三上", "临床康复学 + 真题"], ["考前 2 月", "对照大纲 + 错题"]], "note": "湖北：荆楚理工学院考 英语 + 康复功能评定学 + 临床康复学；恩施学院、荆州学院、武汉设计工程学院只考评定学；湖北医药学院药护学院考 解剖 + 生理。河南：公共英语 150 + 生理学、病理解剖学 150（各 150，总分 300）。", "src": ["https://mtoutiao.xdf.cn/zsb/202507/14733127.html", "http://www.trzsb.com/news/73164.html", "https://www.xszsb.com/uploads/allimg/20250226/1-250226113002O2.pdf"], "file": "专升本 · 康复治疗学"}, {"key": "bk", "name": "本科在读 · 课程与期末", "who": "本科康复治疗学，按学期跟课、准备期末与出科考", "exams": "院校课程考试、毕业考、实习出科考", "subjects": [["专业核心课", 60], ["基础医学", 25], ["临床与拓展", 15]], "focus": {"C1": 30, "D1": 25, "D2": 15, "D3": 10, "E1": 10, "E2": 10}, "must": "C1 全篇；D1 全篇；D2 / D3 各章；E1 / E2 常见病", "timeline": [["大二", "评定 + 三大治疗技术"], ["大三", "神经 / 肌骨 / 儿童 / 内外科康复"], ["大四", "实习 + 毕业考"]], "note": "按课表跟 C1 / D1 / D2 / D3；E1 / E2 在实习前过一遍，出科考基本从这两本出题。", "src": [], "file": "本科在读 · 课程与期末"}, {"key": "ky", "name": "考研 · 康复方向", "who": "应届 / 往届，考 100215 康复医学与理疗学，或 105800 医学技术", "exams": "政治 100 + 英语一 100 + 专业课 300（306 西医综合，或 699 / 自命题）", "subjects": [["内科学（含诊断）", 33], ["外科学（含骨科）", 23], ["生理学", 14], ["生物化学", 12], ["病理学", 12], ["临床医学人文精神", 6]], "focus": {"B5": 35, "B2": 20, "B1": 20, "C1": 10, "E2": 10, "F1": 5}, "must": "B5 全篇；B2 生理；B1 解剖；C1 评定；E2 肌骨", "timeline": [["3—6月", "英语 + 生理 / 解剖"], ["7—9月", "西综第一轮 + 政治"], ["10—12月", "真题 + 康复综合"]], "note": "306 口径：内科（含诊断）约 33%、外科（含骨科）约 23%、生理约 14%、生化约 12%、病理约 12%、人文约 6%，临床医学合计约 55%。699 自命题多为解剖 + 生理 + 康复综合，各校差异大；部分院校（如天津中医药大学 105800）已改考 306，先查目标院校当年科目。", "src": ["https://mtoutiao.xdf.cn/kaoyan/202511/15003976.html", "https://mtoutiao.xdf.cn/kaoyan/202511/15001558.html", "https://www.chsi.com.cn/kyzx/yxzc/202409/20240930/2293337174.html"], "file": "考研 · 康复方向"}, {"key": "zg", "name": "卫生资格 · 康复医学治疗技术（士 / 师）", "who": "毕业 1 年内考师；在校或刚毕业考士", "exams": "全国卫生专业技术资格考试：4 科，每科 100 题 / 90 分钟，两年滚动", "subjects": [["基础知识", 25], ["相关专业知识", 25], ["专业知识", 25], ["专业实践能力", 25]], "focus": {"C1": 25, "D1": 25, "D2": 15, "E1": 15, "E2": 10, "B1": 10}, "must": "C1 全篇；D1 全篇；D2 第1—19章；E1 / E2 常见病", "timeline": [["报名", "前一年 11 月—当年 1 月"], ["考试", "4 月（人机对话）"], ["滚动", "连续两年过 4 科"]], "note": "本科毕业后从事本专业满 1 年可报师；大专满 3 年；中专取得士后满 5 年；硕士学位部分省份可直接报师。4 科为 基础知识 / 相关专业知识 / 专业知识 / 专业实践能力。", "src": ["http://szzx.kaifeng.gov.cn/n1/n17/241205171206289486.html", "https://www.zhida100.com/News/Details/289713"], "file": "卫生资格 · 康复医学治疗技术（士 ／ 师）"}, {"key": "sy", "name": "事业单位 · 考编", "who": "想进公立医院 / 康复中心编制", "exams": "E 类统考：职测 150 + 综应 150；地方单招：公基 / 医学基础 + 专业知识", "subjects": [["医学基础知识", 60], ["岗位专业知识", 40]], "focus": {"B1": 20, "B2": 15, "B5": 25, "C1": 20, "D1": 20}, "must": "B1 解剖；B2 生理；B5 临床；C1 评定；D1 技术", "timeline": [["公告", "春秋两季"], ["笔试", "职测 + 综应 / 专业"], ["面试", "结构化 + 技能操作"]], "note": "E 类《综合应用能力》= 医学基础知识 60% + 岗位专业知识应用能力 40%，《职业能力倾向测验》150 分；地方单招常见 公共基础知识 40% + 医药卫生专业基础知识 60%，以当地公告为准。", "src": ["https://xuancheng.huatu.com/zt/ylwsksnr/", "http://m.hbrsks.net/px/?id=41310"], "file": "事业单位 · 考编"}, {"key": "gp", "name": "规培 · 入职", "who": "应届 / 在职，进康复治疗师规范化培训", "exams": "中国康复医学会 康复治疗师规范化培训（理论 + 技能考核）", "subjects": [["理论考核", 50], ["技能考核", 50]], "focus": {"C1": 20, "D1": 25, "D2": 20, "E1": 15, "E2": 10, "D3": 10}, "must": "C1 评定；D1 技术；D2 作业；E1 神经；E2 肌骨", "timeline": [["招录", "每年 4—7 月"], ["轮转", "约 2 年：PT / OT / ST / 评定"], ["结业", "理论 + 操作"]], "note": "依据国卫医发〔2021〕19 号推进康复治疗师规范化培训；基地自主招录，对象多为康复治疗学、运动康复、医学技术（康复治疗类）专科及以上应届毕业生及在职人员。", "src": ["https://www.carm.org.cn/cms_files/filemanager/1026720528/attach/202312/1f7c70edd2134ee6ab13bd03cfe0be40.pdf", "https://jijian.cdyfy.com/list/305/53182.html"], "file": "规培 · 入职"}, {"key": "zj", "name": "中级 / 在职提升", "who": "已工作，考中级或补短板", "exams": "卫生资格 中级（康复医学治疗技术）+ 继续教育", "subjects": [["基础知识", 25], ["相关专业知识", 25], ["专业知识", 25], ["专业实践能力", 25]], "focus": {"C1": 20, "D1": 20, "E1": 20, "E2": 15, "E5": 10, "D5": 15}, "must": "C1 评定；D1 技术；E1 神经；E2 肌骨；E5 老年；D5 工程", "timeline": [["取得师后", "本科满 4 年 / 大专满 6 年"], ["备考", "3—6 个月"], ["论文", "继续教育学分"]], "note": "中级报考年限各省细则不同，先查当地卫健委当年通知；中级考试仍是 4 科。", "src": ["http://szzx.kaifeng.gov.cn/n1/n17/241205171206289486.html"], "file": "中级 ／ 在职提升"}], "cert": [{"key": "c107", "name": "康复医学治疗技术（士）", "sub": "代码 107 · 中专 / 大专毕业后的第一本职称证", "sections": [["谁该考", "p", "中专或大专的康复治疗技术（含康复治疗学专科）毕业，在医疗机构康复医学科、康复医院、社区卫生服务中心的康复岗工作。在校生不能报，必须有单位出具的工作证明。"], ["报考条件", "ul", ["学历：具备相应专业中专、大专学历即可报士（人社部发〔2021〕51 号）；部分考区仍按「从事本专业工作满 1 年」执行，以当地卫健委当年通知为准。", "单位：工作证明须由持《医疗机构执业许可证》的机构出具；养生馆、健身房、月子中心开的证明不予认可。", "年限：学历取得时间与工作年限一般截止上一年 12 月 31 日（2026 年度报考截止 2025-12-31）。", "不能报考：医疗事故责任未满 3 年、医疗差错责任未满 1 年、行政处分期内、伪造学历或考试违纪未满 2 年。"]], ["考试科目", "table", [["科目", "题量", "时长", "形式"], ["基础知识", "100 题", "90 分钟", "人机对话"], ["相关专业知识", "100 题", "90 分钟", "人机对话"], ["专业知识", "100 题", "90 分钟", "人机对话"], ["专业实践能力", "100 题", "90 分钟", "人机对话"]]], ["题型", "ul", ["A1 单句型最佳选择题：一句话一个考点，占基础科目大头。", "A2 病历摘要型：一段病史 + 提问，考「看到症状想到什么」。", "A3 病历组型：一个病例带 2—3 问，考点彼此独立。", "A4 病历串型：一个病例带 4—6 问，后面的问依赖前面的判断，答错会连锁。", "B1 共用备选答案：2—3 个题干共用 5 个选项，选项可重复选或不选。"]], ["官方用书", "table", [["书", "版本 / ISBN", "用途"], ["全国卫生专业技术资格考试指导·康复医学与治疗技术", "2026 版 9787117385497（人卫，2025-09，886 页）", "四科合一，士 / 师 / 中级通用，按四篇对应四科"], ["康复医学治疗技术（士）模拟试卷", "2026 版 9787117388771（燕铁斌、吴伟 主编）", "考前 6 套整卷，最后两周用"], ["考试大纲", "免费（卫健委人才交流服务中心官网）", "报名前后必下载，按大纲划范围"]]], ["考什么（对应本库教材）", "ul", ["基础知识：解剖、运动学、生理、神经生理、发育、物理因子、心理 → B1 功能解剖学、B3 人体运动学、B2 康复生理学、A3 康复心理学。", "相关专业知识：临床疾病、影像、药理、伦理 → B5 临床疾病概要、E3 内外科疾病康复学、A1 康复医学概论（伦理章）。", "专业知识：评定与三大治疗技术总论 → C1 康复功能评定学、D1 物理治疗学、D2 作业治疗学、D3 语言治疗学。", "专业实践能力：病例与操作 → D1、D2、E1 神经康复学、E2 肌肉骨骼康复学。"]], ["复习顺序", "ul", ["① B1 解剖 + B3 运动学（占基础知识一半）。", "② B2 生理 + A3 心理（基础知识的另一半）。", "③ C1 评定全篇：量表是「专业知识」和病例题的地基。", "④ D1 物理治疗学：物理因子与手法的操作细节最容易出题。", "⑤ E1 / E2 病种：A3 / A4 病例题的素材来源。", "⑥ 指导书第四篇 + 士模拟卷 6 套，按 90 分钟计时做。"]], ["时间线", "table", [["阶段", "时间", "做什么"], ["报名", "前一年 12 月—当年 1 月（2026 年度 2025-11 底起）", "网上报名 + 现场/线上确认，单位盖章"], ["考试", "4 月中下旬（2026 年 107、209 均为 4 月 19 日机考）", "4 科分两个半天考完"], ["查分", "考后约 2 个月", "每科 60 分及格，两年滚动"], ["证书", "次年", "电子证书在中国人事考试网下载，纸质证书按考区发放"]]], ["常见坑", "ul", ["证书不是执业证：康复治疗师没有执业注册，考的是职称，不是「上岗许可」。", "107 与 209 只差工作年限：本科毕业满 1 年可直接报师，别多等一年。", "大纲文件里有 348：那是医师序列的「康复医学（中级）」，治疗技术专业别报错。", "只刷题不看指导书：A3 / A4 病例题要靠体系，不是靠背答案。", "成绩两年滚动：缺考一科不影响，但跨省报考先确认考区接收规则。"]], ["来源", "src", ["https://exam.ipmph.com/examzcms/kangfuyixueshi1/bkzn/", "https://www.pmphmall.com/gdsdetail/658557-335175", "https://product.dangdang.com/12406622988.html", "http://www.fjwjrc.com/info/503.jspx"]]], "file": "康复医学治疗技术（士）"}, {"key": "c209", "name": "康复医学治疗技术（师）", "sub": "代码 209 · 入行一年后的主证", "sections": [["谁该考", "p", "本科康复治疗学毕业后从事本专业满 1 年；大专毕业满 3 年；中专取得士后满 5 年；硕士毕业可直接报师。多数人工作第 2 年报这一级。"], ["报考条件", "ul", ["硕士学位：可直接报师。", "本科 / 学士：从事本专业技术工作满 1 年。", "大专：从事本专业工作满 3 年（部分考区要求先取得士再满 2 年）。", "中专：取得士职称后，从事本专业工作满 5 年。", "其余（单位资质、年限截止、禁考情形）与士相同。"]], ["考试科目", "p", "科目、题型、时长与士完全相同：4 科 × 100 题 × 90 分钟，人机对话，两个半天考完；题型为 A1 / A2 / A3 / A4 / B1。差别在难度——师的专业知识与实践能力更偏病例细节和操作参数。"], ["官方用书", "table", [["书", "版本 / ISBN", "用途"], ["考试指导·康复医学与治疗技术", "2026 版 9787117385497", "与士共用一本，师看后三篇更细"], ["康复医学治疗技术（师）模拟试卷", "2026 版 9787117388757（燕铁斌、薛晶晶 主编）", "考前整卷 6 套"], ["考试大纲", "免费", "按大纲核对，师多出的点集中在评定与治疗技术"]]], ["考什么（对应本库教材）", "ul", ["四科范围与士一致，但「专业知识 / 专业实践能力」权重更实：C1 全篇 + D1 第1—17章 必须成体系。", "D2 作业治疗学、D3 语言治疗学在师这一级开始出题（ADL、认知、失语、吞咽）。", "E1 神经康复学、E2 肌肉骨骼康复学承担 A3 / A4 病例题的素材，Brunnstrom 分期、关节置换术后、脊髓损伤平面都要能背出节点。"]], ["复习顺序", "ul", ["① C1 康复功能评定学全篇（先量表后判读）。", "② D1 物理治疗学第1—17章（技术）+ 第18—29章（物理因子）。", "③ D2 / D3 各过一遍：作业与语言是师与士的分水岭。", "④ E1 / E2 按病种过：每个病「评定 → 治疗 → 并发症」三段式。", "⑤ 指导书 + 师模拟卷，错题回到本库章页补。"]], ["时间线", "table", [["阶段", "时间", "做什么"], ["报名", "前一年 12 月—当年 1 月", "和士同窗口，注意选 209 不是 107"], ["考试", "4 月中下旬（2026 年 4 月 19 日机考）", "与士同日不同卷"], ["查分 / 证书", "考后 2 个月 / 次年", "两年滚动"]]], ["常见坑", "ul", ["本科「满 1 年」从取得学历后算起，实习期不算。", "师和士同一天考：级别选错只能等下一年。", "A4 病历串题前后关联：前一问判断错，后一问的信息就跟着错，难题先跳过。", "别把「康复治疗师」与「康复医师」混了：医师走执业医师 + 348 序列。"]], ["来源", "src", ["https://exam.ipmph.com/examzcms/kangfuyixueshi2/bkzn/", "https://product.dangdang.com/12461092747.html", "https://ks.shangxueba.com/zn/list383_t2474_d0_1.html"]]], "file": "康复医学治疗技术（师）"}, {"key": "c381", "name": "康复医学治疗技术（中级）", "sub": "代码 381 · 主管治疗师", "sections": [["谁该考", "p", "已取得师职称并满足年限：本科满 4 年、大专满 6 年、硕士满 2 年（各省细则不同，以当地卫健委通知为准）。考过即「主管治疗师」。"], ["报考条件", "ul", ["本科：取得师后从事本专业工作满 4 年。", "大专：取得师后满 6 年。", "硕士：取得师后满 2 年。", "博士：部分省份可直接报中级，按当地文件。", "需继续教育学分与单位聘任证明（各省要求不同）。"]], ["考试科目", "table", [["科目", "题量", "时长", "说明"], ["基础知识", "100 题", "90 分钟", "解剖、运动学、生理、病理、药理"], ["相关专业知识", "100 题", "90 分钟", "临床各科、影像、心理、伦理"], ["专业知识", "100 题", "90 分钟", "评定、PT / OT / ST、康复工程"], ["专业实践能力", "100 题", "90 分钟", "案例分析为主（A3 / A4）"]]], ["官方用书", "table", [["书", "版本 / ISBN", "用途"], ["考试指导·康复医学与治疗技术", "2026 版 9787117385497", "士 / 师 / 中级共用"], ["2026 康复医学模拟试卷", "9787117388788（燕铁斌、金冬梅 主编）", "中级整卷"], ["考试大纲", "免费", "中级多出管理与质控、康复工程细节"]]], ["考什么（对应本库教材）", "ul", ["专业实践能力是案例分析：一个病例从评定到出院方案，考「下一步做什么」。", "康复工程（D5 临床康复工程学）在中级开始单独出题：矫形器、假肢、轮椅、无障碍。", "老年与社区（E5 老年康复学、E6 社区康复学）在中级占比上升。", "管理与质控看 A1 康复医学概论 2024 版（文书与质控章）。"]], ["复习顺序", "ul", ["① 先用指导书做一套模拟卷摸底，找出丢分科目。", "② 丢分在实践能力 → 回 E1 / E2 / D1 病例章。", "③ 丢在专业知识 → C1 量表 + D5 工程 + D2 / D3。", "④ 管理质控与伦理 → A1 2024 版对应章。", "⑤ 最后两周整卷计时。"]], ["常见坑", "ul", ["年限从「取得师」起算，不是从毕业起算。", "中级不考职称外语和计算机（已取消），别被旧攻略误导。", "论文与继续教育按各省要求，报名前先问人事科。", "381 是治疗技术的中级；348 是医师序列的康复医学中级，代码别混。"]], ["来源", "src", ["https://ks.shangxueba.com/zn/list384_t2480_d0_1.html", "https://www.pmphmall.com/gdsdetail/659126-335744"]]], "file": "康复医学治疗技术（中级）"}, {"key": "res", "name": "备考资料清单", "sub": "官方用书、免费资源、题库，按性价比排", "sections": [["必买", "table", [["资料", "版本 / ISBN", "价格", "怎么用"], ["考试指导·康复医学与治疗技术", "2026 版 9787117385497（人卫，886 页）", "定价 269，电商约 209", "四科合一，士 / 师 / 中级通用；先通读再刷题"], ["士模拟试卷", "2026 版 9787117388771", "约 40—50", "考前 6 套整卷，计时做"], ["师模拟试卷", "2026 版 9787117388757", "约 40—50", "同上，报师才买"], ["中级模拟试卷", "9787117388788", "约 40—50", "报 381 才买"]]], ["同丛书可选", "ul", ["《同步习题集》：按章练，适合第一轮。", "《同步习题与全真模拟》：章练 + 整卷，一本两用。", "上一版（2024 / 2025）二手可买：大纲变动不大，省一半钱；但模拟卷要买当年。"]], ["免费资源", "ul", ["考试大纲：国家卫生健康委人才交流服务中心（21wecan.com）「考试大纲」栏目，文件名《卫生专业技术资格考试大纲·西医类 107／209／381／348 康复医学与治疗技术》。", "报名、准考证、成绩、证书：同一网站「全国卫生专业技术资格考试」专区；电子证书在中国人事考试网（cpta.com.cn）下载。", "题型说明与样题：人卫考试平台 exam.ipmph.com 的「备考指南」。"]], ["题库 / APP", "ul", ["第三方题库（圣才、上学吧、医考帮、考试宝典等）只作刷题补充。", "答案以人卫指导书和当年大纲为准，错题先回书里核。"]], ["省钱路线", "p", "免费大纲 + 二手上一版指导书（约 80—120 元）+ 当年模拟卷（约 45 元）≈ 150 元；不报班也能过，前提是整卷计时做完 6 套。"], ["来源", "src", ["https://www.pmphmall.com/gdsdetail/658557-335175", "https://product.dangdang.com/12406622988.html", "https://product.dangdang.com/12461092747.html"]]], "file": "备考资料清单"}, {"key": "mapcert", "name": "考试科目 ↔ 本库教材对照", "sub": "四科分别该读哪几本、哪几章", "sections": [["对照表", "table", [["考试科目", "考什么", "本库教材", "章范围"], ["基础知识", "解剖、运动学、生理、神经生理、发育、物理因子、心理", "B1、B3、B2、B4、A3、D1（物理因子）", "B1 全篇；B3 全篇；B2 第1—15章；D1 第18—29章"], ["相关专业知识", "临床疾病、影像、药理、伦理、心理", "B5、E3、A1（伦理）、A3", "B5 全篇；E3 全篇；A1 伦理章"], ["专业知识", "评定与三大治疗技术", "C1、D1、D2、D3", "C1 第1—22章；D1 第1—17章；D2 / D3 全篇"], ["专业实践能力", "病例与操作", "D1、D2、E1、E2", "E1 第1—14章；E2 第1—16章"]]], ["怎么配合", "ul", ["指导书按四篇编排，正好对应四科：读完一篇，回本库把该篇的教材章节过一遍，再做题。", "本库章页有「相关量表 / 相关病种 / 跨书重合」，病例题的素材基本都在那里。", "做题错在哪个病，就 `kb.py chapter 病名` 查章，回章页看知识元要点。"]], ["一句话", "p", "指导书给你考试范围，本库给你「这一章到底讲什么」的结构；两边对着用，比单刷题快。"]], "file": "考试科目 ↔ 本库教材对照"}, {"key": "lit", "name": "文献与期刊", "sub": "病例题从指南来，写论文从期刊找选题", "sections": [["中文核心期刊", "ul", ["《中国康复医学杂志》——国内康复临床与基础的主刊。", "《中国康复理论与实践》——偏神经康复与循证。", "《中华物理医学与康复医学杂志》——物理因子与评定。", "《中国康复》《康复学报》——临床与教学。"]], ["英文期刊", "ul", ["Archives of Physical Medicine and Rehabilitation（APMR）", "Journal of Rehabilitation Medicine", "Clinical Rehabilitation", "Neurorehabilitation", "Physical Therapy"]], ["指南与共识", "ul", ["《中国脑卒中康复治疗指南》——A3 / A4 脑卒中病例题的答案来源。", "《中国脑外伤康复指南》《中国脊髓损伤康复指南》。", "《临床诊疗指南·物理医学与康复分册》。"]], ["数据库", "ul", ["中文：知网、万方、维普。", "英文：PubMed、Cochrane Library、PEDro（物理治疗证据数据库）。"]], ["怎么用", "ul", ["备考：先看指南里的「康复评定」「康复治疗」两节，比教材更贴近病例题的答法。", "中级/副高写论文：从本库「重合与取舍」里挑一个有争议的点（如脊髓损伤步行训练强度），去 PEDro 找 RCT。", "别把综述当证据：病例题只认指南和教材。"]], ["来源", "src", ["https://www.cochranelibrary.com/", "https://pedro.org.au/", "https://pubmed.ncbi.nlm.nih.gov/"]]], "file": "文献与期刊"}], "levels": [["L0", "入门"], ["L1", "基础"], ["L2", "核心"], ["L3", "专科"], ["L4", "综合与拓展"]], "chapters_count": 288, "editions_count": 22}</script>
+<script>
+const DATA = JSON.parse(document.getElementById('kb-data').textContent);
+const $ = (s, r=document) => r.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const LEVELS = DATA.levels;
+/* file:// 下部分浏览器禁用 localStorage，做内存回退 */
+const store = (() => { try { localStorage.setItem('__t','1'); localStorage.removeItem('__t'); return localStorage; }
+  catch(e){ const m={}; return { getItem:k=>(k in m?m[k]:null), setItem:(k,v)=>{m[k]=String(v);}, removeItem:k=>{delete m[k];} }; } })();
+let tab = store.getItem('kb-tab') || 'books';
+let filterLevel = 'all', filterCat = 'all';
+const WHO_KEY='kb-who';
+let who = DATA.ident.find(i=>i.key===store.getItem(WHO_KEY)) || null;
+function focusOf(code){ return (who && who.focus && who.focus[code]) || 0; }
+let cur = null;
+
+const tabNames = {books:'教材', topics:'主题延伸', paths:'学习路径', scales:'量表速查', diseases:'病种速查', overlaps:'重合取舍', ident:'身份适配', cert:'资格证'};
+
+function bookByCode(c){ return DATA.books.find(b=>b.code===c); }
+
+function progressKey(code, i){ return 'kb-prog:'+code+':'+i; }
+function isDone(code,i){ return store.getItem(progressKey(code,i))==='1'; }
+function toggleDone(code,i,el){
+  const k=progressKey(code,i);
+  if(store.getItem(k)==='1'){ store.removeItem(k); el.classList.remove('done'); }
+  else { store.setItem(k,'1'); el.classList.add('done'); }
+  renderProgress(code);
+}
+function renderProgress(code){
+  const b=bookByCode(code); if(!b) return;
+  const done=b.chapters.filter((_,i)=>isDone(code,i)).length;
+  const pct=b.chapters.length? Math.round(done*100/b.chapters.length):0;
+  const bar=$('#progress-bar'); if(bar){ bar.style.width=pct+'%'; }
+  const lab=$('#progress-label'); if(lab){ lab.textContent=done+'/'+b.chapters.length+' 章 · '+pct+'%'; }
+  const li=document.querySelector('[data-list="'+code+'"] .mini');
+  if(li){ li.textContent=pct+'%'; li.classList.toggle('full', pct===100); }
+}
+
+function h(html){ const d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstElementChild; }
+
+function levelBadge(l){ return '<span class="badge lv-'+l+'">'+l+'</span>'; }
+
+function renderSidebar(){
+  const q=($('#search').value||'').trim().toLowerCase();
+  const list=$('#list'); list.innerHTML='';
+  let items;
+  if(tab==='books'){
+    items=DATA.books.filter(b=>{
+      if(filterLevel!=='all' && b.level!==filterLevel) return false;
+      if(filterCat!=='all' && !b.cat.startsWith(filterCat)) return false;
+      if(!q) return true;
+      const hay=(b.code+b.title+b.editor+b.cat+b.tags.join(' ')+b.role+b.chapters.join(' ')).toLowerCase();
+      return hay.includes(q);
+    });
+    items.forEach(b=>{
+      const done=b.chapters.filter((_,i)=>isDone(b.code,i)).length;
+      const pct=b.chapters.length? Math.round(done*100/b.chapters.length):0;
+      const el=h('<div class="item" data-key="'+b.code+'" data-list="'+b.code+'">'+levelBadge(b.level)+
+        '<div class="it-body"><div class="it-title">'+esc(b.title)+'</div>'+
+        '<div class="it-sub">'+b.code+' · '+esc(b.editor)+(focusOf(b.code)?' <span class="fp">重点 '+focusOf(b.code)+'%</span>':'')+'</div></div>'+
+        '<span class="mini'+(pct===100?' full':'')+'">'+pct+'%</span></div>');
+      el.onclick=()=>{ cur=b.code; showBook(b.code); markActive(); };
+      list.appendChild(el);
+    });
+  } else if(tab==='ident'){
+    items=DATA.ident.filter(i=>!q || (i.name+i.who+i.exams).toLowerCase().includes(q));
+    items.forEach(i=>{
+      const el=h('<div class="item" data-key="who:'+i.key+'"><div class="it-body"><div class="it-title">'+esc(i.name)+'</div>'+
+        '<div class="it-sub">'+esc(i.exams)+'</div></div></div>');
+      el.onclick=()=>{ cur='who:'+i.key; showIdentity(i.key); markActive(); };
+      list.appendChild(el);
+    });
+  } else if(tab==='cert'){
+    items=DATA.cert.filter(p=>!q || (p.name+p.sub).toLowerCase().includes(q));
+    items.forEach(p=>{
+      const el=h('<div class="item" data-key="cert:'+p.key+'"><div class="it-body"><div class="it-title">'+esc(p.name)+'</div>'+
+        '<div class="it-sub">'+esc(p.sub)+'</div></div></div>');
+      el.onclick=()=>{ cur='cert:'+p.key; showCert(p.key); markActive(); };
+      list.appendChild(el);
+    });
+  } else if(tab==='topics'){
+    items=DATA.topics.filter(t=>!q || (t.topic+t.sub+t.l2+t.l3+t.l4+t.l5).toLowerCase().includes(q));
+    items.forEach(t=>{
+      const el=h('<div class="item" data-key="'+esc(t.topic)+'"><div class="it-body"><div class="it-title">'+esc(t.topic)+'</div>'+
+        '<div class="it-sub">'+esc(t.sub)+'</div></div></div>');
+      el.onclick=()=>{ cur=t.topic; showTopic(t); markActive(); };
+      list.appendChild(el);
+    });
+  } else if(tab==='paths'){
+    items=DATA.paths.filter(p=>!q || (p.name+p.desc+JSON.stringify(p.rows)).toLowerCase().includes(q));
+    items.forEach(p=>{
+      const el=h('<div class="item" data-key="'+esc(p.name)+'"><div class="it-body"><div class="it-title">'+esc(p.name)+'</div>'+
+        '<div class="it-sub">'+esc(p.desc)+'</div></div></div>');
+      el.onclick=()=>{ cur=p.name; showPath(p); markActive(); };
+      list.appendChild(el);
+    });
+  } else if(tab==='scales'){
+    items=DATA.scales.filter(s=>!q || (s[0]+s[1]+s[2]).toLowerCase().includes(q));
+    items.forEach((s,i)=>{
+      const el=h('<div class="item" data-key="scale'+i+'"><div class="it-body"><div class="it-title">'+esc(s[0])+'</div>'+
+        '<div class="it-sub">'+esc(s[1])+'</div></div></div>');
+      el.onclick=()=>{ cur='scale'+i; showScale(s); markActive(); };
+      list.appendChild(el);
+    });
+  } else if(tab==='overlaps'){
+    items=DATA.overlaps.map((o,i)=>({no:i+1,topic:o[0],main:o[1],ref:o[2],skip:o[3]}))
+      .filter(o=>!q || (o.topic+o.main+o.ref+o.skip).toLowerCase().includes(q));
+    items.forEach(o=>{
+      const el=h('<div class="item" data-key="ov'+o.no+'"><div class="it-body">'+
+        '<div class="it-title">'+o.no+'. '+esc(o.topic)+'</div>'+
+        '<div class="it-sub">精读 '+esc(o.main)+'</div></div></div>');
+      el.onclick=()=>{ cur='ov'+o.no; showOverlap(o); markActive(); };
+      list.appendChild(el);
+    });
+  } else {
+    items=DATA.diseases.filter(d=>!q || (d[0]+d[1]+d[2]).toLowerCase().includes(q));
+    items.forEach((d,i)=>{
+      const el=h('<div class="item" data-key="dis'+i+'"><div class="it-body"><div class="it-title">'+esc(d[0])+'</div>'+
+        '<div class="it-sub">'+esc(d[1])+'</div></div></div>');
+      el.onclick=()=>{ cur='dis'+i; showDisease(d); markActive(); };
+      list.appendChild(el);
+    });
+  }
+  $('#count').textContent=items.length+' 项';
+}
+
+function markActive(){
+  document.querySelectorAll('.item').forEach(e=>{
+    e.classList.toggle('active', e.dataset.key !== undefined && e.dataset.key === String(cur));
+  });
+}
+
+function mainEmpty(){
+  $('#main').innerHTML='<div class="empty"><h2>康复知识库</h2>'+
+   '<p>'+DATA.books.length+' 个书目位点 / '+DATA.editions_count+' 个版次 · '+DATA.chapters_count+' 条章目录 · '+
+   DATA.overlaps.length+' 组重合取舍 · '+DATA.topics.length+' 条主题梯度 · '+DATA.paths.length+' 条路径 · '+
+   DATA.scales.length+' 个量表 · '+DATA.diseases.length+' 个病种 · '+DATA.cert.length+' 个资格证页</p>'+
+   '<p class="hint">左侧搜索或点选；快捷键 <kbd>/</kbd> 聚焦搜索，<kbd>Esc</kbd> 清空。</p>'+identStrip()+
+   '<div class="stat-grid">'+
+   DATA.levels.map(l=>'<div class="stat"><div class="stat-n">'+DATA.books.filter(b=>b.level===l[0]).length+'</div>'+
+     '<div class="stat-l">'+l[0]+' '+l[1]+'</div></div>').join('')+'</div></div>';
+}
+
+function setHash(v){ try{ history.replaceState(null,'','#'+encodeURIComponent(v)); }catch(e){} }
+
+function idBanner(code){
+  if(!who) return '';
+  const p=focusOf(code);
+  const lnk='<a data-who="'+who.key+'">看身份总表</a>';
+  if(!p) return '<div class="banner">当前身份 <b>'+esc(who.name)+'</b> · 这本不在本阶段重点里，内容照常可读。'+lnk+'</div>';
+  return '<div class="banner"><b>本阶段重点</b> '+esc(who.name)+' 里这本占 <b>'+p+'%</b>。'+lnk+'</div>';
+}
+function identStrip(){
+  if(!who) return '<div class="banner">还没选身份。<a data-who="pick">选一个 →</a> 之后书单、书目页、章页、问答都会把和你相关的内容标成「本阶段重点」，其余照旧全量可看。</div>';
+  const top=Object.keys(who.focus).sort((a,b)=>who.focus[b]-who.focus[a]).slice(0,4)
+    .map(c=>{const b=bookByCode(c);return b?'<a class="chip" data-goto="'+c+'">'+esc(b.title)+' '+who.focus[c]+'%</a>':'';}).join('');
+  return '<div class="banner"><b>当前身份：'+esc(who.name)+'</b> · '+esc(who.exams)+
+    ' <a data-who="'+who.key+'">身份总表</a><div class="chips" style="margin-top:8px">'+top+'</div></div>';
+}
+function bindWhoLinks(){
+  $('#main').querySelectorAll('[data-who]').forEach(a=>a.onclick=()=>{
+    const k=a.dataset.who;
+    if(k==='pick'){ if($('#whoSel')) $('#whoSel').focus(); return; }
+    setTab('ident'); cur='who:'+k; showIdentity(k); renderSidebar(); markActive();
+  });
+  $('#main').querySelectorAll('[data-goto]').forEach(a=>a.onclick=()=>{
+    cur=a.dataset.goto; if(tab!=='books'){ setTab('books'); } else { renderSidebar(); }
+    showBook(a.dataset.goto); markActive(); });
+}
+function showIdentity(key){
+  const k=DATA.ident.find(i=>i.key===key); if(!k) return;
+  setHash('身份'+k.key);
+  const bars=(d,label)=>Object.keys(d).sort((a,b)=>d[b]-d[a]).map(c=>{
+    const b=bookByCode(c); if(!b) return '';
+    return '<div class="row"><span><a class="chip" data-goto="'+c+'">'+esc(b.title)+'</a></span><span>'+d[c]+'%</span></div>'+
+           '<div class="bar"><i style="width:'+Math.min(100,d[c]*1.6)+'%"></i></div>';
+  }).join('');
+  const subs=k.subjects.map(s=>'<div class="row"><span>'+esc(s[0])+'</span><span>'+s[1]+'%</span></div>'+
+           '<div class="bar"><i style="width:'+(s[1]*2)+'%"></i></div>').join('');
+  const tl=k.timeline.map(t=>'<div class="row"><span>'+esc(t[0])+'</span><span>'+esc(t[1])+'</span></div>').join('');
+  const srcs=(k.src||[]).map(u=>'<li><a href="'+esc(u)+'" target="_blank" rel="noreferrer">'+esc(u)+'</a></li>').join('');
+  const tot=Object.keys(k.focus).reduce((a,c)=>a+k.focus[c],0);
+  $('#main').innerHTML=
+   '<div class="kicker">身份适配 · 本阶段重点</div>'+
+   '<h1>'+esc(k.name)+'</h1>'+
+   '<div class="meta">'+esc(k.who)+'</div>'+
+   '<div class="chips" style="margin:12px 0"><a class="chip" data-setwho="'+k.key+'">设为我的身份</a>'+
+     '<a class="chip" data-goto="C1">从 C1 康复功能评定学开始</a></div>'+
+   '<div class="idcard"><div class="k2">目标考试</div><p>'+esc(k.exams)+'</p></div>'+
+   '<div class="idcard"><div class="k2">科目与占比</div>'+subs+'</div>'+
+   '<div class="idcard"><div class="k2">本阶段重点教材（权重合计 '+tot+'%）</div>'+bars(k.focus)+'</div>'+
+   '<div class="idcard"><div class="k2">必读范围</div><p>'+esc(k.must)+'</p></div>'+
+   '<div class="idcard"><div class="k2">时间线</div>'+tl+'</div>'+
+   '<div class="idcard"><div class="k2">注意</div><p>'+esc(k.note)+'</p></div>'+
+   (srcs?'<h3>依据来源</h3><ul class="srcs">'+srcs+'</ul>':'')+
+   (['zg','zj','zk'].includes(k.key)?'<h3>对应的证书页</h3><div class="chips">'+
+     [['c107','士 107'],['c209','师 209'],['c381','中级 381']].map(x=>'<a class="chip" data-cert="'+x[0]+'">'+x[1]+'</a>').join('')+'</div>':'')+
+   '<h3>权重怎么理解</h3><p class="muted">权重 = 该考试的科目分值占比 × 本库教材的承载科目，归一化到 100%，是备考顺序提示，不是官方比例。其余教材全量可读，只是不标重点。</p>'+
+   '<div class="file">源文件：06-身份/'+esc(k.name)+'.md</div>';
+  $('#main').querySelectorAll('[data-cert]').forEach(a=>a.onclick=()=>{
+    setTab('cert'); cur='cert:'+a.getAttribute('data-cert'); showCert(a.getAttribute('data-cert')); renderSidebar(); markActive();
+  });
+  $('#main').querySelectorAll('[data-setwho]').forEach(a=>a.onclick=()=>{
+    who=k; store.setItem(WHO_KEY,k.key); const sel=$('#whoSel'); if(sel) sel.value=k.key;
+    showIdentity(k.key); renderSidebar();
+  });
+  bindWhoLinks();
+}
+function chShort(s){return String(s||'').replace(/^第[一二三四五六七八九十百]+章\s*/,'');}
+function renderBlocks(blocks){
+  return (blocks||[]).map(b=>{
+    const title=esc(b[0]), kind=b[1], pl=b[2];
+    let inner='';
+    if(kind==='p') inner='<p>'+esc(pl)+'</p>';
+    else if(kind==='ul') inner='<ul class="pts">'+pl.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>';
+    else if(kind==='src') inner='<ul class="srcs">'+pl.map(u=>'<li><a href="'+esc(u)+'" target="_blank" rel="noreferrer">'+esc(u)+'</a></li>').join('')+'</ul>';
+    else if(kind==='table') inner='<table class="grid"><tr>'+pl[0].map(h=>'<th>'+esc(h)+'</th>').join('')+'</tr>'+
+      pl.slice(1).map(r=>'<tr>'+r.map(c=>'<td>'+esc(c)+'</td>').join('')+'</tr>').join('')+'</table>';
+    return '<h3>'+title+'</h3>'+inner;
+  }).join('');
+}
+function showAtom(k){
+  const a=DATA.know.find(x=>x.k===k); if(!a) return;
+  setHash('元'+k);
+  const chs=(DATA.atomch[k]||[]).slice(0,14).map(([c,sq])=>
+    '<a class="chip" data-ch="'+c+'" data-sq="'+sq+'">'+esc(c)+' 第'+sq+'章 '+esc(chShort(chName(c,sq)))+'</a>').join('');
+  const prev=DATA.atomch[k]&&DATA.atomch[k][0];
+  $('#main').innerHTML=
+    '<div class="kicker">知识元 · 详解</div>'+
+    '<h1>'+esc(a.n)+'</h1>'+
+    '<div class="meta">'+esc(a.c)+'</div>'+
+    (a.kw&&a.kw.length?'<div class="chips">'+a.kw.map(w=>'<span class="chip">'+esc(w)+'</span>').join('')+'</div>':'')+
+    renderBlocks(a.d)+
+    (a.t?'<div class="tip">读法：'+esc(a.t)+'</div>':'')+
+    '<h3>挂在哪些章</h3><div class="chips">'+(chs||'<span class="muted">暂未挂章</span>')+'</div>'+
+    (prev?'<div class="chnav"><a data-ch="'+prev[0]+'" data-sq="'+prev[1]+'">← 回到第 '+prev[1]+' 章 '+esc(chShort(chName(prev[0],prev[1])))+'</a><span></span><span></span></div>':'');
+  $('#main').querySelectorAll('[data-ch]').forEach(a2=>a2.onclick=()=>openChapter(a2.getAttribute('data-ch'), +a2.getAttribute('data-sq')));
+}
+function showCert(key){
+  const p=DATA.cert.find(x=>x.key===key); if(!p) return;
+  setHash('证'+p.key);
+  const sec=(title,kind,pl)=>{
+    let inner='';
+    if(kind==='p') inner='<p>'+esc(pl)+'</p>';
+    else if(kind==='ul') inner='<ul class="pts">'+pl.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>';
+    else if(kind==='src') inner='<ul class="srcs">'+pl.map(u=>'<li><a href="'+esc(u)+'" target="_blank" rel="noreferrer">'+esc(u)+'</a></li>').join('')+'</ul>';
+    else if(kind==='table') inner='<table class="grid"><tr>'+pl[0].map(h=>'<th>'+esc(h)+'</th>').join('')+'</tr>'+
+      pl.slice(1).map(r=>'<tr>'+r.map(c=>'<td>'+esc(c)+'</td>').join('')+'</tr>').join('')+'</table>';
+    return '<h3>'+esc(title)+'</h3>'+inner;
+  };
+  $('#main').innerHTML=
+   '<div class="kicker">资格证 · 卫生专业技术资格考试</div>'+
+   '<h1>'+esc(p.name)+'</h1>'+
+   '<div class="meta">'+esc(p.sub)+'</div>'+
+   (who && (who.key==='zg'||who.key==='zj'||who.key==='zk')?'<div class="banner">当前身份 <b>'+esc(who.name)+'</b> · 这个证正好对你的路。书单按「本阶段重点」标好了。</div>':'')+
+   p.sections.map(x=>sec(x[0],x[1],x[2])).join('')+
+   '<div class="file">源文件：07-资格证/'+esc(p.file||p.name)+'.md</div>';
+}
+function showBook(code){
+  const b=bookByCode(code); if(!b) return;
+  setHash(code);
+  renderProgress(code);
+  const rel=b.related.map(c=>{const r=bookByCode(c); return r?'<a class="chip" data-goto="'+c+'">'+esc(r.title)+'</a>':'';}).join('');
+  const chLi=(c,i)=>{
+    const done=isDone(code,i)?'done':'';
+    return '<li class="ch '+done+'" data-i="'+i+'" title="打开本章大纲与要点"><span class="box">'+(isDone(code,i)?'✓':'')+'</span>'+
+      '<span class="ch-name">'+esc(c)+'</span></li>';
+  };
+  let chs, base=0;
+  if(b.variants){
+    chs=b.variants.map(v=>{
+      const ul='<ul class="chapters">'+v.chapters.map((c,j)=>chLi(c,base+j)).join('')+'</ul>';
+      base+=v.chapters.length;
+      return '<div class="vblock"><div class="vhead">'+esc(v.label)+
+        '　<span class="vmeta">'+esc(v.editor)+' · ISBN '+esc(v.isbn)+'</span>'+
+        '<div class="vnote">'+esc(v.note)+'</div></div>'+ul+'</div>';
+    }).join('');
+  } else {
+    chs='<ul class="chapters" id="chs">'+b.chapters.map(chLi).join('')+'</ul>';
+  }
+  $('#main').innerHTML=
+   '<div class="kicker">'+esc(b.cat)+' · '+levelBadge(b.level)+' '+esc(b.level_name)+'</div>'+
+   '<h1>'+esc(b.title)+'</h1>'+idBanner(code)+
+   '<div class="meta">'+esc(b.editor)+' ｜ '+esc(b.edition)+' / '+esc(b.year)+' ｜ ISBN '+esc(b.isbn)+' ｜ '+b.chapters.length+' 章</div>'+
+   '<div class="progwrap"><div class="progbar"><div id="progress-bar" class="progfill"></div></div><span id="progress-label"></span></div>'+
+   '<h3>定位</h3><p>'+esc(b.role)+'</p>'+
+   '<h3>阅读时机</h3><p>'+esc(b.when)+'</p>'+
+   '<h3>章节 <small>点一下记为已读</small></h3>'+chs+
+   '<h3>往上延伸</h3><p>'+esc(b.extend)+'</p>'+
+   '<h3>电子版</h3><p class="muted">'+esc(b.ebook)+'</p>'+
+   '<h3>关联教材</h3><div class="chips">'+rel+'</div>'+
+   '<div class="file">源文件：'+esc(b.path)+'</div>';
+  const done=b.chapters.filter((_,i)=>isDone(code,i)).length;
+  $('#progress-bar').style.width=(b.chapters.length?Math.round(done*100/b.chapters.length):0)+'%';
+  renderProgress(code);
+  $('#main').querySelectorAll('.ch').forEach(li=>{
+    const i=+li.dataset.i;
+    li.querySelector('.box').onclick=(e)=>{ e.stopPropagation(); toggleDone(code,i,li);
+      li.querySelector('.box').textContent=isDone(code,i)?'✓':''; renderProgress(code); };
+    li.onclick=()=>openChapter(code, i+1);
+  });
+  $('#main').querySelectorAll('[data-goto]').forEach(a=>a.onclick=()=>{
+    cur=a.dataset.goto;
+    if(tab!=='books'){ setTab('books'); } else { renderSidebar(); }
+    showBook(a.dataset.goto); markActive();
+  });
+}
+
+function showTopic(t){
+  setHash(t.topic);
+  const rel=t.codes.map(c=>{const r=bookByCode(c); return r?'<a class="chip" data-goto="'+c+'">'+esc(r.title)+'</a>':'';}).join('');
+  $('#main').innerHTML='<div class="kicker">主题 · '+esc(t.sub)+'</div><h1>'+esc(t.topic)+'</h1>'+
+   '<table class="grid"><tr><th>层</th><th>落点</th></tr>'+
+   '<tr><td>第1层 教材</td><td>'+esc(t.l2)+'</td></tr>'+
+   '<tr><td>第2层 横向对照</td><td>'+esc(t.l3)+'</td></tr>'+
+   '<tr><td>第3层 指南/专著</td><td>'+esc(t.l4)+'</td></tr>'+
+   '<tr><td>第4层 期刊/数据库</td><td>'+esc(t.l5)+'</td></tr></table>'+
+   '<h3>相关教材</h3><div class="chips">'+rel+'</div>';
+  $('#main').querySelectorAll('[data-goto]').forEach(a=>a.onclick=()=>{
+    cur=a.dataset.goto; setTab('books'); showBook(a.dataset.goto); markActive();
+  });
+}
+
+function showPath(p){
+  $('#main').innerHTML='<div class="kicker">路径</div><h1>'+esc(p.name)+'</h1><p class="muted">'+esc(p.desc)+'</p>'+
+   '<table class="grid"><tr><th>阶段</th><th>目标</th><th>必读</th><th>选读/补充</th></tr>'+
+   p.rows.map(r=>'<tr>'+r.map((c,i)=>'<td'+(i===0?' class="stage"':'')+'>'+esc(c)+'</td>').join('')+'</tr>').join('')+
+   '</table>';
+}
+
+function showScale(s){
+  $('#main').innerHTML='<div class="kicker">量表 · 速查</div><h1>'+esc(s[0])+'</h1>'+
+   '<table class="grid"><tr><th>用途</th><td>'+esc(s[1])+'</td></tr>'+
+   '<tr><th>教材位置</th><td>'+esc(s[2])+'</td></tr></table>'+
+   '<p class="hint">查到章号后翻对应教材；速查表是索引，不是原文。</p>';
+}
+
+function showDisease(d){
+  $('#main').innerHTML='<div class="kicker">病种 · 速查</div><h1>'+esc(d[0])+'</h1>'+
+   '<table class="grid"><tr><th>主查</th><td>'+esc(d[1])+'</td></tr>'+
+   '<tr><th>也在</th><td>'+esc(d[2])+'</td></tr></table>';
+}
+
+function showOverlap(o){
+  setHash('重合'+o.no);
+  $('#main').innerHTML='<div class="kicker">重合取舍 · 第 '+o.no+' 组</div><h1>'+esc(o.topic)+'</h1>'+
+   '<table class="grid"><tr><th>精读（主）</th><td>'+esc(o.main)+'</td></tr>'+
+   '<tr><th>对照（选一）</th><td>'+esc(o.ref)+'</td></tr>'+
+   '<tr><th>跳过/理由</th><td>'+esc(o.skip)+'</td></tr></table>'+
+   '<p class="hint">同一内容出现在多本教材时，只精读一本；其余在做题对不上时再查。</p>';
+}
+
+
+/* ---------------- 章节页 ---------------- */
+function refsOf(str){
+  const out=[];
+  const re=/([A-F]\d)\s*(?:第([\d、—\-～,，]+)章|全篇)/g;
+  let m;
+  while((m=re.exec(str||''))){
+    const code=m[1];
+    if(m[2]==null){ const b=bookByCode(code); if(b) b.chapters.forEach((_,i)=>out.push([code,i+1])); continue; }
+    m[2].split(/[、，,]/).forEach(p=>{
+      p=p.trim(); if(!p) return;
+      const rg=p.split(/[—\-～]/);
+      if(rg.length===2){
+        const a=+rg[0],z=+rg[1];
+        if(a&&z) for(let i=a;i<=z;i++) out.push([code,i]);
+      } else if(/^\d+$/.test(p)) out.push([code,+p]);
+    });
+  }
+  return out;
+}
+function chName(code,seq){ const b=bookByCode(code); return (b&&b.chapters[seq-1])||(code+' 第'+seq+'章'); }
+function plain(s){ return String(s||'').replace(/^第[一二三四五六七八九十百]+章\s*/,''); }
+function openChapter(code, seq){
+  if(tab!=='books'){ setTab('books'); } else { renderSidebar(); }
+  cur = code; markActive();
+  showChapter(code, seq);
+}
+
+function showChapter(code, seq){
+  const b=bookByCode(code); if(!b) return;
+  setHash(code+'-'+seq);
+  const key=code+':'+seq, i=seq-1, done=isDone(code,i);
+  const atoms=(DATA.chinfo[key]||[]).map(k=>DATA.know.find(a=>a.k===k)).filter(Boolean);
+  const ref=DATA.chref[key]||{sc:[],ds:[],ov:[]};
+  const name=chName(code,seq);
+  const atomHtml=atoms.length? atoms.map(a=>
+      '<div class="atom" data-atom="'+a.k+'" title="点开看详解"><div class="atom-h"><b>'+esc(a.n)+'</b><span>'+esc(a.c)+'</span>'+
+        '<a class="more" data-atom="'+a.k+'">看详解 →</a></div>'+
+      '<ul class="pts">'+a.p.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'+
+      (a.t? '<div class="tip">读法：'+esc(a.t)+'</div>':'')+'</div>').join('')
+    : '<p class="muted">本章属综述或过渡性内容，按下面「关联」里的条目定位即可。</p>';
+  const scs=ref.sc.map(j=>DATA.scales[j]).filter(Boolean);
+  const dss=ref.ds.map(j=>DATA.diseases[j]).filter(Boolean);
+  const ovs=ref.ov.map(j=>DATA.overlaps[j]).filter(Boolean);
+  const relHtml=(scs.length? '<h3>相关量表</h3><table class="grid"><tr><th>量表</th><th>用途</th><th>位置</th></tr>'+
+      scs.map(x=>'<tr><td>'+esc(x[0])+'</td><td>'+esc(x[1])+'</td><td>'+esc(x[2])+'</td></tr>').join('')+'</table>':'')+
+    (dss.length? '<h3>相关病种</h3><table class="grid"><tr><th>病种</th><th>主查</th><th>也在</th></tr>'+
+      dss.map(x=>'<tr><td>'+esc(x[0])+'</td><td>'+esc(x[1])+'</td><td>'+esc(x[2])+'</td></tr>').join('')+'</table>':'')+
+    (ovs.length? '<h3>跨书重合</h3><table class="grid"><tr><th>主题</th><th>精读</th><th>对照</th><th>跳过/理由</th></tr>'+
+      ovs.map(x=>'<tr><td>'+esc(x[0])+'</td><td>'+esc(x[1])+'</td><td>'+esc(x[2])+'</td><td>'+esc(x[3])+'</td></tr>').join('')+'</table>':'');
+  const prev=seq>1? '<a data-ch="'+code+'" data-sq="'+(seq-1)+'">← 第'+(seq-1)+'章</a>':'<span></span>';
+  const next=seq<b.chapters.length? '<a data-ch="'+code+'" data-sq="'+(seq+1)+'">第'+(seq+1)+'章 →</a>':'<span></span>';
+  $('#main').innerHTML=
+   '<div class="crumb"><a data-ch="'+code+'" data-sq="0">'+esc(b.title)+'</a> › '+esc(name)+'</div>'+
+   '<h1>'+esc(name)+'</h1>'+idBanner(code)+
+   '<div class="meta">'+esc(b.code)+' ｜ '+esc(b.editor)+' ｜ '+esc(b.edition)+' ｜ 全章 '+b.chapters.length+' 章 ｜ 本章位于第 '+seq+' 章</div>'+
+   '<div class="progwrap"><button class="chipbtn'+(done?' on':'')+'" id="chdone">'+(done?'已读 ✓':'标记已读')+'</button>'+
+     '<span class="hint">勾选状态与本页进度同步</span></div>'+
+   '<h3>大纲 <small>本章知识元</small></h3>'+atomHtml+
+   '<h3>内容要点 <small>按上列知识元展开，用于定位与复习</small></h3>'+
+     '<p class="muted">本站不含教材原文；要点是知识元整理稿，原文请按 ISBN 查对应教材。</p>'+
+   (relHtml || '<h3>关联</h3><p class="muted">本章暂无交叉条目，可回到书目页按邻章阅读。</p>')+
+   '<h3>我的笔记 <small>只存在本机浏览器</small></h3>'+
+   '<textarea id="chnote" placeholder="记下本章重点、疑问、老师强调的内容…"></textarea>'+
+   '<div class="chnav"><span>'+prev+'</span><a data-ch="'+code+'" data-sq="0">回到书目</a><span>'+next+'</span></div>';
+  const nt=$('#chnote');
+  nt.value = store.getItem('kb-note:'+key)||'';
+  nt.oninput=()=>store.setItem('kb-note:'+key, nt.value);
+  $('#chdone').onclick=()=>{
+    toggleDone(code,i,{});
+    const now=isDone(code,i);
+    const btn=$('#chdone'); btn.classList.toggle('on',now); btn.textContent=now?'已读 ✓':'标记已读';
+    renderProgress(code);
+  };
+  $('#main').querySelectorAll('.atom[data-atom]').forEach(el=>el.onclick=e=>{e.stopPropagation();showAtom(el.getAttribute('data-atom'));});
+  $('#main').querySelectorAll('[data-ch]').forEach(a=>a.onclick=()=>{
+    const sq=+a.dataset.sq;
+    if(sq===0){ setTab('books'); cur=a.dataset.ch; showBook(a.dataset.ch); markActive(); }
+    else openChapter(a.dataset.ch, sq);
+  });
+}
+
+
+/* ---------- 移动端抽屉 ---------- */
+(function(){
+  const bar=document.querySelector('.mbar');
+  if(!bar) return;
+  const hamb=document.getElementById('hamb'), mask=document.getElementById('mask');
+  const close=()=>document.body.classList.remove('nav-open');
+  if(hamb) hamb.onclick=e=>{e.stopPropagation();document.body.classList.toggle('nav-open');};
+  if(mask) mask.onclick=close;
+  document.addEventListener('click',e=>{
+    if(!document.body.classList.contains('nav-open')) return;
+    if(e.target.closest('aside')||e.target.closest('#hamb')) return;
+    close();
+  });
+  const mk=document.getElementById('mAsk');
+  if(mk) mk.onclick=()=>{ if(typeof toggleAsk==='function') toggleAsk(); };
+  const sub=document.getElementById('mbarSub');
+  const b=document.getElementById('brandSub');
+  if(sub&&b) sub.textContent=b.textContent;
+})();
+
+/* ---------------- 问答对话框 ---------------- */
+let chat=[];
+/* 知识元 → 章节（构建时由 chinfo 反推） */
+const ATOM_CH={};
+Object.keys(DATA.chinfo).forEach(k=>{
+  DATA.chinfo[k].forEach(a=>{ (ATOM_CH[a]=ATOM_CH[a]||[]).push(k); });
+});
+function norm(s){ return String(s||'').toLowerCase().replace(/[\s，。、；：？！,.;:?!（）()“”"']/g,''); }
+function grams(s){ const o=[]; for(let i=0;i<s.length-1;i++) o.push(s.slice(i,i+2)); return o; }
+function scoreOf(q,text){
+  const qq=norm(q); if(!qq) return 0;
+  const t=norm(text);
+  let sc=0;
+  if(t.includes(qq)) sc+=100;
+  else if(qq.includes(t) && t.length>=2) sc+=40;
+  grams(qq).forEach(g=>{ if(t.includes(g)) sc+=4; });
+  return sc;
+}
+function candidates(q){
+  const out=[];
+  DATA.diseases.forEach(d=>{
+    const s=scoreOf(q,d[0]);
+    if(s) out.push({s:s*1.5,kind:'disease',title:d[0],body:'主查 '+d[1]+'；也在 '+d[2],refs:refsOf(d[1]+'；'+d[2])});
+  });
+  DATA.scales.forEach(sc=>{
+    const s=scoreOf(q,sc[0]);
+    if(s) out.push({s:s*1.2,kind:'scale',title:sc[0],body:sc[1]+'；位置 '+sc[2],refs:refsOf(sc[2])});
+  });
+  DATA.know.forEach(a=>{
+    let s=0, best=null;
+    a.kw.forEach(k=>{ const sc=scoreOf(q,k)*(k.length>=2?k.length:1); if(sc>s){ s=sc; best=k; } });
+    if(s>0){
+      const grams=[]; for(let i=0;i<q.length-1;i++) grams.push(q.slice(i,i+2));
+      const refs=(ATOM_CH[a.k]||[]).map(k=>[k.split(':')[0], +k.split(':')[1]])
+        .map(r=>{ const b=bookByCode(r[0]); const nm=(b&&b.chapters[r[1]-1])||'';
+                  r.push(grams.reduce((n,g)=>n+(nm.includes(g)?1:0),0)); return r; })
+        .sort((x,y)=>y[2]-x[2]).slice(0,3).map(r=>[r[0],r[1]]);
+      out.push({s:s*0.9,kind:'know',title:a.n,body:a.c,atom:a,refs:refs});
+    }
+  });
+  DATA.overlaps.forEach((o,i)=>{
+    const s=scoreOf(q,o[0]);
+    if(s) out.push({s:s*1.3,kind:'overlap',title:o[0],body:'精读 '+o[1]+'；对照 '+o[2],skip:o[3],refs:refsOf(o[1]+'；'+o[2])});
+  });
+  DATA.topics.forEach(t=>{
+    const s=scoreOf(q,t.topic);
+    if(s) out.push({s:s,kind:'topic',title:t.topic,body:t.l2,refs:refsOf(t.l2+'；'+t.l3)});
+  });
+  DATA.books.forEach(b=>{
+    b.chapters.forEach((c,i)=>{
+      const s=scoreOf(q,plain(c));
+      if(s>8) out.push({s:s*0.5,kind:'chapter',title:b.code+' 第'+(i+1)+'章 '+plain(c),body:'',refs:[[b.code,i+1]]});
+    });
+  });
+  return out.filter(o=>o.s>6).sort((a,b)=>b.s-a.s);
+}
+function askAnswer(q){
+  const cs=candidates(q);
+  if(!cs.length){
+    return {summary:'没找到直接对应的条目。换个说法试试：病种名（脑卒中、脊髓损伤）、量表名（Berg、MMT）、或章名（肌力评定、吞咽障碍），也可以直接说“膝置换术后怎么练”。',items:[]};
+  }
+  if(who){
+    cs.forEach(c=>{ if(c.refs && c.refs.length && focusOf(c.refs[0][0])) c.s+=30; });
+    cs.sort((a,b)=>b.s-a.s);
+  }
+  /* 先病种/重合（实体），再知识元；章节按来源限量，避免解剖章刷屏 */
+  const pri=t=>(t.kind==='disease'||t.kind==='overlap')?0:1;
+  const top=cs.slice().sort((a,b)=> pri(a)-pri(b) || b.s-a.s).slice(0,3);
+  const refs=[], seen={};
+  const push=r=>{ const k=r[0]+':'+r[1]; if(!seen[k]){ seen[k]=1; refs.push(r); } };
+  top.forEach(t=>{
+    const cap = t.kind==='know'?2 : (t.kind==='disease'?4:3);
+    (t.refs||[]).slice(0,cap).forEach(push);
+  });
+  cs.filter(c=>c.kind==='chapter').slice(0,4).forEach(c=>c.refs.forEach(push));
+  const t0=top[0];
+  let sum='';
+  if(t0.kind==='disease') sum='「'+t0.title+'」：'+t0.body+'。';
+  else if(t0.kind==='scale') sum='「'+t0.title+'」是'+t0.body+'。';
+  else if(t0.kind==='know') sum='「'+t0.title+'」——'+t0.body+'。'+(t0.atom.p.slice(0,2).join('；'))+'。';
+  else if(t0.kind==='overlap') sum='「'+t0.title+'」在 '+t0.body+'。跳过理由：'+t0.skip+'。';
+  else sum='「'+t0.title+'」。';
+  const seenT={}; seenT[t0.title]=1;
+  const others=top.slice(1).map(x=>x.title).filter(t=>t&&!seenT[t]&&(seenT[t]=1));
+  if(others.length) sum+=' 另外涉及：'+others.join('、')+'。';
+  if(t0.kind==='disease') sum+=' 读法：评定 → 干预 → 并发症与随访。';
+  if(who) sum+=' 按你的身份「'+who.name+'」，重点书相关的章会优先排前面。';
+  if(refs.length) sum+=' 优先按下面 '+(refs.length>8?8:refs.length)+' 章读，点一下直接打开。';
+  else sum+=' 这组内容暂未映射到具体章，可从教材页按类目翻。';
+  return {summary:sum, items:refs.slice(0,8)};
+}
+function renderChat(){
+  const box=$('#askLog');
+  box.innerHTML = chat.map(m=>{
+    if(m.role==='u') return '<div class="msg u">'+esc(m.text)+'</div>';
+    const items=(m.res.items||[]).map(r=>'<a class="res" data-code="'+r[0]+'" data-seq="'+r[1]+'"><b>'+r[0]+' 第'+r[1]+'章</b>'+esc(plain(chName(r[0],r[1])))+'</a>').join('');
+    return '<div class="msg a"><div>'+esc(m.res.summary)+'</div>'+(items?'<div class="reslist">'+items+'</div>':'')+'</div>';
+  }).join('');
+  box.querySelectorAll('.res').forEach(a=>a.onclick=()=>{
+    openChapter(a.dataset.code, +a.dataset.seq);
+    if(window.innerWidth<900) toggleAsk(false);
+  });
+  box.scrollTop=box.scrollHeight;
+}
+function ask(q){
+  q=(q||'').trim(); if(!q) return;
+  chat.push({role:'u',text:q});
+  chat.push({role:'a',res:askAnswer(q)});
+  renderChat();
+  $('#askInput').value='';
+}
+function toggleAsk(force){
+  const p=$('#askPanel'), b=$('#askBtn');
+  const show = (force===undefined)? p.hidden : force;
+  p.hidden = !show; b.style.display = show? 'none':'block';
+  if(show){ if(!chat.length){ chat.push({role:'a',res:{summary:'说一句话，我按知识库检索：先给结论，再列出该读哪几章，点章号直接跳过去。',items:[]}}); renderChat(); } $('#askInput').focus(); }
+}
+
+function setTab(t){
+  tab=t; store.setItem('kb-tab',t);
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on', b.dataset.tab===t));
+  $('#filters').style.display = (t==='books')?'flex':'none';
+  renderSidebar(); markActive();
+}
+
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{ setTab(b.dataset.tab); mainEmpty(); cur=null; });
+$('#search').oninput=renderSidebar;
+document.querySelectorAll('[data-level]').forEach(b=>b.onclick=()=>{
+  filterLevel=b.dataset.level;
+  document.querySelectorAll('[data-level]').forEach(x=>x.classList.toggle('on', x===b));
+  renderSidebar();
+});
+document.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{
+  filterCat=b.dataset.cat;
+  document.querySelectorAll('[data-cat]').forEach(x=>x.classList.toggle('on', x===b));
+  renderSidebar();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='/' && document.activeElement.tagName!=='INPUT'){ e.preventDefault(); $('#search').focus(); }
+  if(e.key==='Escape'){ $('#search').value=''; renderSidebar(); }
+});
+$('#brandSub').textContent = DATA.books.length + ' 位点 / ' + DATA.editions_count + ' 版次 / ' + DATA.chapters_count + ' 章';
+const whoSel=$('#whoSel');
+whoSel.innerHTML='<option value="">身份：不指定（全部内容）</option>'+
+  DATA.ident.map(i=>'<option value="'+i.key+'">'+esc(i.name)+'</option>').join('');
+whoSel.value = who? who.key : '';
+whoSel.onchange=()=>{
+  const k=whoSel.value;
+  if(k){ who=DATA.ident.find(i=>i.key===k); store.setItem(WHO_KEY,k); }
+  else { who=null; store.removeItem(WHO_KEY); }
+  renderSidebar();
+  if(cur && bookByCode(cur)) showBook(cur); else mainEmpty();
+};
+$('#askBtn').onclick=()=>toggleAsk(true);
+$('#askClose').onclick=()=>toggleAsk(false);
+$('#askSend').onclick=()=>ask($('#askInput').value);
+$('#askInput').onkeydown=e=>{ if(e.key==='Enter'){ e.preventDefault(); ask($('#askInput').value); } };
+document.querySelectorAll('.asksug button').forEach(b=>b.onclick=()=>ask(b.dataset.q));
+document.addEventListener('keydown',e=>{
+  if(e.key==='/' && document.activeElement.tagName!=='INPUT' && document.activeElement.tagName!=='TEXTAREA'){ e.preventDefault(); $('#search').focus(); }
+});
+setTab(tab); mainEmpty();
+
+/* 支持 #C1 / #神经康复 这类直达链接 */
+const _h = decodeURIComponent((location.hash||'').slice(1));
+if(_h){
+  const _q = _h.match(/^(?:问|ask[:：])\s*(.+)$/);
+  if(_q){ toggleAsk(true); ask(_q[1]); }
+  else {
+  const _m = _h.match(/^([A-F]\d)-(\d+)$/);
+  const _b = _m? null : bookByCode(_h.toUpperCase());
+  if(_m){
+    if(tab!=='books'){ setTab('books'); } cur=_m[1]; renderSidebar(); markActive();
+    openChapter(_m[1], +_m[2]);
+  }
+  else if(_b){ if(tab!=='books'){ setTab('books'); } cur=_b.code; showBook(_b.code); renderSidebar(); markActive(); }
+  else {
+    const _t = DATA.topics.find(x=>x.topic===_h);
+    if(_t){ cur=_t.topic; setTab('topics'); showTopic(_t); renderSidebar(); markActive(); }
+    else {
+      const m = _h.match(/^重合(\d+)$/);
+      if(m){
+        const o = DATA.overlaps[+m[1]-1];
+        if(o){ cur='ov'+m[1]; setTab('overlaps');
+               showOverlap({no:+m[1], topic:o[0], main:o[1], ref:o[2], skip:o[3]});
+               renderSidebar(); markActive(); }
+      }
+    }
+  }
+  }
+}
+/* #身份zsb 直达身份页 */
+const _h3 = decodeURIComponent((location.hash||'').slice(1));
+if(/^元/.test(_h3)){
+  const _a=DATA.know.find(x=>x.k===_h3.slice(1));
+  if(_a){ cur='atom:'+_a.k; showAtom(_a.k); renderSidebar(); markActive(); }
+}
+if(/^证/.test(_h3)){
+  const _c=DATA.cert.find(x=>x.key===_h3.slice(1));
+  if(_c){ setTab('cert'); cur='cert:'+_c.key; showCert(_c.key); renderSidebar(); markActive(); }
+}
+if(/^身份/.test(_h3)){
+  const _it=DATA.ident.find(x=>x.key===_h3.slice(2));
+  if(_it){ setTab('ident'); cur='who:'+_it.key; showIdentity(_it.key); renderSidebar(); markActive(); }
+}
+</script>
+
+<script>
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+</script>
+</body></html>
