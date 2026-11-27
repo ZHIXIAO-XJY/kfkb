@@ -229,6 +229,7 @@ textarea#chnote{width:100%;min-height:92px;padding:9px 11px;border:1px solid var
 const DATA = JSON.parse(document.getElementById('kb-data').textContent);
 const $ = (s, r=document) => r.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const md = s => esc(s).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
 const LEVELS = DATA.levels;
 /* file:// 下部分浏览器禁用 localStorage，做内存回退 */
 const store = (() => { try { localStorage.setItem('__t','1'); localStorage.removeItem('__t'); return localStorage; }
@@ -437,11 +438,11 @@ function renderBlocks(blocks){
   return (blocks||[]).map(b=>{
     const title=esc(b[0]), kind=b[1], pl=b[2];
     let inner='';
-    if(kind==='p') inner='<p>'+esc(pl)+'</p>';
-    else if(kind==='ul') inner='<ul class="pts">'+pl.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>';
+    if(kind==='p') inner='<p>'+md(pl)+'</p>';
+    else if(kind==='ul') inner='<ul class="pts">'+pl.map(x=>'<li>'+md(x)+'</li>').join('')+'</ul>';
     else if(kind==='src') inner='<ul class="srcs">'+pl.map(u=>'<li><a href="'+esc(u)+'" target="_blank" rel="noreferrer">'+esc(u)+'</a></li>').join('')+'</ul>';
-    else if(kind==='table') inner='<table class="grid"><tr>'+pl[0].map(h=>'<th>'+esc(h)+'</th>').join('')+'</tr>'+
-      pl.slice(1).map(r=>'<tr>'+r.map(c=>'<td>'+esc(c)+'</td>').join('')+'</tr>').join('')+'</table>';
+    else if(kind==='table') inner='<table class="grid"><tr>'+pl[0].map(h=>'<th>'+md(h)+'</th>').join('')+'</tr>'+
+      pl.slice(1).map(r=>'<tr>'+r.map(c=>'<td>'+md(c)+'</td>').join('')+'</tr>').join('')+'</table>';
     return '<h3>'+title+'</h3>'+inner;
   }).join('');
 }
